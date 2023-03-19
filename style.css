@@ -1,0 +1,29 @@
+html,body
+{
+height:100%;
+}
+
+.mybody{
+    height: 100%;
+    background: linear-gradient(-60deg,black,black,black, rgb(128, 11, 11), rgb(27, 1, 255), rgb(31, 255, 244), rgb(247, 222, 140), rgb(247, 222, 140));
+    background-size: 400% 400%;
+    overflow: hidden;
+    animation: myanimation 10s ease infinite;
+}
+
+@keyframes myanimation{
+    0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+
+
+    /*0% {background: linear-gradient(darkblue, black); background-blend-mode: screen;}
+    50% {background: linear-gradient(#99ccff, #ffbb33); background-blend-mode: screen;}
+    100% {background: linear-gradient(#e60000, #6600ff); background-blend-mode: screen;}*/
+}
