@@ -5,6 +5,7 @@
       }
 
 .main-text{
-	font-family : Noto Sans;
-	font-weight: 20;
+	font-family : "Noto Sans";
+	font-size: 20;
+	font-weight: BOLD;
 }
