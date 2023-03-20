@@ -1,10 +1,10 @@
-body {
+.body {
         height: 100vh;
         background: linear-gradient(to bottom, #80dfff,#ffbb33);
         overflow: hidden;
       }
 
-h1{
-font-family : "Noto-Sans:;
+.h1{
+font-family : "Noto-Sans";
 	font-weight: 20;
 }
