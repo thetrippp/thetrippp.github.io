@@ -1,32 +1,58 @@
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Change Background Color Based on Time of Day</title>
+	<title>It's thetrippp!</title>
 	<style>
 		body {
-			background: linear-gradient( #f5ffb3, #ffbb33);
+			background-color: #fff; /* default background color */
+			overflow: hidden;
+		}
+		
+		/* Change background color based on time of day */
+		/* Morning (6am - 11:59am) */
+		@media (max-width: 767px) {
+			body:before {
+				content: "";
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background: linear-gradient( #f5ffb3, #ffbb33);
+			}
+		}
+
+		/* Afternoon (12pm - 4:59pm) */
+		@media (min-width: 768px) and (max-width: 1023px) {
+			body:before {
+				content: "";
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background-color: #ffefd5;
+			}
+		}
+
+		/* Evening (5pm - 8:59pm) */
+		@media (min-width: 1024px) {
+			body:before {
+				content: "";
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				background-color: #87ceeb;
+			}
 		}
 	</style>
 </head>
 <body>
-	<script>
-		function setBackground() {
-			var d = new Date();
-			var hour = d.getHours();
-			if (hour >= 6 && hour < 18) { // daytime (6am to 6pm)
-				document.body.style.background = linear-gradient( #f5ffb3, #ffbb33);
-				document.body.style.background-width = 100%;
-				document.body.style.background-height = 100%;
-			} else { // nighttime
-				document.body.style.background = linear-gradient( #f500b3, #ff0033);
-			}
-		}
-
-		setBackground(); // set the initial background color
-		setInterval(setBackground, 60000); // update the background color every minute
-	</script>
+	<h1>Hello, World!</h1>
 </body>
 </html>
