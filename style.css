@@ -1,46 +1,43 @@
-body 
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body
 {
-  height: 100%;
-  /*background: linear-gradient(to bottom, #80dfff,#ffbb33);*/
-  background-color: #ccffcc;
-  font-family: "Noto Sans";
-  /*font-size: 50px;*/
+  height: 100vh;
+  /*background: #ccffcc;*/
+  background: #0d1622;
+  color: #1ba098;
+  accent-color: #f7f7f7;
   overflow: hidden;
 }
 
-.maintext{
+.center
+{
+  justify-content: center;
+  position: absolute;
   margin: auto;
-  width: 60%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  align-items: center;
   text-align: center;
-  overflow: hidden;
 }
 
-.introdiv
-{
-  padding-top: 50%;
-text-align: center;
-overflow: hidden;
+.hello{
+  font-family: 'Poppins', sans-serif;
+  font-size: 50px;
 }
 
-.introtitle{
-  color: #f2f2f2;
-font-size: 50px;
-overflow: hidden;
+.section1{
+  font-family: 'Poppins', sans-serif;
+  font-size: 40px;
 }
 
-.introtext
-{
-  color: #f2f2f2;
-font-size: 30px;
-text-align: center;
-overflow: hidden;
-}
-.introtext2
-{
-  color: #f2f2f2;
-font-size: 20px;
-text-align: center;
-position: sticky;
-top: 0;
-overflow: hidden;
+.section2{
+  padding: 0;
+  font-family: 'Poppins';
+  font-size: 30px;
 }

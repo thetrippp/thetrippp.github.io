@@ -1,0 +1,19 @@
+<!--
+    <script>
+      setInterval(function() {
+        var currentTime = new Date().getHours();
+        var body = document.querySelector("body");
+
+        if (currentTime >= 6 && currentTime < 12) {
+          body.style.background =
+            "linear-gradient(to bottom, #00ffff, #0f0f7d)";
+        } else if (currentTime >= 12 && currentTime < 18) {
+          body.style.background =
+            "linear-gradient(to bottom, #80dfff,#ffbb33)";
+        } else {
+          body.style.background =
+            "linear-gradient(to bottom, #000033, #330033)";
+        }
+      }, 1000);
+    </script>
+    -->
