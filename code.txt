@@ -1,19 +1,147 @@
-<!--
-    <script>
-      setInterval(function() {
-        var currentTime = new Date().getHours();
-        var body = document.querySelector("body");
+.maintext
+{
+  justify-content: right;
+  position: fixed;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 30%;
+  width: 50%;
+  height: 30%;
+  align-items: right;
+  text-align: center;
 
-        if (currentTime >= 6 && currentTime < 12) {
-          body.style.background =
-            "linear-gradient(to bottom, #00ffff, #0f0f7d)";
-        } else if (currentTime >= 12 && currentTime < 18) {
-          body.style.background =
-            "linear-gradient(to bottom, #80dfff,#ffbb33)";
-        } else {
-          body.style.background =
-            "linear-gradient(to bottom, #000033, #330033)";
-        }
-      }, 1000);
-    </script>
-    -->
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.center_pic{
+  width: 300px;
+  height: 300px;
+  border-radius: 100%;
+  transform: scaleX(-1);
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.animated_pic{
+  animation: fade-in .75s;
+  animation-delay: s;
+  animation-fill-mode: both;
+}
+@keyframes fade-in{
+  0%{
+    opacity: 0;
+    size: 0%;
+  }
+  100%{
+    opacity: 1;
+    size:100%;
+  }
+}
+
+.home_h1{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: 300%;
+  color: antiquewhite;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+.home_caption{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: rgba(250, 235, 215,0.75);
+  text-decoration: none;
+  margin-top: 1px;
+  margin-bottom: 0;
+}
+.home_description{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: large;
+  color: rgba(250, 235, 215,0.75);
+  text-decoration: none;
+  margin-top: 1px;
+}
+
+.animated_title{
+  animation: fade-in-right .5s;
+  animation-delay: .1s;
+  animation-fill-mode: both;
+}
+.animated_caption{
+  animation: fade-in-right .5s;
+  animation-delay: .2s;
+  animation-fill-mode: both;
+}
+
+@keyframes fade-in-right{
+  0%{
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100%{
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+// WORKING HTML
+<div>
+        <img src="Profile Picture.jpg"  class="center_pic animated_pic">
+    </div>
+    <div class="maintext">
+        <h1 class="home_h1 animated_title">Raghav Suriyashekar</h1>
+        <p class="home_caption animated_caption">Fast and curious.</p>
+        <p class="home_description animated_caption">Gameplay Programmer. Prototyper. Student.</p>
+    </div> 
+    <div class="div_links">
+        <a href="projects.html">Projects</a>
+        <a href="https://github.com/thetrippp">Github</a>
+        <a href="https://thetrippp.itch.io/">itch.io</a>
+        <a href="resume.html">Resumé</a>
+        <a href="about.html">About</a>
+    </div>
+
+
+/// WORKING LINKS CSS
+    .div_links{
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.div_links a{
+
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: antiquewhite;
+  text-decoration: none;
+
+  float:right;
+  display: block;
+  padding: 20px 20px;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.div_links a:hover{
+  color: rgb(131, 123, 112);
+}

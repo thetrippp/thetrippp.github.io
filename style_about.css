@@ -4,27 +4,20 @@
 body
 {
   height: 100vh;
-  /*background: #ccffcc;*/
   background: #0d1622;
   overflow: hidden;
 }
 
-.center
-{
-  justify-content: center;
-  position: absolute;
-  margin: auto;
+
+.div_links{
+  overflow: hidden;
+  position: fixed;
   top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 50%;
-  height: 50%;
-  align-items: center;
-  text-align: center;
+  width: 100%;
 }
 
-.links{
+
+.div_links a{
 
   font-family: 'Poppins', sans-serif;
   text-align: center;
@@ -32,11 +25,19 @@ body
   color: antiquewhite;
   text-decoration: none;
 
+  float: right;
+  display: block;
+  padding: 20px 20px;
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+
+.div_links a:hover{
+  color: rgb(131, 123, 112);
 }
 
 .home_h1{
