@@ -4,7 +4,7 @@
 body
 {
   height: 100vh;
-  background: #0d1622;
+  background: #2d2d2d;
   overflow: hidden;
 }
 
@@ -45,9 +45,9 @@ body
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: large;
-  color: rgba(250, 235, 215,0.75);
+  color: #ffffcc;
   text-decoration: none;
-  margin-top: 1px;
+  margin-top: 10%;
 }
 
 .animated_title{
