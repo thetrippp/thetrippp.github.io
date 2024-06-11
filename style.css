@@ -31,7 +31,7 @@ body
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #ffffcc;
+  color: #00a2ff;
   text-decoration: none;
   margin-top: 15%;
   user-select: none;
@@ -41,7 +41,7 @@ body
   -ms-user-select: none;
 }
 .name:hover{
-  color: #ffa33a;
+  color: #00507e;
 }
 
 
@@ -61,8 +61,8 @@ body
 
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: large;
-  color: #ffffcc;
+  font-size: x-large;
+  color: #00b688;
   text-decoration: none;
 
   display: inline-flex;
@@ -75,6 +75,6 @@ body
   -ms-user-select: none;
 }
 .div_links a:hover{
-  color: #ffa33a;
+  color: #007c5d;
 }
 
