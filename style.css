@@ -4,30 +4,69 @@
 body
 {
   height: 100vh;
-  background: #0d1622;
+  background: #2d2d2d;
   overflow: hidden;
+}
+
+
+.main_description{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: #ffffcc;
+  text-decoration: none;
+  margin-top: 15%;
+  margin-left: 10%;
+  margin-right: 10%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+
+.name{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: #ffffcc;
+  text-decoration: none;
+  margin-top: 15%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.name:hover{
+  color: #ffa33a;
 }
 
 
 .div_links{
   overflow: hidden;
-  position: fixed;
   top: 0;
+  margin-bottom: 10px;
   width: 100%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
-
-
 .div_links a{
 
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
-  color: antiquewhite;
+  font-size: large;
+  color: #ffffcc;
   text-decoration: none;
 
-  float: right;
-  display: block;
-  padding: 20px 20px;
+  display: inline-flex;
+  padding: 2.5%;
 
   user-select: none;
   -webkit-user-select: none;
@@ -35,47 +74,7 @@ body
   -moz-user-select: none;
   -ms-user-select: none;
 }
-
 .div_links a:hover{
-  color: rgb(131, 123, 112);
+  color: #ffa33a;
 }
 
-.home_h1{
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  font-size: 400%;
-  color: antiquewhite;
-  text-decoration: none;
-
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-.home_p_big{
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  font-size: xx-large;
-  color: antiquewhite;
-  text-decoration: none;
-
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-.home_p{
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  font-size: x-large;
-  color: antiquewhite;
-  text-decoration: none;
-
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
