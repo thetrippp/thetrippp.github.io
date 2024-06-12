@@ -15,7 +15,7 @@ body
   font-size: x-large;
   color: #ffffcc;
   text-decoration: none;
-  margin-top: 15%;
+  margin-top: 25vh;
   margin-left: 10%;
   margin-right: 10%;
   
@@ -44,6 +44,40 @@ body
   color: #00507e;
 }
 
+.projects{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: #ffc400;
+  text-decoration: none;
+  margin-top: 15%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.projects:hover{
+  color: #775b00;
+}
+
+.experiments{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: #00ff73;
+  text-decoration: none;
+  margin-top: 15%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.experiments:hover{
+  color: rgb(0, 83, 38);
+}
+
 
 .div_links{
   overflow: hidden;
@@ -62,7 +96,7 @@ body
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #00b688;
+  color: #00e4ab;
   text-decoration: none;
 
   display: inline-flex;
