@@ -3,7 +3,6 @@
 
 body
 {
-  height: 100vh;
   background: #2d2d2d;
   overflow: hidden;
 }
@@ -15,7 +14,7 @@ body
   font-size: x-large;
   color: #ffffcc;
   text-decoration: none;
-  margin-top: 25%;
+  margin-top: 15%;
   margin-left: 10%;
   margin-right: 10%;
   
@@ -97,9 +96,9 @@ body
   text-align: center;
   color: #00e4ab;
   text-decoration: none;
+  padding: 10px;
 
   display: inline-flex;
-  padding: 2.5%;
 
   user-select: none;
   -webkit-user-select: none;
