@@ -34,6 +34,7 @@ body
   color: #00a2ff;
   text-decoration: none;
   margin-top: 15%;
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -51,6 +52,7 @@ body
   color: #ffc400;
   text-decoration: none;
   margin-top: 15%;
+  
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
