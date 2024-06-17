@@ -5,17 +5,29 @@ body
 {
   height: 100vh;
   background: #2d2d2d;
-  overflow: hidden;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+body::-webkit-scrollbar{
+  display: none;
+}
+
+.main_div
+{  
+  margin-top: 50px;
+  margin-bottom: 50px;
+  justify-content: center;
 }
 
 
-.main_description{
+
+.main_Title
+{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
+  font-size: xx-large;
   color: #ffffcc;
-  text-decoration: none;
-  margin-top: 25vh;
+  text-decoration: none;  
   margin-left: 10%;
   margin-right: 10%;
   
@@ -24,68 +36,19 @@ body
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
-}
-
-
-.name{
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  font-size: x-large;
-  color: #00a2ff;
-  text-decoration: none;
-  margin-top: 15%;
-
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-.name:hover{
-  color: #00507e;
-}
-
-.projects{
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  font-size: x-large;
-  color: #ffc400;
-  text-decoration: none;
-  margin-top: 15%;
   
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-.projects:hover{
-  color: #775b00;
 }
 
-.experiments{
+.main_description{
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #00ff73;
+  color: #ffffcc;
   text-decoration: none;
-  margin-top: 15%;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-.experiments:hover{
-  color: rgb(0, 83, 38);
-}
-
-
-.div_links{
-  overflow: hidden;
-  top: 0;
+  margin-top: 10px;
   margin-bottom: 10px;
-  width: 100%;
+  margin-left: 7.5%;
+  margin-right: 7.5%;
   
   user-select: none;
   -webkit-user-select: none;
@@ -93,24 +56,27 @@ body
   -moz-user-select: none;
   -ms-user-select: none;
 }
-.div_links a{
 
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  font-size: x-large;
-  color: #00e4ab;
+.code_block
+{
+  color: #ffffff;
+  font-size: large;
+}
+
+.code_block code
+{
+
+}
+.code_block pre
+{
+  color: #ffffff;
   text-decoration: none;
-
-  display: inline-flex;
-  padding: 2.5%;
-
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
 }
-.div_links a:hover{
-  color: #007c5d;
+.comment{
+  color: #008111;
 }
+
+
+
+
 

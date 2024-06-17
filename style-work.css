@@ -3,6 +3,7 @@
 
 body
 {
+  height: 100vh;
   background: #2d2d2d;
   overflow: hidden;
 }
@@ -14,7 +15,7 @@ body
   font-size: x-large;
   color: #ffffcc;
   text-decoration: none;
-  margin-top: 15%;
+  margin-top: 25vh;
   margin-left: 10%;
   margin-right: 10%;
   
@@ -79,27 +80,12 @@ body
   color: rgb(0, 83, 38);
 }
 
-.work{
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-  font-size: x-large;
-  color: #00ffbf;
-  text-decoration: none;
-  margin-top: 15%;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-.work:hover{
-  color: #008161;
-}
-
 
 .div_links{
   overflow: hidden;
-  font-size: x-large;
+  top: 0;
+  margin-bottom: 10px;
+  width: 100%;
   
   user-select: none;
   -webkit-user-select: none;
@@ -114,9 +100,9 @@ body
   font-size: x-large;
   color: #00e4ab;
   text-decoration: none;
-  padding: 10px;
 
   display: inline-flex;
+  padding: 2.5%;
 
   user-select: none;
   -webkit-user-select: none;
