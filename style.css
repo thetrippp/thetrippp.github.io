@@ -14,7 +14,7 @@ body
   font-size: x-large;
   color: #ffffcc;
   text-decoration: none;
-  margin-top: 20%;
+  margin-top: 17%;
   margin-left: 10%;
   margin-right: 10%;
   
@@ -25,6 +25,22 @@ body
   -ms-user-select: none;
 }
 
+.subtext{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: medium;
+  color: #ffffcc;
+  text-decoration: none;
+  margin-top: 20%;
+  margin-left: 10%;
+  margin-right: 10%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 
 .name{
   font-family: 'Poppins', sans-serif;
