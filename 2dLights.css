@@ -19,7 +19,26 @@ body::-webkit-scrollbar{
   justify-content: center;
 }
 
+.back
+{
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+  font-size: x-large;
+  color: #0077ff;
+  text-decoration: none;   
+  margin-left: 5%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+}
 
+.back:hover{
+  color: #004594;
+}
 
 .main_Title
 {
