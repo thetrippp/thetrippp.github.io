@@ -26,14 +26,15 @@ body
 }
 
 .subtext{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: medium;
   color: #ffffcc;
   text-decoration: none;
-  margin-top: 20%;
-  margin-left: 10%;
-  margin-right: 10%;
   
   user-select: none;
   -webkit-user-select: none;
