@@ -49,7 +49,7 @@ body
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #0072b1;
+  color: #ff4d00;
   text-decoration: none;
   margin-top: 15%;
 
@@ -60,7 +60,7 @@ body
   -ms-user-select: none;
 }
 .name:hover{
-  color: #00486f;
+  color: #9c0a00;
 }
 
 .projects{

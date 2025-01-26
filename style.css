@@ -14,7 +14,7 @@ body
   font-size: x-large;
   color: #ffffcc;
   text-decoration: none;
-  margin-top: 17%;
+  margin-top: max(25vh, 18vw);
   margin-left: 10%;
   margin-right: 10%;
   
@@ -32,7 +32,7 @@ body
 
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: medium;
+  font-size: min(2vw, 1.5vh);
   color: #ffffcc;
   text-decoration: none;
   
@@ -47,7 +47,8 @@ body
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #00a2ff;
+  font-weight: bolder;
+  color: #0072b1;
   text-decoration: none;
   margin-top: 15%;
 
@@ -58,13 +59,14 @@ body
   -ms-user-select: none;
 }
 .name:hover{
-  color: #00507e;
+  color: #00486f;
 }
 
 .projects{
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
+  font-weight: bolder;
   color: #ffc400;
   text-decoration: none;
   margin-top: 15%;
@@ -76,14 +78,15 @@ body
   -ms-user-select: none;
 }
 .projects:hover{
-  color: #775b00;
+  color: #ca9b00;
 }
 
 .experiments{
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #00ff73;
+  font-weight: bolder;
+  color: #30ad50;
   text-decoration: none;
   margin-top: 15%;
   user-select: none;
@@ -93,14 +96,15 @@ body
   -ms-user-select: none;
 }
 .experiments:hover{
-  color: rgb(0, 83, 38);
+  color: #217737;
 }
 
 .work{
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #00ffbf;
+  font-weight: bolder;
+  color: #ad8fde;
   text-decoration: none;
   margin-top: 15%;
   user-select: none;
@@ -110,7 +114,7 @@ body
   -ms-user-select: none;
 }
 .work:hover{
-  color: #008161;
+  color: #805db9;
 }
 
 
@@ -129,7 +133,8 @@ body
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
-  color: #00e4ab;
+  font-weight: lighter;
+  color: #ff6200;
   text-decoration: none;
   padding: 10px;
 
@@ -142,6 +147,6 @@ body
   -ms-user-select: none;
 }
 .div_links a:hover{
-  color: #007c5d;
+  color: #7a3307;
 }
 
