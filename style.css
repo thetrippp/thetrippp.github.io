@@ -11,10 +11,10 @@ body
 .main_description{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
+  font-size: 1.5em;
   color: #ffffcc;
   text-decoration: none;
-  margin-top: max(25vh, 18vw);
+  margin-top: max(25vh, 15vw);
   margin-left: 10%;
   margin-right: 10%;
   
@@ -136,7 +136,7 @@ body
   font-weight: lighter;
   color: #ff6200;
   text-decoration: none;
-  padding: 10px;
+  padding: 0.5vw;
 
   display: inline-flex;
 
