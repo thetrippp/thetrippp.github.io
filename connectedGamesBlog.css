@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body
+{
+  background: #FDF7E3;
+  overflow: hidden;
+}
+
+
+.main_description{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bold;
+  font-weight: 600;
+  color: #4A4A4A;
+  text-decoration: none;
+  margin-top: max(5vh, 3.6vw);
+  margin-left: 10%;
+  margin-right: 10%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.subtext{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: min(2vw, 1.5vh);
+  color: #4A4A4A;
+  text-decoration: none;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.name{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: #0072b1;
+  text-decoration: none;
+  margin-top: 15%;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.name:hover{
+  color: #00486f;
+}
+
+.projects{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bolder;
+  color: #ffc400;
+  text-decoration: none;
+  margin-top: 15%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.projects:hover{
+  color: #ca9b00;
+}
+
+.experiments{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bolder;
+  color: #30ad50;
+  text-decoration: none;
+  margin-top: 15%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.experiments:hover{
+  color: #217737;
+}
+
+.work{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bolder;
+  color: #ad8fde;
+  text-decoration: none;
+  margin-top: 15%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.work:hover{
+  color: #805db9;
+}
+
+
+.div_links{
+  overflow: hidden;
+  font-size: x-large;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.div_links a{
+
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bolder;
+  color: #ff6200;
+  text-decoration: none;
+  padding: 10px;
+
+  display: inline-flex;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.div_links a:hover{
+  color: #7a3307;
+}
+
