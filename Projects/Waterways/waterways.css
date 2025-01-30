@@ -45,7 +45,7 @@ body::-webkit-scrollbar{
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: xxx-large;
-  color: #ffffcc;
+  color: #ff4400;
   text-decoration: none;  
   margin-left: 10%;
   margin-right: 10%;
@@ -62,7 +62,7 @@ body::-webkit-scrollbar{
 .main_description{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
+  font-size: max(1vw, 1.75vh);
   color: #ffffcc;
   text-decoration: none;
   margin-top: 10px;
@@ -80,7 +80,7 @@ body::-webkit-scrollbar{
 .link1{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
+  font-size: max(1vw, 1.75vh);
   color: #00ffaa;
   text-decoration: none;
   
