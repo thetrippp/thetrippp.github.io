@@ -3,20 +3,24 @@
 
 body
 {
-  background: #2d2d2d;
+  /*background: #2d2d2d;*/
   overflow: hidden;
+  font-weight: bolder;
 }
 
 
 .main_description{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: 1.5em;
-  color: #ffffcc;
+  font-size: 2em;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  /*color: #ffffcc;*/
+  color: white;
   text-decoration: none;
-  margin-top: max(25vh, 15vw);
+  margin-top: max(15vh, 15vw);
   margin-left: 10%;
   margin-right: 10%;
+  z-index: 2;
   
   user-select: none;
   -webkit-user-select: none;
@@ -33,7 +37,8 @@ body
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: min(2vw, 1.5vh);
-  color: #ffffcc;
+  text-shadow: 50px 20px 50px rgba(0, 0, 0, 0.7);
+  color: black;
   text-decoration: none;
   
   user-select: none;
@@ -46,9 +51,8 @@ body
 .name{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
-  font-weight: bolder;
-  color: #0072b1;
+  font-size: 1em;
+  color: #ff5e00;
   text-decoration: none;
   margin-top: 15%;
 
@@ -59,14 +63,13 @@ body
   -ms-user-select: none;
 }
 .name:hover{
-  color: #00486f;
+  color: #ce4b00;
 }
 
 .projects{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
-  font-weight: bolder;
+  font-size: 1em;
   color: #ffc400;
   text-decoration: none;
   margin-top: 15%;
@@ -84,8 +87,7 @@ body
 .experiments{
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  font-size: x-large;
-  font-weight: bolder;
+  font-size: 1em;
   color: #30ad50;
   text-decoration: none;
   margin-top: 15%;
@@ -150,3 +152,21 @@ body
   color: #7a3307;
 }
 
+.img{
+  padding-top: 15px;
+  width: 48px;
+}
+
+.img:hover{
+  filter: brightness(0.625);
+}
+
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  filter: blur(10px);
+}
