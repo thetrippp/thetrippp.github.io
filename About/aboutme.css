@@ -1,0 +1,160 @@
+
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    overflow: hidden;
+  }
+  
+  /* Background Styling */
+  .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../Projects/Waterways/Images/WaterwaysDemo.gif') no-repeat center center/cover;
+    z-index: -1;
+    filter: blur(20px);
+  }
+  
+  /* Content Wrapper */
+  .content {
+    display: flex;
+    align-items: center;
+    z-index: 1;
+    text-align: left;
+    color: #333;
+    max-width: 1200px;  /* limit the content's max width */
+    width: 100%;
+    flex-wrap: wrap;  /* allow wrapping on smaller screens */
+    justify-content: center;  /* center elements horizontally */
+  }
+  
+  /* Circular Image */
+  .image {
+    flex-shrink: 0;
+    margin-right: 1.5rem;
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    /* Optional: responsive margins based on screen size */
+  }
+  
+  .image img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    border: 5px solid #fff;
+  }
+  
+  /* Text Section */
+  .text {
+    flex: 1;
+    margin-left: 1.5rem;  /* Space between text and image */
+    max-width: 800px;
+    padding: 1rem;
+  }
+  
+  /* Heading Styling */
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #fff;
+  }
+  
+  /* Paragraph Styling */
+  p {
+    font-size: 1.5rem;
+    text-align: center;
+    line-height: 1.5;
+    color: #f0f0f0;
+  }
+  
+  /* Link Styling */
+  a {
+    color: #00b0ff;
+    text-decoration: none;
+    margin-right: 0.5rem;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Links Section */
+  .links {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
+  /* Button Styling */
+  .button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: dodgerblue;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  
+  .button:hover {
+    background: #0056b3;
+  }
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .content {
+      flex-direction: column;  /* Stack image and text vertically */
+      align-items: center;  /* Center content on smaller screens */
+    }
+  
+    .image {
+      margin-right: 0;  /* Remove margin between image and text */
+      margin-bottom: 1rem;  /* Add space below image */
+    }
+  
+    .text {
+      text-align: center;  /* Center text on smaller screens */
+      margin-left: 0;  /* Remove margin */
+      max-width: 100%;  /* Allow text section to fill available space */
+    }
+  
+    h1 {
+      font-size: 2rem;  /* Adjust heading size on smaller screens */
+    }
+  
+    p {
+      font-size: 1.25rem;  /* Adjust paragraph size on smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.8rem;  /* Make heading even smaller for very small screens */
+    }
+  
+    p {
+      font-size: 1rem;  /* Adjust paragraph font size */
+    }
+  }
+  
