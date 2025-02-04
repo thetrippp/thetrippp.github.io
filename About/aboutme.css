@@ -3,108 +3,129 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 
-/* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
   
-  /* Body Styling */
   body {
     font-family: 'Poppins', sans-serif;
+    font-weight: 700;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background: transparent;
     overflow: hidden;
+    text-shadow: 
+    1px 1px 0px #000, 
+    -1px -1px 0px #000, 
+    1px -1px 0px #000, 
+    -1px 1px 0px #000;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
   
-  /* Background Styling */
   .background {
     position: fixed;
-    top: 0;
-    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
     background: url('../Projects/Waterways/Images/WaterwaysDemo.gif') no-repeat center center/cover;
     z-index: -1;
-    filter: blur(20px);
+    filter: blur(10px);
   }
   
-  /* Content Wrapper */
   .content {
     display: flex;
     align-items: center;
     z-index: 1;
     text-align: left;
     color: #333;
-    max-width: 1200px;  /* limit the content's max width */
+    max-width: 1300px;
     width: 100%;
-    flex-wrap: wrap;  /* allow wrapping on smaller screens */
-    justify-content: center;  /* center elements horizontally */
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
-  /* Circular Image */
   .image {
     flex-shrink: 0;
-    margin-right: 1.5rem;
-    max-width: 300px;
+    max-width: 350px;
     width: 100%;
+    padding: 1.15em;
     height: auto;
-    /* Optional: responsive margins based on screen size */
   }
   
   .image img {
     width: 100%;
     height: auto;
     border-radius: 50%;
-    border: 5px solid #fff;
+    border: 3px solid #fff;
   }
   
-  /* Text Section */
   .text {
     flex: 1;
-    margin-left: 1.5rem;  /* Space between text and image */
-    max-width: 800px;
+    margin-left: 0.5rem; 
+    max-width: 1100px;
     padding: 1rem;
   }
   
-  /* Heading Styling */
   h1 {
     font-size: 3.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     text-align: center;
     color: #fff;
   }
   
-  /* Paragraph Styling */
   p {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     text-align: center;
     line-height: 1.5;
     color: #f0f0f0;
   }
   
-  /* Link Styling */
-  a {
-    color: #00b0ff;
+  .a1 {
+    color: #ff5e00;
     text-decoration: none;
-    margin-right: 0.5rem;
   }
   
-  a:hover {
-    text-decoration: underline;
+  .a1:hover {
+    color: #ce4b00;
+  }
+
+  .a2 {
+    color: #ffc400;
+    text-decoration: none;
   }
   
-  /* Links Section */
-  .links {
-    margin-top: 1rem;
-    text-align: center;
+  .a2:hover {
+    color: #ca9b00;
+  }
+
+  .a3 {
+    color: #30ad50;
+    text-decoration: none;
   }
   
-  /* Button Styling */
+  .a3:hover {
+    color: #217737;
+  }
+
+  .a4 {
+    color: #ad8fde;
+    text-decoration: none;
+  }
+  
+  .a4:hover {
+    color: #805db9;
+  }
+  
+  
   .button {
     display: inline-block;
     padding: 0.5rem 1rem;
@@ -120,41 +141,76 @@
   .button:hover {
     background: #0056b3;
   }
+
+  .links {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 1.5rem; /* Space between icons */
+    margin-top: 1rem;
+  }
   
-  /* Media Queries */
+  .links a {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    transition: transform 0.3s ease;
+  }
+  
+  .links a:hover {
+    transform: scale(1.5);
+  }
+  
+  .links img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  
   @media (max-width: 768px) {
     .content {
-      flex-direction: column;  /* Stack image and text vertically */
-      align-items: center;  /* Center content on smaller screens */
+      flex-direction: column;
+      align-items: center; 
     }
   
     .image {
-      margin-right: 0;  /* Remove margin between image and text */
-      margin-bottom: 1rem;  /* Add space below image */
+      margin-right: 0;
+      margin-bottom: 1rem;
     }
   
     .text {
-      text-align: center;  /* Center text on smaller screens */
-      margin-left: 0;  /* Remove margin */
-      max-width: 100%;  /* Allow text section to fill available space */
+      text-align: center;
+      margin-left: 0;
+      max-width: 100%;
     }
   
     h1 {
-      font-size: 2rem;  /* Adjust heading size on smaller screens */
+      font-size: 2rem;
     }
   
     p {
-      font-size: 1.25rem;  /* Adjust paragraph size on smaller screens */
+      font-size: 1.5rem; 
+    }
+
+    .links a {
+      width: 50px;
+      height: 50px;
     }
   }
   
   @media (max-width: 480px) {
     h1 {
-      font-size: 1.8rem;  /* Make heading even smaller for very small screens */
+      font-size: 1.8rem;
     }
   
     p {
-      font-size: 1rem;  /* Adjust paragraph font size */
+      font-size: 1.25rem;
+    }
+    
+    .links a {
+      width: 45px;
+      height: 45px;
     }
   }
   

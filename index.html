@@ -1,30 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="icon" type="image/x-icon" href="Images/joystick.png">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="icon" type="image/x-icon" href="Images/joystick.png">
+  <link rel="stylesheet" href="test.css">
 </head>
 <body>
-    <img src="Projects/Waterways/Images/WaterwaysDemo.gif" id="myVideo">
-    <div class="main_description">
-        Hello and Welcome!<br>
-        I'm <a href="About/aboutme.html" class="name">Raghav Suriyashekar</a>, a Master's student at Kingston University.<br>
-        Check out my <a href="Projects/projects.html" class="experiments">Projects</a> <!--, <a href="workXP.html" class="work">Work</a>--> and <a href="Experiments/experiments.html" class="projects">Experiments</a>.<br>
-        Procedural Generation, Shader Programming and Gameplay Mechanics are my focus.<br>
-        <div class="div_links">
-            
-            <a href="https://github.com/thetrippp" target="_blank"><img class="img" src="Images/github_logo.png" ></a>
-            <a href="https://thetrippp.itch.io/" target="_blank"><img class="img" src="Images/itch_logo.png"></a>
-            <a href="https://in.linkedin.com/in/raghav-suriyashekar-ab160b203" target="_blank"><img class="img" src="Images/linkedin_logo.png"></a>
 
+  <div class="container">
+
+    <section class="section intro-section" id="mainSection">
+        <div class="background"></div>
+        <div class="content">
+          <div class="image">
+            <img src="../Images/myface.jpg" alt="Profile Image">
+          </div>
+          <div class="text">
+            <h1>Hello and Welcome!</h1>
+            <p>
+              I'm <a href="#aboutSection" class="a1">Raghav Suriyashekar</a>, a Master's student at Kingston University.
+              I love Procedural Generation, Shader Programming and developing Gameplay Mechanics.
+              Check out my <a href="#projectSection" class="a3">Projects</a> and <a href="#experimentSection" class="a4">Experiments</a> below.
+            </p>
+          </div>
         </div>
+    </section>
+
+    <section class="section project-section" id="projectSection">
+      <div class="project-content">
+        <h1>Projects</h1>
+    <p class="p1">A collection of my most exciting projects.</p>
+
+    <div class="card-container">
+      <a href="project1.html" class="card" style="background-image: url('Images/PageImages/Waterways/WaterwaysDemo.gif');">Waterways!</a>
+      <a href="project2.html" class="card" style="background-image: url('path/to/project1-image.gif');">BOSSBORNE</a>
+      <a href="project2.html" class="card" style="background-image: url('path/to/project1-image.gif');">What Time Is It?</a>
     </div>
-    <div class="subtext">
-        This page is still under development and content is being added to it.<br>Will be fully populated soon! :)
+      </div>
+    </section>
+
+    <section class="section experiments-section" id="experimentSection">
+        <div class="experiment-content">
+          <h1>Experiments</h1>
+    <p class="p1">Some cool technical and artistic experiments.</p>
+
+    <div class="card-container">
+      <a href="experiment1.html" class="card" style="background-image: url('Images/PageImages/LOLFOW/FOWStage3.gif'); background-position: center; ">League of Legends: Fog of War</a>
+      <a href="experiment2.html" class="card" style="background-image: url('Images/PageImages/2DLights/2DLightsShadows.gif'); background-position: center; ">2D Lights and Shadows</a>
+      <!--<a href="experiment2.html" class="card" style="background-image: url('Images/WaterwaysDemo.gif');">GPU Instancing : Audience</a>-->
+      <a href="experiment2.html" class="card" style="background-image: url('Images/PageImages/Waterways/IslandColorMap.png'); background-position: center;">GPU Instancing : Dynamic mesh-based Shadows</a>
     </div>
+        </div>
+      </section>
+
+    <section class="section about-section" id="aboutSection">
+        <div class="about-content">
+          <h2>About Me</h2>
+    <p>
+        Developer from Chennai, India. Currently pursuing my Masters in Game Developement(Programming) at Kingston University, London.
+        I love playing and making games, listening to music, watching anime, making things  and learning languages. 
+        Represented my state Tamilnadu twice in Basketball. Was part of the winning basketball team at the District Level. 
+      </p>
+
+    <div class="card-container">
+      <a href="experience.html" class="card" style="color: gold; background-color: antiquewhite; filter:brightness(1); max-width: 200px; min-width:100px">Galio Clay Figurine</a>
+    </div>
+        <div class="links">
+            <a href="https://www.instagram.com/ragikanji/?next=%2F" target="_blank">
+              <img src=".//Images/instagram_icon.png" alt="GitHub">
+            </a>
+            <a href="https://github.com/thetrippp" target="_blank">
+                <img src="../Images/github_logo.png" alt="GitHub">
+              </a>
+            <a href="https://thetrippp.itch.io/" target="_blank">
+              <img src="../Images/itch_logo.png" alt="Itch.io">
+            </a>
+            <a href="https://in.linkedin.com/in/raghav-suriyashekar-ab160b203" target="_blank">
+              <img src="../Images/linkedin_logo.png" alt="LinkedIn">
+            </a>
+            <a href="../../Raghav Suriyashekar.pdf" download>
+              <img src="Images/resume_logo.png" alt="LinkedIn">
+            </a>
+          </div>
+        </div>
+      </section>
+  </div>
 </body>
 </html>

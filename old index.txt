@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="icon" type="image/x-icon" href="Images/joystick.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <img src="Projects/Waterways/Images/WaterwaysDemo.gif" id="myVideo">
+    <div class="main_description">
+        Hello and Welcome!<br>
+        I'm <a href="test.html" class="name">Raghav Suriyashekar</a>, a Master's student at Kingston University.<br>
+        Check out my <a href="Projects/projects.html" class="experiments">Projects</a> <!--, <a href="workXP.html" class="work">Work</a>--> and <a href="Experiments/experiments.html" class="projects">Experiments</a>.<br>
+        Procedural Generation, Shader Programming and Gameplay Mechanics are my focus.<br>
+        <div class="div_links">
+            
+            <a href="https://github.com/thetrippp" target="_blank"><img class="img" src="Images/github_logo.png" ></a>
+            <a href="https://thetrippp.itch.io/" target="_blank"><img class="img" src="Images/itch_logo.png"></a>
+            <a href="https://in.linkedin.com/in/raghav-suriyashekar-ab160b203" target="_blank"><img class="img" src="Images/linkedin_logo.png"></a>
+
+        </div>
+    </div>
+    <div class="subtext">
+        This page is still under development and content is being added to it.<br>Will be fully populated soon! :)
+    </div>
+</body>
+</html>
+
+
+---------------------------
+
+
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body
+{
+  /*background: #2d2d2d;*/
+  overflow: hidden;
+  font-weight: bolder;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+
+.main_description{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: min(5vw, 3vh);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  /*color: #ffffcc;*/
+  color: white;
+  text-decoration: none;
+  margin-top: max(15vh, 15vw);
+  margin-left: 10%;
+  margin-right: 10%;
+  z-index: 2;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.subtext{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: min(2vw, 1.5vh);
+  text-shadow: 50px 20px 50px rgba(0, 0, 0, 0.7);
+  color: black;
+  text-decoration: none;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.name{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: 1em;
+  color: #ff5e00;
+  text-decoration: none;
+  margin-top: 15%;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.name:hover{
+  color: #ce4b00;
+}
+
+.projects{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: 1em;
+  color: #ffc400;
+  text-decoration: none;
+  margin-top: 15%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.projects:hover{
+  color: #ca9b00;
+}
+
+.experiments{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: 1em;
+  color: #30ad50;
+  text-decoration: none;
+  margin-top: 15%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.experiments:hover{
+  color: #217737;
+}
+
+.work{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bolder;
+  color: #ad8fde;
+  text-decoration: none;
+  margin-top: 15%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.work:hover{
+  color: #805db9;
+}
+
+
+.div_links{
+  overflow: hidden;
+  font-size: x-large;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.div_links a{
+
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  font-weight: lighter;
+  color: #ff6200;
+  text-decoration: none;
+  padding: 0.5vw;
+
+  display: inline-flex;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.div_links a:hover{
+  color: #7a3307;
+}
+
+.img{
+  padding-top: 15px;
+  width: 48px;
+}
+
+.img:hover{
+  filter: brightness(0.625);
+}
+
+#myVideo {
+  
+  position: fixed;
+  background-size: auto 100%;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  filter: blur(10px);
+}
