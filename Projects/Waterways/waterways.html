@@ -8,55 +8,59 @@
 
     <link rel="icon" type="image/x-icon" href="Images/joystick.png">
     <link rel="stylesheet" href="waterways.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+    <script src="../required.js" defer></script> 
 
 
 </head>
 <body>
-    <div class="main_div"></div>
-        <a href="../projects.html" class="back">Back to Projects</a>
-        <div class="main_description">
-            <h1 class="main_Title">Waterways!</h1>
-            <p class="main_description">
+    <div class="main_div">
+    <a href="../../index.html">
+        <button id="returnButton" class="floating-button"><span class="material-symbols-outlined">
+            arrow_back
+            </span></button>
+            </a>
+        <div class="content">
+            <br>
+            <h1>Waterways!</h1>
+            <p>
             This project started out as an attempt to recreate the effect outlined in 
-            <a href="https://www.youtube.com/watch?v=bMTeCqNkId8" class="link1" target="_blank">this video</a> based of
-            <a href="https://www.reddit.com/r/generative/comments/xz7tlf/comparison_with_and_without_raytracing_for_my_2d/" class="link1" target="_blank">this reddit post</a>.<br>
+            <a href="https://www.youtube.com/watch?v=bMTeCqNkId8" class="link" target="_blank">this video</a> based of
+            <a href="https://www.reddit.com/r/generative/comments/xz7tlf/comparison_with_and_without_raytracing_for_my_2d/" class="link" target="_blank">this reddit post</a>.<br>
             It however, quickly became one of my most favorite projects to work on. The implementation I came up with used Compute Shaders. Being the first time I worked with them it was both super exciting and terrifying.
             <br><br>
             <p>Similar to how the video progresses, I started out with a height map. I used Perlin Noise in octaves to get organic looking islands and added a small
             function to help isolate the noise generation to the center of the screen.</p>
-            <img src="Images/Island Height Map.png" class="four">
+            <img src="../../Images/PageImages/Waterways/IslandHeightMap.png" class="three">
             <p>
                 By applying discrete colors over sets of value ranges of the height map, a visually captivating island-like landform is created. This versatile technique not only highlights the distinct features of beaches, grasslands, and mountains but also gives the landmass shapes an organic look with well-defined detail in interesting areas. Most importantly, it empowers you to create diverse and unique terrains, fostering creativity and innovation in your projects.  </p>
-            <img src="Images/Island Color Map.png" class="four">
+            <img src="../../Images/PageImages/Waterways/IslandColorMap.png" class="three">
             <p>
-                Using the height values, an unlit shader is employed to 'ray march' through the texture, a key step in the technique. The shader is significantly enhanced with a 'sun' position, a crucial vector direction that not only guides but also dictates the ray marching process. Depending on conditions, rays either 'escape' the landmass boundaries or intersect with the height values in the direction of the ray march, creating a lit or in-shadow region of the landmass. A shadow mask is combined with the colored stage to make a ray-marched 3D-looking island.</p>
-            <img src="Images/Island Shadow Mask.png" class="four">
-            <img src="Images/Island Shadow Stage.png" class="four">
+                Using the height values, an unlit shader is employed to "ray march" through the texture, a key step in the technique. The shader is significantly enhanced with a sun's position, a crucial vector direction that not only guides but also dictates the ray marching process. Depending on conditions, rays either "escape" the landmass boundaries with respect to the simulated vertical direction or intersect with the height values in the direction of the ray march, creating a lit or in-shadow region of the landmass. A shadow mask is combined with the colored stage to make a ray-marched 3D-looking island.</p>
+            <img src="../../Images/PageImages/Waterways/IslandShadowMask.png" class="three">
+            <img src="../../Images/PageImages/Waterways/IslandShadowStage.png" class="three">
             <p>
                 Another feature I wanted to add was waves periodically crashing into the beach. In a compute shader kernel, I defined an area that would circumvent the landmass and provide a mask that would contain information about the nearest shore point, a vector pointing to it, and the magnitude of that vector. This mask (I love how pretty vector fields look) allows another shader to then calculate periodic values that can be used to compute waves whose thickness, speed, and coherence can be controlled at runtime. Although visually appealing, the initial stage of these waves lacked a natural feel. I used another higher frequency, higher scale layer of noise to add some offsets into the mask values. Incorporating these noise values into the waves’ shader provided a satisfying wave motion, resulting in a final terrain that is not just visually appealing, but also deeply satisfying.</p>
-            <img src="Images/Island Foam Mask.png" class="four">
+            <img src="../../Images/PageImages/Waterways/IslandFoamMask.png" class="three">
             <p>
                 Adding some simple noise-based clouds that pan and scroll over time results in this
             </p>
-            <img src="Images/Island Output.png" class="four">
+            <img src="../../Images/PageImages/Waterways/IslandOutput.png" class="three">
             <p>
                 *inserting non-static result here*
-            </p>
-            <video width=85% height=75% controls loop="" muted="" autoplay="">
-                <source src="https://github.com/thetrippp/thetrippp.github.io/raw/refs/heads/main/Projects/Waterways/Images/Waterways%20Demo.mp4">
-            </video>
-            
+            </p>            
+            <img src="../../Images/PageImages/Waterways/WaterwaysDemo.gif" class="three">
             <p>
-                While I am currently working on some optimizations, I will be smug about the fact that all the real-time processes involved run within 2ms and ~500fps. HEHE
-                Unfortunately, compute shaders are not supported at the time of development by the WebGL platform, and there are some issues I am facing with packaging compute shaders.
+                While I am currently working on some optimizations, I will be smug about the fact that all the real-time processes involved run within 2ms and at ~500fps. HEHE<br>
+                Unfortunately, compute shaders are not supported at the time of development by the WebGL platform, and there are some issues I am facing with packaging them.
                 I will have a demo that you can download soon-ish. 
                 <br>
-                Cheers! T
             </p>
             </p>
             <br>
         </div>
         </div>
     </div>
+</div>
 </body>
 </html>

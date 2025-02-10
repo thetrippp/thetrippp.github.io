@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
   <link rel="icon" type="image/x-icon" href="Images/joystick.png">
-  <link rel="stylesheet" href="test.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -20,9 +20,8 @@
           <div class="text">
             <h1>Hello and Welcome!</h1>
             <p>
-              I'm <a href="#aboutSection" class="a1">Raghav Suriyashekar</a>, a Master's student at Kingston University.
-              I love Procedural Generation, Shader Programming and developing Gameplay Mechanics.
-              Check out my <a href="#projectSection" class="a3">Projects</a> and <a href="#experimentSection" class="a4">Experiments</a> below.
+              I'm <a href="#aboutSection" class="a1">Raghav Suriyashekar</a>, a gameplay developer and shader programmer who thrives on pushing the limits of real-time rendering, procedural generation, and performance optimization. Whether it's crafting cutting-edge shaders or designing dynamic gameplay systems, I build experiences that are as efficient as they are immersive.
+              Want to see innovation in action? Dive into my <a href="#projectSection" class="a3">Projects</a> and <a href="#experimentSection" class="a4">Experiments</a> below.
             </p>
           </div>
         </div>
@@ -31,12 +30,15 @@
     <section class="section project-section" id="projectSection">
       <div class="project-content">
         <h1>Projects</h1>
-    <p class="p1">A collection of my most exciting projects.</p>
+    <p class="p1">Some of my interesting projects.</p>
 
     <div class="card-container">
-      <a href="project1.html" class="card" style="background-image: url('Images/PageImages/Waterways/WaterwaysDemo.gif');">Waterways!</a>
-      <a href="project2.html" class="card" style="background-image: url('path/to/project1-image.gif');">BOSSBORNE</a>
-      <a href="project2.html" class="card" style="background-image: url('path/to/project1-image.gif');">What Time Is It?</a>
+      <a href="Projects/Waterways/waterways.html" class="card" style="background-image: url('Images/PageImages/Waterways/WaterwaysDemo.gif'); background-position: center;">Waterways!</a>
+      <a href="Projects/BOSSBORNE/bossborne.html" class="card" style="background-image: url('path/to/project1-image.gif');">BOSSBORNE</a>
+      <!--<a href="ConnectedGamesBlog/connectedGamesBlog.html" class="card" style="background-image: url('Images/UnknownBG.jpg'); background-size:cover;" target="_blank">In-Progress Multiplayer Game</a>-->
+      <!--<a href="project2.html" class="card" style="background-image: url('path/to/project1-image.gif');">In-Progress Multiplayer Game...</a>-->
+      <div class="card" style="background-image: url('Images/UnknownBG.jpg'); background-size:cover; ">In-Progress Multiplayer Game</div>
+      <!--<a href="project2.html" class="card" style="background-image: url('path/to/project1-image.gif');">What Time Is It?</a>-->
     </div>
       </div>
     </section>
@@ -47,10 +49,10 @@
     <p class="p1">Some cool technical and artistic experiments.</p>
 
     <div class="card-container">
-      <a href="experiment1.html" class="card" style="background-image: url('Images/PageImages/LOLFOW/FOWStage3.gif'); background-position: center; ">League of Legends: Fog of War</a>
-      <a href="experiment2.html" class="card" style="background-image: url('Images/PageImages/2DLights/2DLightsShadows.gif'); background-position: center; ">2D Lights and Shadows</a>
+      <a href="Experiments/LOLFOW/lolfow.html" class="card" style="background-image: url('Images/PageImages/LOLFOW/FOWStage3.gif'); background-position: center; ">League of Legends: Fog of War</a>
+      <a href="Experiments/2D Shadows/2dshadows.html" class="card" style="background-image: url('Images/PageImages/2DLights/2DLightsShadows.gif'); background-position: center; ">2D Lights and Shadows</a>
+      <a href="Experiments/GPUShadows/gpushadows.html" class="card" style="background-image: url('Images/PageImages/Waterways/IslandColorMap.png'); background-position: center;">GPU Instancing : Dynamic mesh-based Shadows</a>
       <!--<a href="experiment2.html" class="card" style="background-image: url('Images/WaterwaysDemo.gif');">GPU Instancing : Audience</a>-->
-      <a href="experiment2.html" class="card" style="background-image: url('Images/PageImages/Waterways/IslandColorMap.png'); background-position: center;">GPU Instancing : Dynamic mesh-based Shadows</a>
     </div>
         </div>
       </section>
@@ -61,11 +63,11 @@
     <p>
         Developer from Chennai, India. Currently pursuing my Masters in Game Developement(Programming) at Kingston University, London.
         I love playing and making games, listening to music, watching anime, making things  and learning languages. 
-        Represented my state Tamilnadu twice in Basketball. Was part of the winning basketball team at the District Level. 
+        Was part of the winning basketball team at the District Level. 
       </p>
 
     <div class="card-container">
-      <a href="experience.html" class="card" style="color: gold; background-color: antiquewhite; filter:brightness(1); max-width: 200px; min-width:100px">Galio Clay Figurine</a>
+      <a href="About/Galio/galio.html" class="card" style="color: gold; background-color: antiquewhite; filter:brightness(1); max-width: 200px; min-width:100px">Galio Clay Figurine</a>
     </div>
         <div class="links">
             <a href="https://www.instagram.com/ragikanji/?next=%2F" target="_blank">
@@ -85,7 +87,56 @@
             </a>
           </div>
         </div>
+        <p class="p2">Also feel free to check out <a href="https://requieem.github.io/" class="a1" target="_blank">Marco Farace</a>, an awesome developer I'm working with at Univerity.</p>
       </section>
   </div>
+
+
+  <script>
+    // Function to find the closest section based on the scroll position
+    function getClosestSection() {
+      const sections = document.querySelectorAll('section');
+      let closestSection = null;
+      let closestDistance = Infinity;
+
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const distance = Math.abs(rect.top); // Distance from the top of the viewport
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestSection = section;
+        }
+      });
+
+      return closestSection ? closestSection.id : null;
+    }
+
+    // Save the ID of the closest section to local storage before leaving
+    window.addEventListener("beforeunload", () => {
+      const closestSectionId = getClosestSection();
+      if (closestSectionId) {
+        localStorage.setItem("lastViewedSection", closestSectionId);
+      }
+    });
+
+    // Restore the last viewed section on page load
+    window.addEventListener("load", () => {
+      const lastViewedSection = localStorage.getItem("lastViewedSection");
+      if (lastViewedSection) {
+        const section = document.getElementById(lastViewedSection);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+        localStorage.removeItem("lastViewedSection");
+      }
+    });
+
+    // Redirect to another page (for demonstration)
+    document.getElementById("go-to-page").addEventListener("click", () => {
+      window.location.href = "anotherPage.html"; // change the link accordingly
+    });
+  </script>
+
 </body>
 </html>

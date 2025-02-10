@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>League of Legends: Fog of War</title>
+
+    <link rel="icon" type="image/x-icon" href="Images/joystick.png"> 
+    <link rel="stylesheet" href="lolfow.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+    <script src="../required.js" defer></script> 
+
+</head>
+<body>
+    <div class="main_div">
+    <a href="../../index.html">
+    <button id="returnButton" class="floating-button"><span class="material-symbols-outlined">
+        arrow_back
+        </span></button>
+        </a>
+        <div class="main_description">
+            <br>
+            <h1>League of Legends: Fog Of War</h1>
+            <h2>Exploring the Fog of War system</h2>
+            <p>
+                Playing the copious amounts of League of Legends that I have been playing, something that constantly caught my attention(to the point of me losing objectives and CS) was the Fog of War system. Moreso, how it "bends" around terrain, gets cutoff by brushes and smoothly transitions when vision is acquired and lost. I simply HAD to try and recreate it.
+                </p> 
+                <br>
+                <p>
+                    First step was to acquire the map. I found a top-down view of the Summoner's Rift's mini-map and removed all parts of the map that was traversable so it's alpha would be 0(this is important).
+                </p>
+                <p>
+                    My initial thought, was to check the texture in a range around a desired position, if any pixels were "traversable" or had alpha 0. This led me to my first rather useless implementation stage:
+                </p>
+                <img src="../../Images/PageImages/LOLFOW/FOWStage0.gif" class="three">
+                <p>
+                    Having that working, I moved on to the next stage, which was to actually introduce the light like behavior into the system: ray-tracing. Instead of traversing from the position outwards, I opted instead to move from the area around inwards. This allowed me to quickly terminate those pixels that began in untraversable non sero alpha areas and improved performance significantly.
+                </p>
+
+                <img src="../../Images/PageImages/LOLFOW/FOWStage1.gif" class="three">
+                <img src="../../Images/PageImages/LOLFOW/LOLGameplay01.gif" class="three">    
+                <p>
+                    The light bends around terrain and flows into new regions. Awesome!<br>
+                    Next thing to be tackled was the brushes. I had to make sure that the light was cutoff by the brushes and that the light would not flow through them. This is where the texture's alpha map came in handy. I drew in the brush areas with an opacity of 0.5 which I could use in the previous stage to extend the functionality.
+                    Any pixel in the ray-tracing that began in a brush area would continue on as normal, since you gained vision outside the brush while sitting in one.
+                    <br>
+                    Ratty behavior enabled.
+                </p>
+            
+            <img src="../../Images/PageImages/LOLFOW/FOWStage2.gif" class="three">
+            <img src="../../Images/PageImages/LOLFOW/LOLGameplay02.gif" class="three">  
+
+            <p>
+                The final and most satisfying part was the transitions when vision is acquired and lost. I used time here to mark when a pixel became lit. If the same pixel remains lit, its time is updated constantly to be the current time. If the pixel moves out of vision, the pixel's value interpolates towards zero at a controllable rate, giving this somewhat ethereal motion accurate of the one in the game.
+            </p>
+            
+            <img src="../../Images/PageImages/LOLFOW/FOWStage3.gif" class="three"><br>
+            <img src="../../Images/PageImages/LOLFOW/LOLFOWMinimap.gif" class="one">  
+            <p>
+                The system I ended up with can handle about 3000 units with vision at ~1000fps. Noice!
+            </p>
+            <img src="../../Images/PageImages/LOLFOW/FOWPerf.gif" class="four">
+            <p>
+                 I am working on expanding this system to handle the concept of teams, more vision elements like wards and abilities and using the generated FOW map to transition between "lit" and "unlit" appearances like in the game.<br><br>
+                 I will be focusing on prioritizing adding the other features. Check in to see the progress and the downloadable demo!
+            </p>
+
+
+        </div>
+        
+    </div>   
+    </div>
+</body>
+</html>

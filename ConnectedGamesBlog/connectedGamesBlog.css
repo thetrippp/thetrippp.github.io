@@ -1,0 +1,357 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body
+{
+  height: 100vh;
+  background: #F7F5E3;
+  color: #30261B;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  max-width: 1300px;
+  justify-self: center;
+  justify-items: center;
+}
+body::-webkit-scrollbar{
+  display: none;
+}
+
+.main_div
+{  
+  margin-top: 100px;
+  margin-bottom: 50px;
+  justify-content: center;
+  position: relative; /* Allows absolute positioning inside */
+  width: 90%;
+  overflow-y: auto; /* Enables scrolling inside */
+  padding: 20px;
+  margin: 50px auto;
+}
+
+.floating-button {
+  position: absolute;
+  left: 10px;
+  width: 50px;
+  height: 50px;
+  background-color: #30261B;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%; /* Makes it circular */
+  cursor: pointer;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.13s ease-in-out, background-color 0.13s ease-in-out;
+}
+
+.floating-button:hover {
+  background-color: #30261B6d;
+  color: #ffffff;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+.a1 {
+  color: #ff7300;
+  text-decoration: none;
+}
+
+.a1:hover {
+  color: #c25700;
+}
+
+.back
+{
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+  font-size: medium;
+  color: #0077ff;
+  text-decoration: none;   
+  margin-left: 5%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+}
+
+.back:hover{
+  color: #004594;
+}
+
+.main_Title
+{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: large;
+  font-weight: bold;  
+  color: #30261B;
+  text-decoration: none;  
+  margin-left: 10%;
+  margin-right: 10%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+}
+
+.h1
+{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: medium;
+  font-weight: bold; 
+  color: #30261B;;
+  text-decoration: none;  
+  margin-left: 10%;
+  margin-right: 10%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.main_description
+{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600; 
+  color: #30261B;;
+  text-decoration: none;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 7.5%;
+  margin-right: 7.5%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.p{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: large;
+  color: #ffffff;
+  text-decoration: none;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 7.5%;
+  margin-right: 7.5%;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: flex;
+}
+
+.one{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50%;
+}
+.two{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 40%;
+}
+
+.three{
+  max-width: 100%;
+}
+
+.four{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50%;
+}
+
+.experiment_link{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: #00ffaa;
+  text-decoration: none;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.experiment_link:hover{
+  color: #009261;
+}
+
+.code_block
+{
+  color: #ffffff;
+  font-size: x-large;
+  justify-content: center;
+  text-align: left;
+}
+
+.code_block code
+{
+  margin-left: 25%;
+}
+.code_block pre
+{
+  margin-left: 15%;
+  color: #ffffff;
+  text-decoration: none;
+}
+.comment{
+  margin-left: 15%;
+  color: #008111;
+}
+
+.link1{
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-size: x-large;
+  color: #00ffaa;
+  text-decoration: none;
+  
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.link1:hover{
+  color: #009261;
+}
+
+
+/* dbdsoidbdusdisdbesiy */
+
+.blog-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Blog card styles */
+.blog-card {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Title overlay */
+.blog-title {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 1.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* Expanded card styles */
+.blog-card.expanded {
+  height: auto;
+  min-height: 500px; /* Ensure proper expansion */
+  transition: height 1s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Expanded card content - Ensure it fills the expanded space */
+.blog-content {
+  display: none;
+  flex-direction: column;
+  flex-grow: 1; /* Allows content to expand within the card */
+  gap: 10px;
+  text-align: top;
+  background: rgba(0, 0, 0, 0);
+  padding: 20px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow-y: auto; /* Ensures scrolling if needed */
+  max-height: 100%;
+  width: 100%;
+}
+
+.blog-card.expanded .blog-content {
+  display: flex;
+}
+
+/* Ensure images and text fill the expanded card */
+.blog-content img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.blog-content h2, .blog-content p {
+  margin: 10px 0;
+  flex-grow: 1; /* Allows text to stretch properly */
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 5px 10px;
+  border-radius: 50%;
+  display: none;
+}
+
+.blog-card.expanded .close-btn {
+  display: block;
+}
+
+
