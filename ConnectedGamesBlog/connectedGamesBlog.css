@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
-body
-{
+body {
   height: 100vh;
   background: #F7F5E3;
   color: #30261B;
@@ -12,18 +11,20 @@ body
   justify-self: center;
   justify-items: center;
 }
-body::-webkit-scrollbar{
+
+body::-webkit-scrollbar {
   display: none;
 }
 
-.main_div
-{  
+.main_div {
   margin-top: 100px;
   margin-bottom: 50px;
   justify-content: center;
-  position: relative; /* Allows absolute positioning inside */
+  position: relative;
+  /* Allows absolute positioning inside */
   width: 90%;
-  overflow-y: auto; /* Enables scrolling inside */
+  overflow-y: auto;
+  /* Enables scrolling inside */
   padding: 20px;
   margin: 50px auto;
 }
@@ -36,7 +37,8 @@ body::-webkit-scrollbar{
   background-color: #30261B;
   color: #ffffff;
   border: none;
-  border-radius: 50%; /* Makes it circular */
+  border-radius: 50%;
+  /* Makes it circular */
   cursor: pointer;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
   font-size: 24px;
@@ -53,10 +55,10 @@ body::-webkit-scrollbar{
 
 .material-symbols-outlined {
   font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
 }
 
 .a1 {
@@ -68,57 +70,55 @@ body::-webkit-scrollbar{
   color: #c25700;
 }
 
-.back
-{
+.back {
   font-family: 'Poppins', sans-serif;
   text-align: left;
   font-size: medium;
   color: #0077ff;
-  text-decoration: none;   
+  text-decoration: none;
   margin-left: 5%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  
+
 }
 
-.back:hover{
+.back:hover {
   color: #004594;
 }
 
-.main_Title
-{
+.main_Title {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: large;
-  font-weight: bold;  
+  font-weight: bold;
   color: #30261B;
-  text-decoration: none;  
+  text-decoration: none;
   margin-left: 10%;
   margin-right: 10%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  
+
 }
 
-.h1
-{
+.h1 {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: medium;
-  font-weight: bold; 
-  color: #30261B;;
-  text-decoration: none;  
+  font-weight: bold;
+  color: #30261B;
+  ;
+  text-decoration: none;
   margin-left: 10%;
   margin-right: 10%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -126,19 +126,19 @@ body::-webkit-scrollbar{
   -ms-user-select: none;
 }
 
-.main_description
-{
+.main_description {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: 1rem;
-  font-weight: 600; 
-  color: #30261B;;
+  font-weight: 600;
+  color: #30261B;
+  ;
   text-decoration: none;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: 7.5%;
   margin-right: 7.5%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -146,7 +146,7 @@ body::-webkit-scrollbar{
   -ms-user-select: none;
 }
 
-.p{
+.p {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: large;
@@ -156,7 +156,7 @@ body::-webkit-scrollbar{
   margin-bottom: 10px;
   margin-left: 7.5%;
   margin-right: 7.5%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -170,34 +170,35 @@ body::-webkit-scrollbar{
   display: flex;
 }
 
-.one{
+.one {
   margin-left: auto;
   margin-right: auto;
   max-width: 50%;
 }
-.two{
+
+.two {
   margin-left: auto;
   margin-right: auto;
   max-width: 40%;
 }
 
-.three{
+.three {
   max-width: 100%;
 }
 
-.four{
+.four {
   margin-left: auto;
   margin-right: auto;
   max-width: 50%;
 }
 
-.experiment_link{
+.experiment_link {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
   color: #00ffaa;
   text-decoration: none;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -205,40 +206,39 @@ body::-webkit-scrollbar{
   -ms-user-select: none;
 }
 
-.experiment_link:hover{
+.experiment_link:hover {
   color: #009261;
 }
 
-.code_block
-{
+.code_block {
   color: #ffffff;
   font-size: x-large;
   justify-content: center;
   text-align: left;
 }
 
-.code_block code
-{
+.code_block code {
   margin-left: 25%;
 }
-.code_block pre
-{
+
+.code_block pre {
   margin-left: 15%;
   color: #ffffff;
   text-decoration: none;
 }
-.comment{
+
+.comment {
   margin-left: 15%;
   color: #008111;
 }
 
-.link1{
+.link1 {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
   color: #00ffaa;
   text-decoration: none;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -246,7 +246,7 @@ body::-webkit-scrollbar{
   -ms-user-select: none;
 }
 
-.link1:hover{
+.link1:hover {
   color: #009261;
 }
 
@@ -297,7 +297,8 @@ body::-webkit-scrollbar{
 /* Expanded card styles */
 .blog-card.expanded {
   height: auto;
-  min-height: 500px; /* Ensure proper expansion */
+  min-height: 500px;
+  /* Ensure proper expansion */
   transition: height 1s ease-in-out;
   display: flex;
   flex-direction: column;
@@ -308,14 +309,16 @@ body::-webkit-scrollbar{
 .blog-content {
   display: none;
   flex-direction: column;
-  flex-grow: 1; /* Allows content to expand within the card */
+  flex-grow: 1;
+  /* Allows content to expand within the card */
   gap: 10px;
   text-align: top;
   background: rgba(0, 0, 0, 0);
   padding: 20px;
   border-radius: 10px;
   box-sizing: border-box;
-  overflow-y: auto; /* Ensures scrolling if needed */
+  overflow-y: auto;
+  /* Ensures scrolling if needed */
   max-height: 100%;
   width: 100%;
 }
@@ -331,9 +334,11 @@ body::-webkit-scrollbar{
   border-radius: 8px;
 }
 
-.blog-content h2, .blog-content p {
+.blog-content h2,
+.blog-content p {
   margin: 10px 0;
-  flex-grow: 1; /* Allows text to stretch properly */
+  flex-grow: 1;
+  /* Allows text to stretch properly */
 }
 
 /* Close button */
@@ -353,5 +358,3 @@ body::-webkit-scrollbar{
 .blog-card.expanded .close-btn {
   display: block;
 }
-
-

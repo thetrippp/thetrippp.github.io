@@ -1,31 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="blogTest.css">
-  <script src="blogTest.js"></script>   
+  <link rel="icon" type="image/x-icon" href="Images/joystick.png">
+  <script src="blogTest.js"></script>
   <title>Development Blog</title>
 </head>
+
 <body>
   <div class="blog-container">
-    <div class="blog-card" onclick="expandCard(this)" style="background-image: url('https://via.placeholder.com/300/4caf50');">
+    <div class="blog-card" onclick="expandCard(this)"
+      style="background-image: url('https://via.placeholder.com/300/4caf50');">
       <div class="blog-title">Post 1</div>
       <div class="blog-content">
         <h2>Understanding JavaScript Closures</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pharetra elementum dolor, at fermentum ex gravida ut. Nullam a orci metus. Proin sit amet mauris nec leo egestas cursus. Sed in est sed ante aliquet finibus ac in arcu. Nullam ut euismod nisi. Suspendisse egestas dui id purus mollis, ut condimentum quam hendrerit. Nulla vitae congue diam. Maecenas dignissim porttitor lacus a pulvinar. Nulla sodales justo ac placerat iaculis. Sed tristique, magna eu vehicula euismod, nisi nibh placerat tellus, a efficitur arcu arcu in erat. Sed commodo neque elit, eu aliquam lectus euismod at. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lacinia mauris et justo semper, nec euismod lectus molestie. Nunc ut fringilla orci, a consectetur velit. Etiam tincidunt eros a neque scelerisque, vitae varius elit fringilla.
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pharetra elementum dolor, at fermentum ex
+          gravida ut. Nullam a orci metus. Proin sit amet mauris nec leo egestas cursus. Sed in est sed ante aliquet
+          finibus ac in arcu. Nullam ut euismod nisi. Suspendisse egestas dui id purus mollis, ut condimentum quam
+          hendrerit. Nulla vitae congue diam. Maecenas dignissim porttitor lacus a pulvinar. Nulla sodales justo ac
+          placerat iaculis. Sed tristique, magna eu vehicula euismod, nisi nibh placerat tellus, a efficitur arcu arcu
+          in erat. Sed commodo neque elit, eu aliquam lectus euismod at. Lorem ipsum dolor sit amet, consectetur
+          adipiscing elit. Ut lacinia mauris et justo semper, nec euismod lectus molestie. Nunc ut fringilla orci, a
+          consectetur velit. Etiam tincidunt eros a neque scelerisque, vitae varius elit fringilla.
 
-            Suspendisse dignissim risus vitae nulla dignissim efficitur. Pellentesque nec ex sed augue ullamcorper feugiat a at arcu. Maecenas non sapien in mi scelerisque bibendum. Aliquam scelerisque mauris sit amet enim semper tempor. Donec eu ultricies diam. Suspendisse varius lorem elit, nec dapibus dui consectetur id. Aliquam consequat lacus eros. Mauris et aliquam libero. Nam volutpat sem leo, sed eleifend magna ultricies et. Suspendisse tincidunt purus ex, eu fringilla urna sagittis in.
-            
-            Praesent placerat posuere massa et sodales. Pellentesque aliquet nisi ut dolor efficitur porttitor. Maecenas a tincidunt arcu. Curabitur ullamcorper fringilla erat, at condimentum dui dictum commodo. In auctor vestibulum ultrices. Donec odio ante, ultrices vel elementum sed, interdum eu orci. Ut id massa ut nulla pellentesque euismod. Vivamus ornare tempus commodo.
-            
-            Cras lobortis arcu nibh, id molestie nunc auctor et. Donec felis orci, sagittis sed imperdiet sit amet, sagittis sit amet quam. Proin aliquam tristique lacus, nec sodales mauris venenatis at. Ut odio enim, pellentesque sit amet ligula a, ullamcorper posuere felis. Sed tempus metus quis urna euismod mattis tempor non velit. Suspendisse posuere fermentum metus mattis viverra. Fusce ac metus efficitur, placerat sapien eget, congue eros. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Quisque tempus, magna id interdum feugiat, mi urna pellentesque nulla, at imperdiet massa urna at ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-            
-            Vivamus a euismod nulla, eu blandit ipsum. Sed consequat non risus eget congue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus tempus porta erat. Praesent consequat, quam et elementum fringilla, massa eros venenatis leo, ut iaculis ante elit sit amet est. Cras vel libero turpis. Aenean eget sapien a lacus laoreet consequat vitae sed quam. Maecenas a ex lacus. Mauris dictum dui augue, eget venenatis lacus ullamcorper eu. Quisque vulputate elit quis augue fringilla eleifend. Morbi ornare ipsum quis mollis pellentesque.</p>
+          Suspendisse dignissim risus vitae nulla dignissim efficitur. Pellentesque nec ex sed augue ullamcorper feugiat
+          a at arcu. Maecenas non sapien in mi scelerisque bibendum. Aliquam scelerisque mauris sit amet enim semper
+          tempor. Donec eu ultricies diam. Suspendisse varius lorem elit, nec dapibus dui consectetur id. Aliquam
+          consequat lacus eros. Mauris et aliquam libero. Nam volutpat sem leo, sed eleifend magna ultricies et.
+          Suspendisse tincidunt purus ex, eu fringilla urna sagittis in.
+
+          Praesent placerat posuere massa et sodales. Pellentesque aliquet nisi ut dolor efficitur porttitor. Maecenas a
+          tincidunt arcu. Curabitur ullamcorper fringilla erat, at condimentum dui dictum commodo. In auctor vestibulum
+          ultrices. Donec odio ante, ultrices vel elementum sed, interdum eu orci. Ut id massa ut nulla pellentesque
+          euismod. Vivamus ornare tempus commodo.
+
+          Cras lobortis arcu nibh, id molestie nunc auctor et. Donec felis orci, sagittis sed imperdiet sit amet,
+          sagittis sit amet quam. Proin aliquam tristique lacus, nec sodales mauris venenatis at. Ut odio enim,
+          pellentesque sit amet ligula a, ullamcorper posuere felis. Sed tempus metus quis urna euismod mattis tempor
+          non velit. Suspendisse posuere fermentum metus mattis viverra. Fusce ac metus efficitur, placerat sapien eget,
+          congue eros. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+          Quisque tempus, magna id interdum feugiat, mi urna pellentesque nulla, at imperdiet massa urna at ante. Class
+          aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+
+          Vivamus a euismod nulla, eu blandit ipsum. Sed consequat non risus eget congue. Class aptent taciti sociosqu
+          ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus tempus porta erat. Praesent consequat,
+          quam et elementum fringilla, massa eros venenatis leo, ut iaculis ante elit sit amet est. Cras vel libero
+          turpis. Aenean eget sapien a lacus laoreet consequat vitae sed quam. Maecenas a ex lacus. Mauris dictum dui
+          augue, eget venenatis lacus ullamcorper eu. Quisque vulputate elit quis augue fringilla eleifend. Morbi ornare
+          ipsum quis mollis pellentesque.</p>
         <img src="https://via.placeholder.com/400" alt="JavaScript Closures">
       </div>
     </div>
-    <div class="blog-card" onclick="expandCard(this)" style="background-image: url('https://via.placeholder.com/300/00bcd4');">
+    <div class="blog-card" onclick="expandCard(this)"
+      style="background-image: url('https://via.placeholder.com/300/00bcd4');">
       <div class="blog-title">Post 2</div>
       <div class="blog-content">
         <h2>CSS Grid vs. Flexbox</h2>
@@ -37,4 +67,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>

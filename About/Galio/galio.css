@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
-body
-{
+body {
   height: 100vh;
   background: #F7F5E3;
   color: #30261B;
@@ -12,18 +11,20 @@ body
   justify-self: center;
   justify-items: center;
 }
-body::-webkit-scrollbar{
+
+body::-webkit-scrollbar {
   display: none;
 }
 
-.main_div
-{  
+.main_div {
   margin-top: 100px;
   margin-bottom: 50px;
   justify-content: center;
-  position: relative; /* Allows absolute positioning inside */
+  position: relative;
+  /* Allows absolute positioning inside */
   width: 90%;
-  overflow-y: auto; /* Enables scrolling inside */
+  overflow-y: auto;
+  /* Enables scrolling inside */
   padding: 20px;
   margin: 50px auto;
 }
@@ -33,10 +34,12 @@ body::-webkit-scrollbar{
   left: 10px;
   width: 50px;
   height: 50px;
-  background-color: #30261B;;
+  background-color: #30261B;
+  ;
   color: #ffffff;
   border: none;
-  border-radius: 50%; /* Makes it circular */
+  border-radius: 50%;
+  /* Makes it circular */
   cursor: pointer;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
   font-size: 24px;
@@ -52,63 +55,62 @@ body::-webkit-scrollbar{
 
 .material-symbols-outlined {
   font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
 }
 
 
 
-.back
-{
+.back {
   font-family: 'Poppins', sans-serif;
   text-align: left;
   font-size: medium;
   color: #0077ff;
-  text-decoration: none;   
+  text-decoration: none;
   margin-left: 5%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  
+
 }
 
-.back:hover{
+.back:hover {
   color: #004594;
 }
 
-.main_Title
-{
+.main_Title {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: large;
-  color: #30261B;;
-  text-decoration: none;  
+  color: #30261B;
+  ;
+  text-decoration: none;
   margin-left: 10%;
   margin-right: 10%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  
+
 }
 
-h1
-{
+h1 {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: xxx-large;
-  color: #30261B;;
-  text-decoration: none;  
+  color: #30261B;
+  ;
+  text-decoration: none;
   margin-left: 10%;
   margin-right: 10%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -116,18 +118,18 @@ h1
   -ms-user-select: none;
 }
 
-.main_description
-{
+.main_description {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: medium;
-  color: #30261B;;
+  color: #30261B;
+  ;
   text-decoration: none;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: 7.5%;
   margin-right: 7.5%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -135,7 +137,7 @@ h1
   -ms-user-select: none;
 }
 
-p{
+p {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: 1.2rem;
@@ -145,7 +147,7 @@ p{
   margin-bottom: 10px;
   margin-left: 7.5%;
   margin-right: 7.5%;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -159,34 +161,35 @@ p{
   display: flex;
 }
 
-.one{
+.one {
   margin-left: auto;
   margin-right: auto;
   max-width: 50%;
 }
-.two{
+
+.two {
   margin-left: auto;
   margin-right: auto;
   max-width: 40%;
 }
 
-.three{
+.three {
   max-width: 100%;
 }
 
-.four{
+.four {
   margin-left: auto;
   margin-right: auto;
   max-width: 50%;
 }
 
-.experiment_link{
+.experiment_link {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
   color: #00ffaa;
   text-decoration: none;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -194,40 +197,39 @@ p{
   -ms-user-select: none;
 }
 
-.experiment_link:hover{
+.experiment_link:hover {
   color: #009261;
 }
 
-.code_block
-{
+.code_block {
   color: #ffffff;
   font-size: x-large;
   justify-content: center;
   text-align: left;
 }
 
-.code_block code
-{
+.code_block code {
   margin-left: 25%;
 }
-.code_block pre
-{
+
+.code_block pre {
   margin-left: 15%;
   color: #ffffff;
   text-decoration: none;
 }
-.comment{
+
+.comment {
   margin-left: 15%;
   color: #008111;
 }
 
-.link1{
+.link1 {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-size: x-large;
   color: #00ffaa;
   text-decoration: none;
-  
+
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -235,11 +237,6 @@ p{
   -ms-user-select: none;
 }
 
-.link1:hover{
+.link1:hover {
   color: #009261;
 }
-
-
-
-
-

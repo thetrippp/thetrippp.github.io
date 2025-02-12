@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,59 +9,123 @@
 
     <link rel="icon" type="image/x-icon" href="Images/joystick.png">
     <link rel="stylesheet" href="bossborne.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
-    <script src="../required.js" defer></script> 
-
-
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back" />
+    <script src="../required.js" defer></script>
 </head>
+
 <body>
     <div class="main_div">
-    <a href="../../index.html">
-        <button id="returnButton" class="floating-button"><span class="material-symbols-outlined">
-            arrow_back
-            </span></button>
-            </a>
+        <a href="../../index.html">
+            <button id="returnButton" class="floating-button"><span class="material-symbols-outlined">
+                    arrow_back
+                </span></button>
+        </a>
         <div class="content">
-            <br>
-            <h1>BOSSBORNE</h1>
+            <br><br><br><br>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE.png" class="three">
+
             <p>
-            This project started out as an attempt to recreate the effect outlined in 
-            <a href="https://www.youtube.com/watch?v=bMTeCqNkId8" class="link" target="_blank">this video</a> based of
-            <a href="https://www.reddit.com/r/generative/comments/xz7tlf/comparison_with_and_without_raytracing_for_my_2d/" class="link" target="_blank">this reddit post</a>.<br>
-            It however, quickly became one of my most favorite projects to work on. The implementation I came up with used Compute Shaders. Being the first time I worked with them it was both super exciting and terrifying.
-            <br><br>
-            <p>Similar to how the video progresses, I started out with a height map. I used Perlin Noise in octaves to get organic looking islands and added a small
-            function to help isolate the noise generation to the center of the screen.</p>
-            <img src="../../Images/PageImages/Waterways/IslandHeightMap.png" class="three">
-            <p>
-                By applying discrete colors over sets of value ranges of the height map, a visually captivating island-like landform is created. This versatile technique not only highlights the distinct features of beaches, grasslands, and mountains but also gives the landmass shapes an organic look with well-defined detail in interesting areas. Most importantly, it empowers you to create diverse and unique terrains, fostering creativity and innovation in your projects.  </p>
-            <img src="../../Images/PageImages/Waterways/IslandColorMap.png" class="three">
-            <p>
-                Using the height values, an unlit shader is employed to "ray march" through the texture, a key step in the technique. The shader is significantly enhanced with a sun's position, a crucial vector direction that not only guides but also dictates the ray marching process. Depending on conditions, rays either "escape" the landmass boundaries with respect to the simulated vertical direction or intersect with the height values in the direction of the ray march, creating a lit or in-shadow region of the landmass. A shadow mask is combined with the colored stage to make a ray-marched 3D-looking island.</p>
-            <img src="../../Images/PageImages/Waterways/IslandShadowMask.png" class="three">
-            <img src="../../Images/PageImages/Waterways/IslandShadowStage.png" class="three">
-            <p>
-                Another feature I wanted to add was waves periodically crashing into the beach. In a compute shader kernel, I defined an area that would circumvent the landmass and provide a mask that would contain information about the nearest shore point, a vector pointing to it, and the magnitude of that vector. This mask (I love how pretty vector fields look) allows another shader to then calculate periodic values that can be used to compute waves whose thickness, speed, and coherence can be controlled at runtime. Although visually appealing, the initial stage of these waves lacked a natural feel. I used another higher frequency, higher scale layer of noise to add some offsets into the mask values. Incorporating these noise values into the waves’ shader provided a satisfying wave motion, resulting in a final terrain that is not just visually appealing, but also deeply satisfying.</p>
-            <img src="../../Images/PageImages/Waterways/IslandFoamMask.png" class="three">
-            <p>
-                Adding some simple noise-based clouds that pan and scroll over time results in this
+                Game built for the CI7500 : 3D Games Programming Course at Kingston University.
             </p>
-            <img src="../../Images/PageImages/Waterways/IslandOutput.png" class="three">
             <p>
-                *inserting non-static result here*
-            </p>            
-            <img src="../../Images/PageImages/Waterways/WaterwaysDemo.gif" class="three">
+                Procedural Generation was a key feature of the game. The game was built in Unity with C# and HLSL.
+                The terrain and environment was generated with the Day as the seed. This ensured that the world would be
+                new everyday.
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE_ProcGen.gif" class="three">
             <p>
-                While I am currently working on some optimizations, I will be smug about the fact that all the real-time processes involved run within 2ms and at ~500fps. HEHE<br>
-                Unfortunately, compute shaders are not supported at the time of development by the WebGL platform, and there are some issues I am facing with packaging them.
-                I will have a demo that you can download soon-ish. 
+                Another component to the environment was the was it provided feedback to the player on its different
+                "biomes". Movement speed was an area that provided the maximum feedback to the player.
+                The difference in speeds on the surfaces gave the player a sense of the environment they were in.
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE_Environment.gif" class="three">
+            <p>
+                Speaking of movement, an entirely custom character controller was implemented. The controller was built
+                to be responsive and give the player a sense of control with an added layer of fluid response when
+                navigating the environment. This was accomplished by implementing the Collide and Slide Algorithm, a
+                robust algorithm that focuses on the intuitive redirection of velocities upon surface interactions
+                rather than arresting them to provide a smoother and more responsive movement experience.
+                <br><br>
+                An interseting feature I had the oppportunity to work on and implement is one that uses the Adaptive
+                Triggers of the PS5 Dualsense Controllers. Certain player actions like attacking and jumping consume
+                stamina(the blue value on the top right). This stamina bar ties in with the triggers. Being low on
+                stamina not only means that your actions in the game are limited, it also physically gets harder to push
+                the corresponding buttons to perform the action.
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE_PlayerMovement.gif" class="three">
+            <h2>Enter ChatGPT</h2>
+            <p>
+                A key feature of the game was the interaction with the AI. An AI companion, "Questra", was built using
+                OpenAI's ChatGPT.
+                Interacting with Questra through voice commands, allows the player to get quests among other things.
+                Questra, through ChatGPT, generates quests with details like the location, the objective and the number
+                of items required, and the enemies and their attributes. Components of a generated quest are then
+                populated in the game world for the player to complete.
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE_Questra.gif" class="three">
+            <p>
+                Enemies have their own State Machines and reflect them with their animations. <br>
+                Note: Pixel art is extremely difficult to do especially in the month and a half we got to make this
+                game. Please bear with me for using a certain asset from a character that rhymes with Dowser.
+                On that note, my thanks to the artist, gamekrazzy, for the asset. <a href="https://gamekrazzy.itch.io/"
+                    target="_blank" class="link">Link to the artist's page</a>
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE//BOSSBORNE_Enemies.gif" class="three">
+            <p>
+                Upon quest completion, the player is rewarded with a talisman. The talismans are generated by ChatGPT
+                and have their own attributes. The player can equip these talismans to gain different altered stats. The
+                talisman's attributes and values are generated in accordance to the difficulty of the quest that was
+                completed. Asking Questra for a difficult quest would give better talismans on completion with the added
+                challenge of enemies with better stats. Talismans can stack their attributes so the order of tailsman
+                application can vastly vary the effects provided.
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE_Talismans.gif" class="three">
+            <h1>The Titular Feature</h1>
+            <h2>BOSSES!</h2>
+            <p>
+                The Bosses in Bossborne are the highlight of the game. The bosses are generated by ChatGPT and have
+                their own attributes, stats and a title and appearance. The bosses have their own State Machines and
+                animations.
+                The name and title are generated randomly and a color palette that corresponds to the title is
+                generated. A shader is the used to apply the palette to the boss. This results in a unique boss every
+                time in both name, appearance and stats.
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE_Bosses.gif" class="three">
+            <p>
+                To enhance boss fight experiences, I developed a system that allows bosses to record player gameplay and
+                construct a probability map of the moves that the player would likely do given a position, direction and
+                state. This information is accumulated over a fixed interval(now at 30 seconds) and then is acted on by
+                a statistically driven probability model to determine the likely player move. A counter state is
+                achieved which dictates the direction and state the boss must take to avoid damage.
+            </p>
+            <img src="../../Images/PageImages/BOSSBORNE/BOSSBORNE_BossesLearn.gif" class="three">
+            <p>
+                To say that the bosses are difficult would be an understatement. Attacking would leave the player
+                vulnerable to counter attacks, which, with the boss being MUCH stronger than quest enemies spell a LOT
+                of trouble. Respawns exist in the game with the caveat that the player loses all their acquired
+                talismans and quest progress.
                 <br>
+                <br>
+
+                It was a ton of fun building this game and I enjoyed integrating ChatGPT into my systems. It was
+                definitely an extensive iterative process to fine-tune the prompts to get acceptable results and
+                certainly did not send me into a flying rage on a few occasions.
+                I have plenty of ideas to extend the game both content wise and system wise. I hope to get back to it
+                soon.
+                <br><br>
+                In the mean time I will be putting up the demo here.<br>
+                I have some changes I need to make and the game will be down for a bit. Stay tuned for the update!
+                <br>
+                Until then, enjoy BOSSBORNE!
+
+                <br><a href="BOSSBORNE.rar" class="link" download>Download the BOSSBORNE demo!</a><br>
+                You WILL need a PS5 controller to play the demo. Might have some input artifacts with other controllers.
+
             </p>
-            </p>
-            <br>
-        </div>
         </div>
     </div>
-</div>
+    </div>
 </body>
+
 </html>

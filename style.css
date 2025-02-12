@@ -1,53 +1,58 @@
-
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
 /* General Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Body Styling */
-  body, html {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    height: 100vh;
-    text-shadow: 
-    1px 1px 0px #000, 
-    -1px -1px 0px #000, 
-    1px -1px 0px #000, 
-    -1px 1px 0px #000;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    scroll-snap-type: y mandatory;
-    height: 100%;
-    scroll-behavior: smooth;
-    overflow-y: scroll;
-    scrollbar-width: none; /* Firefox */
-  }
-  
-  body::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, and Edge */
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  /* Floating Button (Back to Main) */
+/* Body Styling */
+body,
+html {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  height: 100vh;
+  text-shadow:
+    1px 1px 0px #000,
+    -1px -1px 0px #000,
+    1px -1px 0px #000,
+    -1px 1px 0px #000;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  scroll-snap-type: y mandatory;
+  height: 100%;
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, and Edge */
+}
+
+/* Floating Button (Back to Main) */
 .scroll-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
   padding: 12px 18px;
-  background-color: #ff4500; /* More visible color */
+  background-color: #ff4500;
+  /* More visible color */
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  display: none; /* Initially hidden */
+  display: none;
+  /* Initially hidden */
   z-index: 1000;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
@@ -59,256 +64,257 @@
 .scroll-button:active {
   transform: scale(0.95);
 }
-  
-  /* Container for Sections */
-  .container {
-    height: 400vh; /* Two full-screen sections */
-  }
-  
-  /* Section Styling */
-  .section {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    scroll-snap-align: start;
-    position: relative;
-    align-items: center;
-    z-index: 1;
-    text-align: left;
-    color: #333;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .intro-section {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .intro-section .background 
-  {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background: url('Images/PageImages/Waterways/WaterwaysDemo.gif') no-repeat center center/cover;
-    z-index: -1;
-    border: 0;
-    box-shadow: none; 
-    outline: none; 
-    transform: scale(1.1);
-    filter: blur(10px);
-  }
-  
-  .intro-section .content {
-    display: flex;
-    align-items: center;
-    z-index: 1;
-    text-align: left;
-    color: #333;
-    max-width: 1300px;
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
 
-  .image {
-    flex-shrink: 0;
-    max-width: 350px;
-    width: 100%;
-    padding: 1.15em;
-    height: auto;
-  }
-  
-  .image img {
-    width: 100%;
-    height: auto;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    pointer-events: none;
-  }
+/* Container for Sections */
+.container {
+  height: 400vh;
+  /* Two full-screen sections */
+}
 
-  
-  .text {
-    flex: 1;
-    margin-left: 1.5rem; 
-    max-width: 1200px;
-    padding: 1rem;
-  }
-  
-  h1 {
-    font-size: 3.5rem;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    color: #fff;
-  }
-  
-  p {
-    font-size: 1.5rem;
-    text-align: center;
-    line-height: 1.5;
-    color: #f0f0f0;
-  }
+/* Section Styling */
+.section {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: start;
+  position: relative;
+  align-items: center;
+  z-index: 1;
+  text-align: left;
+  color: #333;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
-  .p1{
-    font-size: 1.25rem;
-    text-align: center;
-    line-height: 1.5;
-    color: #f0f0f0;
-    padding: 1rem;
-  }
+.intro-section {
+  position: relative;
+  overflow: hidden;
+}
 
-  .p2{
-    font-size: 1rem;
-    text-align: center;
-    line-height: 1.5;
-    color: #f0f0f0;
-    padding: 1rem;
-  }
+.intro-section .background {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: url('Images/PageImages/Waterways/WaterwaysDemo.gif') no-repeat center center/cover;
+  z-index: -1;
+  border: 0;
+  box-shadow: none;
+  outline: none;
+  transform: scale(1.1);
+  filter: blur(10px);
+}
 
-  .a0{
-    color: #4666B0;
-    text-decoration: none;
-  }
+.intro-section .content {
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  text-align: left;
+  color: #333;
+  max-width: 1300px;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
-  .a0:hover{
-    color: #2b3e6b;
-  }
+.image {
+  flex-shrink: 0;
+  max-width: 350px;
+  width: 100%;
+  padding: 1.15em;
+  height: auto;
+}
 
-  .a1 {
-    color: #ff9224;
-    text-decoration: none;
-  }
-  
-  .a1:hover {
-    color: #945515;
-  }
+.image img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  pointer-events: none;
+}
 
-  .a2 {
-    color: #ffc400;
-    text-decoration: none;
-  }
-  
-  .a2:hover {
-    color: #ca9b00;
-  }
 
-  .a3 {
-    color: #30ad50;
-    text-decoration: none;
-  }
-  
-  .a3:hover {
-    color: #217737;
-  }
+.text {
+  flex: 1;
+  margin-left: 1.5rem;
+  max-width: 1200px;
+  padding: 1rem;
+}
 
-  .a4 {
-    color: #ad8fde;
-    text-decoration: none;
-  }
-  
-  .a4:hover {
-    color: #805db9;
-  }
-  
-  .links {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    gap: 1.5rem; /* Space between icons */
-    margin-top: 1rem;
-    
-    -webkit-user-drag: none;
-  }
-  
-  .links a {
-    display: inline-block;
-    width: 60px;
-    height: 60px;
-    transition: transform 0.3s ease;
-  }
-  
-  .links a:hover {
-    transform: scale(1.5);
-  }
-  
-  .links img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
+h1 {
+  font-size: 3.5rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  color: #fff;
+}
 
-  /* Section 2 : Project Section  */
-  .project-section {
-    background-color: #040b09;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .project-content {
-    max-width: 1600px;
-  }
-  
-  .project-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .project-section p {
-    font-size: 1.5rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
+p {
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+  color: #f0f0f0;
+}
 
-  /* Section 3 : Experiments Section  */
-  .experiments-section {
-    background-color: #0b040b;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .experiments-content {
-    max-width: 1600px;
-  }
-  
-  .experiments-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .experiments-section p {
-    font-size: 1.5rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
-  
-  /* Section 4: About */
-  .about-section {
-    background-color: #0b0a04;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .about-content {
-    max-width: 1600px;
-  }
-  
-  .about-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .about-section p {
-    font-size: 1.25rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
+.p1 {
+  font-size: 1.25rem;
+  text-align: center;
+  line-height: 1.5;
+  color: #f0f0f0;
+  padding: 1rem;
+}
+
+.p2 {
+  font-size: 1rem;
+  text-align: center;
+  line-height: 1.5;
+  color: #f0f0f0;
+  padding: 1rem;
+}
+
+.a0 {
+  color: #4666B0;
+  text-decoration: none;
+}
+
+.a0:hover {
+  color: #2b3e6b;
+}
+
+.a1 {
+  color: #ff9224;
+  text-decoration: none;
+}
+
+.a1:hover {
+  color: #945515;
+}
+
+.a2 {
+  color: #ffc400;
+  text-decoration: none;
+}
+
+.a2:hover {
+  color: #ca9b00;
+}
+
+.a3 {
+  color: #30ad50;
+  text-decoration: none;
+}
+
+.a3:hover {
+  color: #217737;
+}
+
+.a4 {
+  color: #ad8fde;
+  text-decoration: none;
+}
+
+.a4:hover {
+  color: #805db9;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  gap: 1.5rem;
+  /* Space between icons */
+  margin-top: 1rem;
+
+  -webkit-user-drag: none;
+}
+
+.links a {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  transition: transform 0.3s ease;
+}
+
+.links a:hover {
+  transform: scale(1.2);
+}
+
+.links img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Section 2 : Project Section  */
+.project-section {
+  background-color: #040b09;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.project-content {
+  max-width: 1600px;
+}
+
+.project-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.project-section p {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+/* Section 3 : Experiments Section  */
+.experiments-section {
+  background-color: #0b040b;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.experiments-content {
+  max-width: 1600px;
+}
+
+.experiments-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.experiments-section p {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+/* Section 4: About */
+.about-section {
+  background-color: #0b0a04;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.about-content {
+  max-width: 1600px;
+}
+
+.about-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.about-section p {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
 
 
 /* Card Container */
@@ -322,122 +328,149 @@
 
 /* Individual Cards */
 .card {
-  background-color: #222; /* Default background if no image is specified */
+  background-color: #222;
+  /* Default background if no image is specified */
   /*background-size: cover;  Ensures the image covers the card fully */
   /*background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Avoid repeating the image */
+  background-repeat: no-repeat;
+  /* Avoid repeating the image */
   color: #fff;
   text-decoration: none;
-  padding: 30px; /* Increased padding for a larger visual size */
+  padding: 30px;
+  /* Increased padding for a larger visual size */
   border-radius: 10px;
   text-align: center;
-  font-size: 1.5rem; /* Increased font size for a balanced look */
-  font-weight: bold;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Adjusted shadow for larger size */
+  font-size: 1.5rem;
+  /* Increased font size for a balanced look */
+  font-weight: inherit;
+  /*box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Adjusted shadow for larger size */
   transition: transform 0.3s ease, background-color 0.3s ease, filter 0.5s ease;
-  filter: brightness(0.75);
+  filter: brightness(0.7);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 300px; /* Increased minimum width */
-  max-width: 450px; /* Increased maximum width */
-  min-height: 150px; /* Added for increased vertical space */
-  max-height: 250px; /* Adjusted to match width scaling */
+  min-width: 300px;
+  /* Increased minimum width */
+  max-width: 450px;
+  /* Increased maximum width */
+  min-height: 150px;
+  /* Added for increased vertical space */
+  max-height: 250px;
+  /* Adjusted to match width scaling */
   flex: 1;
   overflow: hidden;
   position: relative;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Hover Effect - Background Enlarge */
 .card:hover {
-  background-color: rgba(0, 0, 0, 0.6); /* Slight overlay for focus */
-  transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.6);
+  /* Slight overlay for focus */
+  transform: scale(1.05) translate3d(0, 0, 0);
   filter: brightness(1);
 }
 
-  
-  /* Responsive Adjustments */
 
-  @media (max-width: 1024px) {
-    .card {
-      flex: 1 1 calc(50% - 20px); /* Two cards per row on medium screens */
-    }
-  }
-  
+/* Responsive Adjustments */
 
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 2rem;
-    }
-  
-    p {
-      font-size: 1.3rem;
-    }
-  
-    .links a img {
-      width: 45px;
-      height: 45px;
-    }
+@media (max-width: 1024px) {
+  .card {
+    flex: 1 1 calc(50% - 20px);
+    /* Two cards per row on medium screens */
+  }
+}
 
-    .card {
-      flex: 1 1 100%; /* One card per row on small screens */
-    }
-  
-    .card-container {
-      gap: 15px; /* Reduce gap for smaller screens */
-    }
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
   }
-  
-  @media (max-width: 480px) {
-    h1 {
-      font-size: 1.8rem;
-    }
-  
-    p {
-      font-size: 1.2rem;
-    }
-  
-    /* Adjust the container to prevent overflow */
-    .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center; /* Center cards */
-      align-items: flex-start; /* Align cards to the top */
-      gap: 10px; /* Space between cards */
-      padding: 10px; /* Add padding to prevent cut-off edges */
-      overflow-x: hidden; /* Prevent horizontal overflow */
-    }
-  
-    /* Make cards fit within the screen width */
-    .card {
-      flex: 1 1 calc(100% - 20px); /* Take full width minus gap */
-      max-width: 100%; /* Ensure no card exceeds the container width */
-      margin: 0; /* Remove extra margins */
-      box-sizing: border-box; /* Include padding and borders in width */
-    }
-  
-    .card img {
-      width: 100%; /* Make images fully responsive */
-      height: auto; /* Maintain aspect ratio */
-      border-radius: 8px; /* Keep rounded corners */
-      transition: transform 0.3s ease; /* Smooth hover effect */
-    }
-  
-    .card:hover img {
-      transform: scale(1.1); /* Slight zoom on hover */
-    }
-  
-    /* Text inside cards */
-    .card h3 {
-      font-size: 1.2rem;
-      margin: 5px 0;
-      text-align: center; /* Center-align card titles */
-    }
-  
-    .card p {
-      font-size: 1rem;
-      text-align: center;
-    }
+
+  p {
+    font-size: 1.3rem;
   }
-  
+
+  .links a img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .card {
+    flex: 1 1 100%;
+    /* One card per row on small screens */
+  }
+
+  .card-container {
+    gap: 15px;
+    /* Reduce gap for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+
+  /* Adjust the container to prevent overflow */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Center cards */
+    align-items: flex-start;
+    /* Align cards to the top */
+    gap: 10px;
+    /* Space between cards */
+    padding: 10px;
+    /* Add padding to prevent cut-off edges */
+    overflow-x: hidden;
+    /* Prevent horizontal overflow */
+  }
+
+  /* Make cards fit within the screen width */
+  .card {
+    flex: 1 1 calc(100% - 20px);
+    /* Take full width minus gap */
+    max-width: 100%;
+    /* Ensure no card exceeds the container width */
+    margin: 0;
+    /* Remove extra margins */
+    box-sizing: border-box;
+    /* Include padding and borders in width */
+  }
+
+  .card img {
+    width: 100%;
+    /* Make images fully responsive */
+    height: auto;
+    /* Maintain aspect ratio */
+    border-radius: 8px;
+    /* Keep rounded corners */
+    transition: transform 0.3s ease;
+    /* Smooth hover effect */
+  }
+
+  .card:hover img {
+    transform: scale(1.1);
+    /* Slight zoom on hover */
+  }
+
+  /* Text inside cards */
+  .card h3 {
+    font-size: 1.2rem;
+    margin: 5px 0;
+    text-align: center;
+    /* Center-align card titles */
+  }
+
+  .card p {
+    font-size: 1rem;
+    text-align: center;
+  }
+}
