@@ -27,8 +27,8 @@
             <h1>2D Lights and Shadows</h1>
             <h2>Understanding Light Falloffs</h2>
             <p>
-                There are 2 main types of light falloffs: radial and angular, which govern the falloffs with respect to
-                distance and the angular deviation from the direction of propogation.<br>
+                There are 2 main types of light falloffs: radial and angular, which govern the falloffs concerning
+                distance and the angular deviation from the direction of propagation.<br>
                 The intensities and falloffs are calculated using the following formulae:<br>
             <div class="code">float radialFalloff = pow(1.0 - dist, fallOff);</div><br>
             <div class="code">float angularFalloff = 1 - smoothstep(0, maxAngle, abs(angle));</div><br>
@@ -87,14 +87,14 @@
                 for <b>Celeste!</b>
                 Although he built his system with textures, and I'm using mesh manipulation, I feel like this experiment
                 helped me
-                Clear a vital hurdle: starting to use geometry shaders. I think that is awesome in its own regard.
+                I've cleared a vital hurdle: starting to use geometry shaders. I think that's awesome in its own regard.
             </p>
             <p>
                 "Shadows" being cast against the "light." Works smoothly even when the mesh is scaled.
             </p>
             <!--<video width=75% height=75% controls loop="" muted="" autoplay="">
-                <source src="https://github.com/thetrippp/thetrippp.github.io/raw/refs/heads/main/Shadows%20Demo.mp4">
-            </video>-->
+ <source src="https://github.com/thetrippp/thetrippp.github.io/raw/refs/heads/main/Shadows%20Demo.mp4">
+ </video>-->
 
             <img src="../../Images/PageImages/2DLights/2DLightsShadows.gif" class="three">
             <p>

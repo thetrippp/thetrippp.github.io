@@ -27,16 +27,17 @@
             <h1>Waterways!</h1>
             <p>
                 This project started out as an attempt to recreate the effect outlined in
-                <a href="https://www.youtube.com/watch?v=bMTeCqNkId8" class="link" target="_blank">this video</a> based
+                <a href="https://www.youtube.com/watch?v=bMTeCqNkId8" class="link" target="_blank">this
+                    video</a> based
                 of
                 <a href="https://www.reddit.com/r/generative/comments/xz7tlf/comparison_with_and_without_raytracing_for_my_2d/"
                     class="link" target="_blank">this reddit post</a>.<br>
-                However, it quickly became one of my favorite projects. The implementation I came up with used Compute
+                However, it quickly became one of my favorite projects. The implementation I came up with used a Compute
                 Shaders. Being the first time I worked with them was exciting and terrifying.
                 <br><br>
             <p> I started with a height map as the video progressed. I used Perlin Noise in octaves to get
                 organic-looking islands and added a small
-                function to help isolate the noise generation at the center of the screen.</p>
+                function to help isolate the noise generation to the center of the screen.</p>
             <img src="../../Images/PageImages/Waterways/IslandHeightMap.png" class="three">
             <p>
                 A visually captivating island-like landform is created by applying discrete colors over sets of value
@@ -76,7 +77,7 @@
             <p>
                 While working on some optimizations, I will be smug that all the real-time processes run within 2ms and
                 at ~500fps. HEHE<br>
-                Unfortunately, the WebGL platform does not support compute shaders at the time of development, and I am
+                Unfortunately, the WebGL platform did not support compute shaders at the time of development, and I am
                 facing some issues with packaging them.
                 I will have a demo that you can download soon.
                 <br>
