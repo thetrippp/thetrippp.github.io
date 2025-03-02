@@ -88,7 +88,7 @@ a:hover{
 .blog-post p
 {
   font-size: 16px;
-  color: #555;
+  color: #333;
   margin-top: 10px;
 } 
 .read-more {
@@ -134,18 +134,22 @@ a:hover{
 }
 
 /* Ensure text and content within the expanded post are properly aligned */
-.expanded-post h2,
+.expanded-post h2{
+  text-align: center;
+  width: 100%;
+}
+
 .expanded-post p {
   text-align: center;
   width: 100%;
 }
 
-/* Make sure images inside expanded posts fit properly */
+/* Make sure images inside expanded posts fit properly 
 .expanded-content img {
   max-width: 75%;
   height: auto;
   border-radius: 5px;
-}
+}*/
 
 /* Ensure Read More link doesn't appear */
 .expanded-post .read-more {
@@ -153,7 +157,8 @@ a:hover{
 }
 
 .expanded-content img{
-  width: 100%;
+  width: 80%;
+  max-width: 700px;
   height: auto;
   border-radius: 5px;
 }
