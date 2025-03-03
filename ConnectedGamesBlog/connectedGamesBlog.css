@@ -172,6 +172,9 @@ a:hover{
   margin-top: 15px;
   font-size: 16px;
   color: #333;
+  width: 90%;
+  text-align: center;
+  text-wrap: auto;
 }
 
 /* Overlay for background blur & darken effect */

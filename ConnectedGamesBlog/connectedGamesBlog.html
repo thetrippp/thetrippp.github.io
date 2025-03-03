@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K2314767 - CI7825 - Connected Games Blog</title>
     <link rel="stylesheet" href="connectedGamesBlog.css">
+    <link rel="stylesheet" href="../required.css">
+
+    <script src="../required.js" defer></script>
     <link rel="icon" type="image/x-icon" href="Images/joystick.png">
 </head>
 
@@ -16,29 +19,20 @@
     <br>
     <h3 style="text-align: center;">Multiplayer and procedurally generated experiences crafted here, with Profit
         Pits!</h3>
-    <p> I am <a href="../index.html" class="a1" target="_blank">Raghav Suriyashekar</a>, or as my friends call me,
+    <p>
+        I am <a href="../index.html" class="a1" target="_blank">Raghav Suriyashekar</a>, or as my friends call me,
         K2314767,
         part of Group 1 - Quarry Mines Inc.<br><br>
+    </p>
+    <p>
         Welcome to my development journey as a programmer in a team building a multiplayer game
         for the CI7825 Connected Games module as part of the MSc. Game Developement(Programming) course at Kingston
         University.
-        <br><br>
     </p>
+    <br><br>
     <div class="blog-container">
 
-        <!--
-        <div class="blog-post" onclick="expandPost(this)">
-            <h2>Kickoff!</h2>
-            <p class="date">Feb 8, 2025</p>
-            <p>We're building a MULTIPLAYER GAME!!!! AAAAAHHHHH</p>
-            <a class="read-more">Read More</a>
-            <div class="expanded-content">
-                <p>
 
-                </p>
-            </div>
-        </div>
-        -->
         <div class="blog-post" onclick="expandPost(this)">
             <h2>It has begun.</h2>
             <p class="date">February 8, 2025</p>
@@ -68,32 +62,141 @@
             <a class="read-more">Read More</a>
             <div class="expanded-content">
                 <p>
+                    To build a cave, which is essentially a cavity, I wanted to explore creating an algorithm from
+                    scratch.
+                    Through some thought cycles, I settled on what I'm calling Cave Cascades. A method where volumes
+                    are layered additively in stages to form a complex outer hull that defines the cave structure.<br>
+                    I'm calling this method <strong style="color: black; font-weight:bolder">CAVE CASCADES</strong>.
 
-                    
                 </p>
-                <img src="Media/Post02/CaveStage01.png">
+                <br>
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copyCode()">Copy</button>
+                    <br>
+                    <pre><code id="code-block">
+        PSEUDO CODE FOR THE CAVE CASCADES
+        1. Define a base cascade volume.
+        2. For every cascade stage iterated through with a depth value, append volumes along the surface of the previous cascade stage.
+        3. Randomize between cuboidal and spherical voolumes in each stage.
+        4. Encapsulate all the generated volumes to form a container.
+                    </code></pre>
+                </div>
+                <br>
                 <p>
-
-                    
+                    One of the intriguing techniques I've incorporated is the use of bit manipulation to select the
+                    surface face around which the next cascade stage will be generated. This method ensures a high level
+                    of precision in the algorithm.
                 </p>
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copycode()">Copy</button>
+                    <br>
+                    <pre>
+                        <code id="code-block">
+        int randomPower = (int)Helper.Randomize(ref seed, ref output, 0f, 3f);
+        int baseResult = (int)Mathf.Pow(2, randomPower);
+        int requiredResult = 7 - baseResult;
+                        </code>
+                    </pre>
+                </div>
+                <br>
+                <p>
+                    The random power generates a number between 0 and 2(inclusive). Raising 2 to this random power gives
+                    1, 2, or 4.<br>
+                    The binary representations of these numbers(shortened to 3 bits) are:<br>
+                    1 : 001<br>
+                    2 : 010<br>
+                    4 : 100<br>
+                    This step isolates an axis, as seen with 0 and 1, to position a cascade volume.
+                    Subtracting these values from 7 results in outputs 3, 5, and 6, whose binary representations
+                    are:<br>
+                    3 : 011<br>
+                    5 : 101<br>
+                    6 : 110<br>
+                    These subtracted values essentially remove the influence of the missing bit, confining the cascade
+                    volume to its plane.
+                    Randomizing the two dimensions of the coordinates on the plane gives a position to generate a
+                    cascade.
+                </p>
+                <br>
+                <img src="Media/Post02/CaveStage01.png">
                 <img src="Media/Post02/CaveStage02.png">
                 <img src="Media/Post02/CaveStage03.png">
+                <br>
+                <p>
+                    The developing complexity of each cascade depth builds into the cave's volume.<br>
+                    The resulting cave structure had good detail and organic looking structure but was very angular
+                    without any smooth or curved areas, as caves usually feature.
+                    Introducing spheres with each cascade depth to build the volume proved to be the perfect addition to
+                    fleshing out the volume.
+                </p>
+                <br>
                 <img src="Media/Post02/CaveStage04.png">
                 <img src="Media/Post02/CaveStage05.png">
                 <img src="Media/Post02/CaveStage06.png">
+                <br>
+                <p>
+                    With the volume/cavity of the cave generated, the points lying within in a fixed spatial density
+                    containing information about the volumes had to be derived.
+                    The points generated in the compute shader contain the volume-bound information into Vector4 data
+                    structured buffers.
+                    The system uses thread IDs to calculate the appropriate indices, allowing
+                    the system to generate points in a volume at a higher density than customarily computed.
+                    The points in the coordinate system are generated and are closer to each other, allowing for higher
+                    fidelity of the generated mesh in the following steps.
+                </p>
+                <br>
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copyCode()">Copy</button>
+                    <br>
+                    <pre><code id="code-block">
+        // id is uint3 SV_DispatchThreadID, the global thread index in a compute shader defined by the [numthreads()] property.
+        // _position is the world space position of the cave parent object.
+        // _bounds is the calculated bounding volume generated encompassing the cascades.
+
+        // Converting SV_DispatchThreadID into World Space Positions.
+        float3 position = (id) / 3.0 + _position - _bounds * 0.5;
+
+        // Converting Position based data into global indices for mesh generation stage.
+        int _index = id.x + id.y * 3 * _bounds.x + id.z * 3 * 3 * _bounds.y * _bounds.x;
+                    </code></pre>
+                </div>
+                <br>
+                <p>
+                    The points generated by the compute shader, filtered out to only display those within the generated
+                    cave volume.
+                </p>
+                <br>
                 <img src="Media/Post02/CaveStage07.png">
-                <img src="Media/Post02/CaveStage08.png">
-                <img src="Media/Post02/CaveStage09.png">
+                <br>
+                <p>
+                    The mesh generation is taken care of by the MARCHING CUBES algorithm.<br>
+                    This algorithm uses the relative relationship between the 8 vertices of a cube to decide how the intermediate surface should be.
+                    Based on the value of the whether the points are in air or solid.<br>
+                    The previous points generation stage is crucial for optimal mesh generation by the Marching Cubes algorithm.
+                </p>
+                <br>
+                <p>
+                    Wireframe of the generated caves.
+                </p>
+                <br>
                 <img src="Media/Post02/CaveStage10.png">
                 <img src="Media/Post02/CaveStage11.png">
+                <img src="Media/Post02/CaveStage08.png">
+                <img src="Media/Post02/CaveStage09.png">
                 <img src="Media/Post02/CaveInside.png">
                 <img src="Media/Post02/CaveInsideWireFrame.png">
+
+                <p>
+                    Some examples of the caves generated using this method.
+                </p>
                 <img src="Media/Post02/CaveExample01.png">
                 <img src="Media/Post02/CaveExample02.png">
                 <img src="Media/Post02/CaveExample03.png">
 
             </div>
         </div>
+
+        <!--
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Into the Pits. 2/4</h2>
             <p class="date">February 19, 2025</p>
@@ -115,8 +218,8 @@
             <h2>Into the Pits. 3/4</h2>
             <p class="date">February 23, 2025</p>
             <p>
-                From Cavity to Cave.<br> 
-                From Cave to Cave system. 
+                From Cavity to Cave.<br>
+                From Cave to Cave system.
             </p>
             <a class="read-more">Read More</a>
             <div class="expanded-content">
@@ -141,6 +244,7 @@
                 </p>
             </div>
         </div>
+        -->
     </div>
 
     <script>

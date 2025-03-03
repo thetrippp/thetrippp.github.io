@@ -1,0 +1,111 @@
+/*.code-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    background: #282c34;
+    border-radius: 8px;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+pre {
+    margin: 0;
+    padding: 15px;
+    max-height: 300px;
+    overflow: auto;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    white-space: pre;
+    background: #1e1e1e;
+    border-radius: 5px;
+    line-height: 1.4;
+    counter-reset: line-number;
+}
+pre code {
+    display: block;
+}
+pre code span {
+    display: block;
+    position: relative;
+    padding-left: 2em;
+}
+pre code span::before {
+    counter-increment: line-number;
+    content: counter(line-number);
+    position: absolute;
+    left: 0;
+    width: 1.5em;
+    text-align: right;
+    color: #888;
+    padding-right: 0.5em;
+    font-size: 12px;
+}
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #61dafb;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 10;
+}
+@media (max-width: 600px) {
+    .code-container {
+        padding: 15px;
+    }
+    .copy-btn {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+    */
+
+    /* Code Container */
+.code-container {
+    background-color: #2e2e2e;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Code block styling */
+  pre {
+    white-space: pre-wrap; /* Wrap content */
+            word-wrap: break-word;
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: left;
+    background-color: #1e1e1e;
+    border-radius: 4px;
+  }
+  
+  /* Copy Button */
+  .copy-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .copy-btn:hover {
+    background-color: #0056b3;
+  }
