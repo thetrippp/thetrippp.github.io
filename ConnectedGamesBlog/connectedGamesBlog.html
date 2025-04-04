@@ -27,12 +27,12 @@
     <p>
         Welcome to my development journey as a programmer in a team building a multiplayer game
         for the CI7825 Connected Games module as part of the MSc. Game Developement(Programming) course at Kingston
-        University.
+        University with an awesome co-developer <a href="https://requieem.github.io/" class="a1" target="_blank">Marco
+            Farace</a>.
+        Check out my blog posts below to see the progress made so far.
     </p>
     <br><br>
     <div class="blog-container">
-
-
         <div class="blog-post" onclick="expandPost(this)">
             <h2>It has begun.</h2>
             <p class="date">February 8, 2025</p>
@@ -64,9 +64,9 @@
                 <p>
                     To build a cave, which is essentially a cavity, I wanted to explore creating an algorithm from
                     scratch.
-                    Through some thought cycles, I settled on what I'm calling Cave Cascades. A method where volumes
+                    Through some thought cycles, I settled on a custom solution, a method where volumes
                     are layered additively in stages to form a complex outer hull that defines the cave structure.<br>
-                    I'm calling this method <strong style="color: black; font-weight:bolder">CAVE CASCADES</strong>.
+                    I'm calling this method <strong style="color: rgb(255, 98, 0); font-weight:bolder">CAVE CASCADES</strong>.
 
                 </p>
                 <br>
@@ -169,10 +169,15 @@
                 <img src="Media/Post02/CaveStage07.png">
                 <br>
                 <p>
-                    The mesh generation is taken care of by the MARCHING CUBES algorithm.<br>
+                    The mesh generation is taken care of by the <strong style="color: rgb(255, 98, 0); font-weight:bolder">MARCHING CUBES</strong> algorithm.<br>
                     This algorithm uses the relative relationship between the 8 vertices of a cube to decide how the intermediate surface should be.
-                    Based on the value of the whether the points are in air or solid.<br>
+                    Based on the value of the whether the points are part of solid geometry or not. There are 256 permutations of how each vertex of a cube can be and how it's resulting surface would look like.<br>
+                    This can further be optimized to 15 cases, as the cube is symmetric and the surface can be mirrored across the axes. The algorithm uses a lookup table to determine how the surface should be generated based on the values of the vertices.
+                    <br>
+                    <img src="Media/Post02/MarchingCubesCases.png"><br>
                     The previous points generation stage is crucial for optimal mesh generation by the Marching Cubes algorithm.
+                    The density of the cells used by the Marching Cubes algorithm determines the quality and resolution of the generated mesh.<br>
+                    <img src="Media/Post02/polygonise3.gif"><br>
                 </p>
                 <br>
                 <p>
@@ -183,6 +188,10 @@
                 <img src="Media/Post02/CaveStage11.png">
                 <img src="Media/Post02/CaveStage08.png">
                 <img src="Media/Post02/CaveStage09.png">
+
+                <p>
+                    Caves when viewed from the inside and their wireframe representation.
+                </p>
                 <img src="Media/Post02/CaveInside.png">
                 <img src="Media/Post02/CaveInsideWireFrame.png">
 
@@ -196,7 +205,7 @@
             </div>
         </div>
 
-        <!--
+        
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Into the Pits. 2/4</h2>
             <p class="date">February 19, 2025</p>
@@ -207,13 +216,52 @@
             <div class="expanded-content">
                 <p>
                     Procedurally generated seeded caves are a go! They have a moderate amout of detail and are within a
-                    reasonable tri-count.
+                    reasonable tri-count.<br>
                 </p>
-                <br>
+                <br> 
+                <p>
+                     Having seeded caves is very beneficial for the game, as it allows for a lot of flexibility in the design of the caves and the gameplay.<br>
+                     However, any detail that needs to be intentional cannot be baked into the seed and/or the algorithm itself.<br>
+                        This is where the next step comes in, where the cave volume can be manipulated to add detail and features to the cave.<br>
+                    The cave volume can be manipulated in a few ways, such as:<br>
+                    1. Defining a volume called "Cavities" that will remove parts of the cave that are within it.<br>
+                    2. Defining a colume called "Cambers" that will add it's volume to the cave.<br>
+                </p>
+                <h2>Cavities</h2>
+                <p>
+                    Using bounds to define the position and extends of the volume to be removed from the cave.<br>
+                    <img src="Media/Post03/Cavities/Cave_NoCavities_01.png"><br>
+                    <img src="Media/Post03/Cavities/Cave_Cavities_01.png"><br>
+                    <img src="Media/Post03/Cavities/Cave_Cavities_02.png"><br>
+                    <img src="Media/Post03/Cavities/Cave_Cavities_11.png"><br>
+                    <img src="Media/Post03/Cavities/Cave_Cavities_12.png"><br>
+                    <p>
+                        With the cavities in place, the cave can be manipulated to have very specific features to accomodate for visual or gameplay related purposes.<br>
+                    </p>
+                </p>
+                <h2>Cambers</h2>
+                <p>
+                    Similar to the cavities, bounds define the position and extends of the volume to be added into the cave.<br>
+                    <img src="Media/Post03/Cambers/Cave_NoCambers_01.png"><br>
+                    <img src="Media/Post03/Cambers/Cave_Cambers_01.png"><br>
+                    <img src="Media/Post03/Cambers/Cave_Cambers_02.png"><br>
+                </p>
+                <h2>Combinations for better detail.</h2>
+                <p>
+                    The cavities and cambers can be combined to create more complex shapes and features in the cave.<br>
+                    
+                    <img src="Media/Post03/Cave_Combo_01.png"><br>
+                    <img src="Media/Post03/Cave_Combo_02.png"><br>
+                    Like this tavern bar area built right into the cave structure.<br>
+                    <img src="Media/Post03/Cave_Combo_03.png"><br>
 
-
+                    With this, the designers have full control of parts of the cave that needs a fixed appearance.<br>
+                    The designers can define the position and extends of the cavities and cambers to create a very specific look for the cave.<br>
+                    This allows for a lot of flexibility in the design of the caves and the gameplay.<br>
+                </p>
             </div>
         </div>
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Into the Pits. 3/4</h2>
             <p class="date">February 23, 2025</p>
@@ -235,7 +283,7 @@
             <h2>Into the Pits. 4/4</h2>
             <p class="date">March 2, 2025</p>
             <p>
-                Cave based Shader Magic required!
+                Shader Magic ahead!
             </p>
             <a class="read-more">Read More</a>
             <div class="expanded-content">
@@ -244,7 +292,7 @@
                 </p>
             </div>
         </div>
-        -->
+        
     </div>
 
     <script>

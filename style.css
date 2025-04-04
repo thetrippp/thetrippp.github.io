@@ -67,7 +67,7 @@ body::-webkit-scrollbar {
 
 /* Container for Sections */
 .container {
-  height: 400vh;
+  height: 300vh;
   /* Two full-screen sections */
 }
 
@@ -354,9 +354,9 @@ p {
   /* Increased minimum width */
   max-width: 550px;
   /* Increased maximum width */
-  min-height: 150px;
+  min-height: 120px;
   /* Added for increased vertical space */
-  max-height: 250px;
+  max-height: 200px;
   /* Adjusted to match width scaling */
   flex: 1;
   overflow: hidden;
