@@ -82,7 +82,7 @@ a:hover{
 .blog-post h2
 {
   margin-top: 10px;
-  font-size: 22px;
+  font-size: 28px;
   margin: 10px 0;
 } 
 .blog-post p
@@ -124,6 +124,7 @@ a:hover{
   overflow: auto;
   z-index: 1000;
   scrollbar-width: none;
+  
 
   display: flex; /* Ensure content layout remains as before */
   flex-direction: column; 
@@ -136,11 +137,13 @@ a:hover{
 /* Ensure text and content within the expanded post are properly aligned */
 .expanded-post h2{
   text-align: center;
+  font-size: 30x;
   width: 100%;
 }
 
 .expanded-post p {
   text-align: center;
+  font-size: 18px;
   width: 100%;
 }
 
@@ -170,12 +173,13 @@ a:hover{
 .expanded-post .expanded-content {
   display: block !important;
   margin-top: 15px;
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
   width: 90%;
   text-align: center;
   text-wrap: auto;
 }
+
 
 /* Overlay for background blur & darken effect */
 .expanded-overlay {
