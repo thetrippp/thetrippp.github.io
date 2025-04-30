@@ -19,13 +19,13 @@ body {
   align-items: center;
   text-align: center;
   padding: 20px;
-
+/*
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  
+  */
 }
 
 p{
@@ -85,6 +85,7 @@ a:hover{
   font-size: 28px;
   margin: 10px 0;
 } 
+
 .blog-post p
 {
   font-size: 16px;
@@ -118,7 +119,7 @@ a:hover{
   transform: translateX(-50%);
   width: 90vw;
   height: 90vh;
-  max-width: 1400px;
+  max-width: 90vw;
   background: #fffded;
   padding: 20px;
   overflow: auto;
@@ -131,28 +132,32 @@ a:hover{
   justify-content: flex-start; 
   align-items: center;
 
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 1); /* Optional: Adds some depth */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 1); /* Optional: Adds some depth */
 }
 
 /* Ensure text and content within the expanded post are properly aligned */
 .expanded-post h2{
-  text-align: center;
+  text-align: left;
   font-size: 30x;
-  width: 100%;
+  width: 90%;
+  padding-top: 30px;
+  
+  color: #c06300;
+}
+
+.expanded-post h3{
+  text-align: left;
+  width: 90%;
+  padding-top: 30px;
+  
+  color: #c06300;
 }
 
 .expanded-post p {
-  text-align: center;
+  text-align: left;
   font-size: 18px;
-  width: 100%;
+  width: 90%;
 }
-
-/* Make sure images inside expanded posts fit properly 
-.expanded-content img {
-  max-width: 75%;
-  height: auto;
-  border-radius: 5px;
-}*/
 
 /* Ensure Read More link doesn't appear */
 .expanded-post .read-more {
@@ -164,6 +169,8 @@ a:hover{
   max-width: 700px;
   height: auto;
   border-radius: 5px;
+  align-items: center;
+  align-self: center; 
 }
 
 .expanded-content {
@@ -176,8 +183,9 @@ a:hover{
   font-size: 18px;
   color: #333;
   width: 90%;
-  text-align: center;
+  text-align: left;
   text-wrap: auto;
+  align-items: center;
 }
 
 
@@ -247,8 +255,9 @@ a:hover{
 /* Star position for expanded post */
 .expanded-post .star {
   position: absolute;
+  transform: scale(1.5); /* Scale up for visibility */
   top: 20px;
-  left: 20px;
+  left: 30px;
 }
 
 

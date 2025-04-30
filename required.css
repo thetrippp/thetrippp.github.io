@@ -66,7 +66,7 @@ pre code span::before {
 }
     */
 
-    /* Code Container */
+    /* Code Container 
 .code-container {
     background-color: #2e2e2e;
     color: #fff;
@@ -78,10 +78,10 @@ pre code span::before {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Code block styling */
+  /* Code block styling 
   pre {
-    white-space: pre-wrap; /* Wrap content */
-            word-wrap: break-word;
+    white-space: pre-wrap;
+    word-wrap: break-word;
     margin: 0;
     font-family: 'Courier New', Courier, monospace;
     font-size: 16px;
@@ -89,6 +89,11 @@ pre code span::before {
     text-align: left;
     background-color: #1e1e1e;
     border-radius: 4px;
+  } */
+
+  pre
+  {
+    text-align: left;
   }
   
   /* Copy Button */

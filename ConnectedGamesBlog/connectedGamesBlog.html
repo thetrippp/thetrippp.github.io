@@ -11,6 +11,11 @@
 
     <script src="../required.js" defer></script>
     <link rel="icon" type="image/x-icon" href="Images/joystick.png">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
 </head>
 
 <body>
@@ -27,7 +32,7 @@
     <p>
         Welcome to my development journey as a programmer in a team building a multiplayer game
         for the CI7825 Connected Games module as part of the MSc. Game Developement(Programming) course at Kingston
-        University with an awesome co-developer <a href="https://requieem.github.io/" class="a1" target="_blank">Marco Farace</a> 
+        University with an awesome co-developer <a href="https://requieem.github.io/#blog" class="a1" target="_blank">Marco Farace</a> 
         and amazing design team <a href="" class="a1" target="_blank">Roland Thomas</a>, 
         <a href="" class="a1" target="_blank">Achitphon Rungcharoenwikrai</a> and 
         <a href="" class="a1" target="_blank">Nana Baah</a>.<br>
@@ -47,15 +52,16 @@
                     From the words of our designers, the game is :<br>
                     Profit Pits, a seamless collaborative game where the players are hired miners under Quarry Minds.inc where they must
                     explore the cave systems and aim to discover variety of ores to mine, become a well-oiled machine of teamwork in pursuit of wealth in mining by delivering the processed minerals to your employers to sell. 
+                    <br><br>
+                    My primary responsibility was the procedural generation, mesh generation and shaders.<br>
+                    I built a novel algorithm to generate the cave system and the caves within it, which I will be discussing in the next post.<br>
+                    I utilized compute shaders, shader graph and HLSL to create a responsive, performant and infinitely manipulable cave system.<br>
+                    I also worked on the shader to visualize the caves and the cave system, which I will be discussing in a later post.<br>
+
                 </p>
-                <br>
+                <h3>LOTS AND LOTS AND LOTS OF PLANNING<br></h3>
                 <p>
-                    We wanted to do some collaborative multiplayer game, similar to games like Among Us etc.<br>
-                    Procedural generation was also something us developers wanted to work with not only because it is a hot topic in the industry but also because it provides for infinitely varied cave experiences not tied to anything the designers need to hand-craft.<br>
-                </p>
-                <br>
-                <p>
-                    LOTS AND LOTS AND LOTS OF PLANNING<br>
+                    
                     We had many discussions about the game both during the initial stages and many during the development, as good games usually do.
                     We had many ideas and concepts that we wanted to implement, but we had to be realistic about the time we had and the scope of the project.
                     We used tools like Trello and Miro to plan out the project and the tasks we needed to do.<br>
@@ -71,8 +77,8 @@
                 <img src="Media/Post01/Img08.png">
                 <img src="Media/Post01/Img09.png">
                 <p>
-                    Some of the planning we did for the project.<br>
-                    PLAN WAS WRIT, ONTO DEVELOPMENT!!!!!!<br><br>
+                    Glimpse of some of the planning we did for the project.<br><br>
+                    THE PLAN WAS WRIT, ONTO DEVELOPMENT!!!!!!<br><br>
                 </p>
             </div>
         </div>
@@ -95,35 +101,28 @@
 
                 </p>
                 <br>
-                <div class="code-container">
-                    <button class="copy-btn" onclick="copyCode()">Copy</button>
                     <br>
-                    <pre><code id="code-block">
+                    <pre><code>
         PSEUDO CODE FOR THE CAVE CASCADES
         1. Define a base cascade volume.
         2. For every cascade stage iterated through with a depth value, append volumes along the surface of the previous cascade stage.
         3. Randomize between cuboidal and spherical voolumes in each stage.
         4. Encapsulate all the generated volumes to form a container.
                     </code></pre>
-                </div>
                 <br>
                 <p>
                     One of the intriguing techniques I've incorporated is the use of bit manipulation to select the
                     surface face around which the next cascade stage will be generated. This method ensures a high level
                     of precision in the algorithm.
                 </p>
-                <div class="code-container">
-                    <button class="copy-btn" onclick="copycode()">Copy</button>
-                    <br>
-                    <pre>
-                        <code id="code-block">
-        int randomPower = (int)Helper.Randomize(ref seed, ref output, 0f, 3f);
-        int baseResult = (int)Mathf.Pow(2, randomPower);
-        int requiredResult = 7 - baseResult;
-                        </code>
-                    </pre>
-                </div>
-                <br>
+               
+                <pre>
+                    <code class="language-csharp">
+    int randomPower = (int)Helper.Randomize(ref seed, ref output, 0f, 3f);
+    int baseResult = (int)Mathf.Pow(2, randomPower);
+    int requiredResult = 7 - baseResult;
+                    </code>
+                </pre>
                 <p>
                     The random power generates a number between 0 and 2(inclusive). Raising 2 to this random power gives
                     1, 2, or 4.<br>
@@ -170,22 +169,73 @@
                     fidelity of the generated mesh in the following steps.
                 </p>
                 <br>
-                <div class="code-container">
-                    <button class="copy-btn" onclick="copyCode()">Copy</button>
-                    <br>
-                    <pre><code id="code-block">
-        // id is uint3 SV_DispatchThreadID, the global thread index in a compute shader defined by the [numthreads()] property.
-        // _position is the world space position of the cave parent object.
-        // _bounds is the calculated bounding volume generated encompassing the cascades.
-
-        // Converting SV_DispatchThreadID into World Space Positions.
-        float3 position = (id) / 3.0 + _position - _bounds * 0.5;
-
-        // Converting Position based data into global indices for mesh generation stage.
-        int _index = id.x + id.y * 3 * _bounds.x + id.z * 3 * 3 * _bounds.y * _bounds.x;
+                    <pre><code class="language-csharp">
+                        bool WithinBounds(float3 pos, float3 boundPos, float3 boundDim)
+                        {
+                            bool x = (pos.x < boundPos.x + boundDim.x * 0.5 && pos.x > boundPos.x - boundDim.x * 0.5);
+                            bool y = (pos.y < boundPos.y + boundDim.y * 0.5 && pos.y > boundPos.y - boundDim.y * 0.5);
+                            bool z = (pos.z < boundPos.z + boundDim.z * 0.5 && pos.z > boundPos.z - boundDim.z * 0.5);
+                            
+                            return x && y && z;
+                        }
+                        
+                        [numthreads(3,3,3)]
+                        void GenerateBoundedPoints (uint3 id : SV_DispatchThreadID)
+                        {
+                            int3 _bounds = ceil(bounds);
+                            float3 pos = (id) / 3.0 + _position - _bounds * 0.5;
+                            bool boundInNode = false;
+                            bool boundInSNode = false;
+                             
+                            int n = id.x + id.y * 3 + id.z * 3 * 3;
+                            int _index = id.x * 1 + id.y * 1 * 3 * _bounds.x + id.z * 1 * 3 * 3 * _bounds.y * _bounds.x;
+                            
+                            int i;
+                            
+                            bool boundInCavity = false;
+                            bool boundInCamber = false;
+                            
+                            for (i = 0; i < cavityCount; i++)
+                            {
+                                boundInCavity = WithinBounds(pos, cavityPositions[i].xyz, cavityDimensions[i].xyz);
+                                if (boundInCavity)
+                                    i = cavityCount;
+                            }
+                            
+                            for (i = 0; i < camberCount; i++)
+                            {
+                                boundInCamber = WithinBounds(pos, camberPositions[i].xyz, camberDimensions[i].xyz);
+                                if (boundInCamber)
+                                    i = camberCount;
+                            }
+                            
+                            for (i = 0; i < nodeCount; i++)
+                            {
+                                boundInNode = WithinBounds(pos, nodePositions[i].xyz, nodeDimensions[i].xyz);
+                                if (boundInNode)
+                                    i = nodeCount;
+                            }
+                            
+                            for (i = 0; i < sNodeCount; i++)
+                            {
+                                boundInSNode = distance(pos, sphericalNodes[i].xyz) < sphericalNodes[i].w;
+                                if (boundInSNode)
+                                    i = sNodeCount;
+                            }
+                        
+                            if(boundInCavity)
+                                positions[_index] = float4(pos, 1);
+                            else if(boundInCamber)
+                                positions[_index] = float4(pos, 0);
+                            else
+                                positions[_index] = float4(pos, ((boundInNode || boundInSNode) && pos.y > floorHeight) ? 1 : 0);
+                              
+                        }
                     </code></pre>
-                </div>
                 <br>
+                <p>
+                    This comopute shader generated the points in a volume corresponding to if it is in the cave cascades or if it is manipulated by being inside a cavity or camber.<br>
+                </p>
                 <p>
                     The points generated by the compute shader, filtered out to only display those within the generated
                     cave volume.
@@ -250,9 +300,9 @@
                         This is where the next step comes in, where the cave volume can be manipulated to add detail and features to the cave.<br>
                     The cave volume can be manipulated in a few ways, such as:<br>
                     1. Defining a volume called "Cavities" that will remove parts of the cave that are within it.<br>
-                    2. Defining a colume called "Cambers" that will add it's volume to the cave.<br>
+                    2. Defining a colume called "Cambers" that will add it's volume to the cave.
                 </p>
-                <h2>Cavities</h2>
+                <h3>CAVITIES</h3>
                 <p>
                     Using bounds to define the position and extends of the volume to be removed from the cave.<br>
                     <img src="Media/Post03/Cavities/Cave_NoCavities_01.png"><br>
@@ -264,14 +314,14 @@
                         With the cavities in place, the cave can be manipulated to have very specific features to accomodate for visual or gameplay related purposes.<br>
                     </p>
                 </p>
-                <h2>Cambers</h2>
+                <h3>CAMBERS</h3>
                 <p>
                     Similar to the cavities, bounds define the position and extends of the volume to be added into the cave.<br>
                     <img src="Media/Post03/Cambers/Cave_NoCambers_01.png"><br>
                     <img src="Media/Post03/Cambers/Cave_Cambers_01.png"><br>
                     <img src="Media/Post03/Cambers/Cave_Cambers_02.png"><br>
                 </p>
-                <h2>Combinations for better detail.</h2>
+                <h3>COMBINATION FOR BETTER DETAIL</h3>
                 <p>
                     The cavities and cambers can be combined to create more complex shapes and features in the cave.<br>
                     
@@ -279,10 +329,10 @@
                     <img src="Media/Post03/Cave_Combo_02.png"><br>
                     Like this tavern bar area built right into the cave structure.<br>
                     <img src="Media/Post03/Cave_Combo_03.png"><br>
-
+                    <br>
                     With this, the designers have full control of parts of the cave that needs a fixed appearance.<br>
                     The designers can define the position and extends of the cavities and cambers to create a very specific look for the cave.<br>
-                    This allows for a lot of flexibility in the design of the caves and the gameplay.<br>
+                    This allows for a lot of flexibility in the design of the caves and the gameplay.<br><br><br><br>
                 </p>
             </div>
         </div>
