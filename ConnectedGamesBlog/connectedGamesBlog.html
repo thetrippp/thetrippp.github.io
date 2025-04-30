@@ -27,12 +27,15 @@
     <p>
         Welcome to my development journey as a programmer in a team building a multiplayer game
         for the CI7825 Connected Games module as part of the MSc. Game Developement(Programming) course at Kingston
-        University with an awesome co-developer <a href="https://requieem.github.io/" class="a1" target="_blank">Marco
-            Farace</a>.
+        University with an awesome co-developer <a href="https://requieem.github.io/" class="a1" target="_blank">Marco Farace</a> 
+        and amazing design team <a href="" class="a1" target="_blank">Roland Thomas</a>, 
+        <a href="" class="a1" target="_blank">Achitphon Rungcharoenwikrai</a> and 
+        <a href="" class="a1" target="_blank">Nana Baah</a>.<br>
         Check out my blog posts below to see the progress made so far.
     </p>
     <br><br>
     <div class="blog-container">
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>It has begun.</h2>
             <p class="date">February 8, 2025</p>
@@ -41,18 +44,40 @@
             <a class="read-more">Read More</a>
             <div class="expanded-content">
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer varius orci sit amet enim
-                    vulputate, malesuada finibus tellus interdum. Cras tristique diam in dapibus rhoncus. Donec
-                    convallis lectus nec rhoncus lacinia. Nunc ut turpis vel nisl blandit pellentesque. Interdum et
-                    malesuada fames ac ante ipsum primis in faucibus. Fusce accumsan neque ac orci ornare, in vulputate
-                    orci lacinia. Nam id tortor a nibh sagittis dictum. Mauris in tellus ac lacus luctus vehicula vel
-                    vel eros. Duis sodales tincidunt nisi, nec semper quam imperdiet quis. In ut eros ultricies, finibus
-                    tellus ac, porttitor quam. In quis convallis erat. Sed placerat tincidunt arcu. Nullam convallis
-                    magna orci, maximus tristique elit egestas non. Pellentesque ullamcorper lacus sit amet dictum
-                    commodo. Sed rhoncus eros quam, id mollis massa vehicula eu.
+                    From the words of our designers, the game is :<br>
+                    Profit Pits, a seamless collaborative game where the players are hired miners under Quarry Minds.inc where they must
+                    explore the cave systems and aim to discover variety of ores to mine, become a well-oiled machine of teamwork in pursuit of wealth in mining by delivering the processed minerals to your employers to sell. 
+                </p>
+                <br>
+                <p>
+                    We wanted to do some collaborative multiplayer game, similar to games like Among Us etc.<br>
+                    Procedural generation was also something us developers wanted to work with not only because it is a hot topic in the industry but also because it provides for infinitely varied cave experiences not tied to anything the designers need to hand-craft.<br>
+                </p>
+                <br>
+                <p>
+                    LOTS AND LOTS AND LOTS OF PLANNING<br>
+                    We had many discussions about the game both during the initial stages and many during the development, as good games usually do.
+                    We had many ideas and concepts that we wanted to implement, but we had to be realistic about the time we had and the scope of the project.
+                    We used tools like Trello and Miro to plan out the project and the tasks we needed to do.<br>
+                    Must mention Roland's amazing work setting up the Trello board and Miro board for us to use.<br>
+                </p>
+                <img src="Media/Post01/Img01.png">
+                <img src="Media/Post01/Img02.png">
+                <img src="Media/Post01/Img03.png">
+                <img src="Media/Post01/Img04.png">
+                <img src="Media/Post01/Img05.png">
+                <img src="Media/Post01/Img06.png">
+                <img src="Media/Post01/Img07.png">
+                <img src="Media/Post01/Img08.png">
+                <img src="Media/Post01/Img09.png">
+                <p>
+                    Some of the planning we did for the project.<br>
+                    PLAN WAS WRIT, ONTO DEVELOPMENT!!!!!!<br><br>
                 </p>
             </div>
         </div>
+
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>The Pits</h2>
             <p class="date">February 8, 2025</p>
@@ -262,6 +287,7 @@
             </div>
         </div>
 
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>The expansion.</h2>
             <p class="date">February 23, 2025</p>
@@ -272,12 +298,43 @@
             <a class="read-more">Read More</a>
             <div class="expanded-content">
                 <p>
-
-                    Put the cave system stuff here.
-                    + performance.
+                    Caves have some organic looking detail and their volumes can be manipulated to add features and details.<br>
+                    The next step would be to expand it to form a cave system so players can have a more immersive experience.<br>
+                    The cave system is a 2D grid of caves in a layout defined by the syustem dimensions.<br><br>
                 </p>
+                <img src="Media/Post04/CaveSystem_04.png"><br><br>
+                <p>
+                    With the basic layout of the caves in place, we needed a way to connect the caves to each other.<br>
+                    Fortunately, the cave manipulation can  also be used to create tunnels within the volumes. If we make each of the cave's bounds overlap with its neighbours, 
+                    The cavities will join the caves together and create a tunnel between them.<br>
+                    To generate the cavities that connect the caves, I first generate every axis-aligned connection between neighbouring caves.<br>
+                    There will be <br>
+                </p>    
+                <h3>2 * M * N - (M + N)</h3>
+                <p>
+                    cave connections for a cave system with dimensions M and N.<br>
+                    If we pick a random number < (M + N) from this collection of connections, we can randomize the cave network to be more organic with tis links and tunnels.<br>
+                    This results in a overview that looks like this<br><br>
+                </p>
+                <img src="Media/Post04/CaveSystem_05.png"><br><br>
+                <p>
+                    Generating the caves with these cavities gives a nice cave system layout.<br>
+                </p>
+                <img src="Media/Post04/CaveSystem_06.png"><br><br>
+                <img src="Media/Post04/CaveSystem_03.png"><br><br>
+                <p>
+                    The cave system generates in about 0.5 - 1 second and is very controllable in both the connections and dimensions.<br>
+                </p>
+                <img src="Media/Post04/CaveSystem_01.png"><br><br>
+                <img src="Media/Post04/CaveSystem_02.png"><br><br>
+                <p>
+                    With a shader I developed to look into the caves(next post), it works out-of-the-box with the entire system as well.<br>
+                </p>
+                <img src="Media/Post04/CaveSystem_07.png"><br><br>
             </div>
         </div>
+
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Looking into the pits.</h2>
             <p class="date">March 2, 2025</p>
@@ -292,9 +349,10 @@
             </div>
         </div>
 
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Mineables and Poison</h2>
-            <p class="date">March 22, 2025</p>
+            <p class="date">March 14, 2025</p>
             <p>
                 Populating the caves with mineables and poison.<br>
             </p>
@@ -306,6 +364,7 @@
             </div>
         </div>
         
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>DISASTER</h2>
             <p class="date">April 2, 2025</p>
@@ -319,6 +378,7 @@
             </div>
         </div>
 
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Fixes and Extras<h2>
             <p class="date">April 20, 2025</p>
@@ -331,9 +391,10 @@
             </div>
         </div>
 
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Finishing Touches</h2>
-            <p class="date">April 2, 2025</p>
+            <p class="date">May 1, 2025</p>
             <p>
                 THE CONCLUSION.
             </p>
@@ -354,6 +415,12 @@
 
     </div>
 
+    <br><br>
+    <p>
+        This blog site was made in HTML and CSS with some JavaScript to make it more interactive.<br>
+        It is hosted on my Github pages site and will be up until I decide to re-write it.<br>
+    </p>
+    <br><br>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
