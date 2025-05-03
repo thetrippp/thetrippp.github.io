@@ -32,9 +32,10 @@
     <p>
         Welcome to my development journey as a programmer in a team building a multiplayer game
         for the CI7825 Connected Games module as part of the MSc. Game Developement(Programming) course at Kingston
-        University with an awesome co-developer <a href="https://requieem.github.io/#blog" class="a1" target="_blank">Marco Farace</a> 
-        and amazing design team <a href="" class="a1" target="_blank">Roland Thomas</a>, 
-        <a href="" class="a1" target="_blank">Achitphon Rungcharoenwikrai</a> and 
+        University with an awesome co-developer <a href="https://requieem.github.io/#blog" class="a1"
+            target="_blank">Marco Farace</a>
+        and amazing design team <a href="" class="a1" target="_blank">Roland Thomas</a>,
+        <a href="" class="a1" target="_blank">Achitphon Rungcharoenwikrai</a> and
         <a href="" class="a1" target="_blank">Nana Baah</a>.<br>
         Check out my blog posts below to see the progress made so far.
     </p>
@@ -50,20 +51,28 @@
             <div class="expanded-content">
                 <p>
                     From the words of our designers, the game is :<br>
-                    Profit Pits, a seamless collaborative game where the players are hired miners under Quarry Minds.inc where they must
-                    explore the cave systems and aim to discover variety of ores to mine, become a well-oiled machine of teamwork in pursuit of wealth in mining by delivering the processed minerals to your employers to sell. 
+                    Profit Pits, a seamless collaborative game where the players are hired miners under Quarry Minds.inc
+                    where they must
+                    explore the cave systems and aim to discover variety of ores to mine, become a well-oiled machine of
+                    teamwork in pursuit of wealth in mining by delivering the processed minerals to your employers to
+                    sell.
                     <br><br>
                     My primary responsibility was the procedural generation, mesh generation and shaders.<br>
-                    I built a novel algorithm to generate the cave system and the caves within it, which I will be discussing in the next post.<br>
-                    I utilized compute shaders, shader graph and HLSL to create a responsive, performant and infinitely manipulable cave system.<br>
-                    I also worked on the shader to visualize the caves and the cave system, which I will be discussing in a later post.<br>
+                    I built a novel algorithm to generate the cave system and the caves within it, which I will be
+                    discussing in the next post.<br>
+                    I utilized compute shaders, shader graph and HLSL to create a responsive, performant and infinitely
+                    manipulable cave system.<br>
+                    I also worked on the shader to visualize the caves and the cave system, which I will be discussing
+                    in a later post.<br>
 
                 </p>
                 <h3>LOTS AND LOTS AND LOTS OF PLANNING<br></h3>
                 <p>
-                    
-                    We had many discussions about the game both during the initial stages and many during the development, as good games usually do.
-                    We had many ideas and concepts that we wanted to implement, but we had to be realistic about the time we had and the scope of the project.
+
+                    We had many discussions about the game both during the initial stages and many during the
+                    development, as good games usually do.
+                    We had many ideas and concepts that we wanted to implement, but we had to be realistic about the
+                    time we had and the scope of the project.
                     We used tools like Trello and Miro to plan out the project and the tasks we needed to do.<br>
                     Must mention Roland's amazing work setting up the Trello board and Miro board for us to use.<br>
                 </p>
@@ -97,16 +106,17 @@
                     scratch.
                     Through some thought cycles, I settled on a custom solution, a method where volumes
                     are layered additively in stages to form a complex outer hull that defines the cave structure.<br>
-                    I'm calling this method <strong style="color: rgb(255, 98, 0); font-weight:bolder">CAVE CASCADES</strong>.
+                    I'm calling this method <strong style="color: rgb(255, 98, 0); font-weight:bolder">CAVE
+                        CASCADES</strong>.
 
                 </p>
                 <br>
-                    <br>
-                    <pre><code>
+                <br>
+                <pre><code>
         PSEUDO CODE FOR THE CAVE CASCADES
         1. Define a base cascade volume.
         2. For every cascade stage iterated through with a depth value, append volumes along the surface of the previous cascade stage.
-        3. Randomize between cuboidal and spherical voolumes in each stage.
+        3. Randomize between cuboidal and spherical volumes in each stage.
         4. Encapsulate all the generated volumes to form a container.
                     </code></pre>
                 <br>
@@ -115,7 +125,7 @@
                     surface face around which the next cascade stage will be generated. This method ensures a high level
                     of precision in the algorithm.
                 </p>
-               
+
                 <pre>
                     <code class="language-csharp">
     int randomPower = (int)Helper.Randomize(ref seed, ref output, 0f, 3f);
@@ -141,7 +151,148 @@
                     Randomizing the two dimensions of the coordinates on the plane gives a position to generate a
                     cascade.
                 </p>
+                <pre>
+                    <code class="language-csharp">
+            nodes.Clear();
+            nodes.Add(new CaveNodeCuboid(transform.position, false, new Vector3(container.x, container.y, container.z)));
+            List<ICaveNode> currentDepth = new() { nodes[^1] };
+            _Bounds = new Bounds();
+            
+            for (int i = 0; i < depth; i++)
+            {
+                List<ICaveNode> _currentDepth = new();
+                int num = Mathf.Max(Mathf.CeilToInt((Mathf.Abs(depth - 1.0f) / (float)depth) * countPerLevel), 1);
+            
+                foreach (ICaveNode node in currentDepth)
+                {
+                    for (int n = 0; n < num; n++)
+                    {
+                        int randomPower = (int)Helper.Randomize(ref seed, ref output, 0f, 3f);
+                        int baseResult = (int)Mathf.Pow(2, randomPower);
+                        int requiredResult = 7 - baseResult;
+            
+                        if (node is CaveNodeCuboid) // If current node is a cuboid.
+                        {
+                            Vector3 baseResultVector = new((baseResult & (1 << 2)) == 0 ? 0 : 1, (baseResult & (1 << 1)) == 0 ? 0 : 1, (baseResult & (1 << 0)) == 0 ? 0 : 1);
+                            baseResultVector *= Mathf.Sign(Helper.BiasFunction(Helper.Randomize(ref seed, ref output, 0.1f, 1f)));
+                            baseResultVector = Vector3.Scale(baseResultVector, (node as CaveNodeCuboid).Dimensions * 0.5f);
+                            Vector3 requiredResultVector = new((requiredResult & (1 << 2)) == 0 ? 0 : 1, (requiredResult & (1 << 1)) == 0 ? 0 : 1, (requiredResult & (1 << 0)) == 0 ? 0 : 1);
+            
+                            if (Helper.Randomize(ref seed, ref output, 0f, 1f) < 0.75f) // Add new Cuboid Node.
+                            {
+                                // NodePosition should be baseResult * (+/- 1) * coordinate offset + requiredResult * random coordinate offset.
+                                var dimensions = (node as CaveNodeCuboid).Dimensions * 0.9f;
+                                requiredResultVector = Vector3.Scale(requiredResultVector, new Vector3(Helper.Randomize(ref seed, ref output, -dimensions.x, dimensions.x), Helper.Randomize(ref seed, ref output, -dimensions.y, dimensions.y), Helper.Randomize(ref seed, ref output, -dimensions.z, dimensions.z)));
+                                Vector3 nodePosition = (node as CaveNodeCuboid).Position + baseResultVector + requiredResultVector;
+                                Vector3 nodeDimensions = randomizeDimensions ? 
+                                    new Vector3(Helper.Randomize(ref seed, ref output, dimensions.x * 0.5f, dimensions.x * 2f), Helper.Randomize(ref seed, ref output, dimensions.y * 0.5f, dimensions.y * 2f), Helper.Randomize(ref seed, ref output, dimensions.z * 0.5f, dimensions.z * 2f)) * 0.5f : 
+                                    dimensions * 0.5f;
+                                CaveNodeCuboid caveNodeCuboid = new(nodePosition, false, nodeDimensions);
+                                nodes.Add(caveNodeCuboid);
+                                _currentDepth.Add(caveNodeCuboid);
+                                var _bounds = new Bounds(nodePosition, nodeDimensions);
+                                _Bounds.Encapsulate(_bounds);
+                            }
+                            else // Add new Spherical Node.
+                            {
+                                var dimensions = (node as CaveNodeCuboid).Dimensions * 0.9f;
+                                requiredResultVector = Vector3.Scale(requiredResultVector, new Vector3(Helper.Randomize(ref seed, ref output, -dimensions.x, dimensions.x), Helper.Randomize(ref seed, ref output, -dimensions.y, dimensions.y), Helper.Randomize(ref seed, ref output, -dimensions.z, dimensions.z)));
+                                Vector3 nodePosition = (node as CaveNodeCuboid).Position + baseResultVector + requiredResultVector;
+                                var _dimensions = Mathf.Min(container.x, container.y, container.z) * Mathf.Pow(0.75f, depth);
+                                CaveNodeSphere caveNodeSphere = new(nodePosition, false, _dimensions);
+                                nodes.Add(caveNodeSphere);
+                                _currentDepth.Add(caveNodeSphere);
+                                var _bounds = new Bounds(nodePosition, Vector3.one * _dimensions);
+                                _Bounds.Encapsulate(_bounds);
+                            }
+                        }
+            
+                        else if(node is CaveNodeSphere) // If current node is a sphere.
+                        {
+                            Vector3 newPosVector = UnityEngine.Random.insideUnitSphere * (node as CaveNodeSphere).Radius;
+                            Vector3 nodePosition = (node as CaveNodeSphere).Position + newPosVector;
+            
+                            if (Helper.Randomize(ref seed, ref output, 0f, 1f) < 0.75f) // Add new Cuboid Node.
+                            {
+                                var dimensions = (Vector3)container * Mathf.Pow(0.9f, depth);
+                                Vector3 nodeDimensions = randomizeDimensions ? 
+                                    new Vector3(Helper.Randomize(ref seed, ref output, dimensions.x * 0.5f, dimensions.x * 2f), Helper.Randomize(ref seed, ref output, dimensions.y * 0.5f, dimensions.y * 2f), Helper.Randomize(ref seed, ref output, dimensions.z * 0.5f, dimensions.z * 2f)) * 0.5f : 
+                                    dimensions * 0.5f;
+                                CaveNodeCuboid caveNodeCuboid = new(nodePosition, false, nodeDimensions);
+                                nodes.Add(caveNodeCuboid);
+                                _currentDepth.Add(caveNodeCuboid);
+                                var _bounds = new Bounds(nodePosition, nodeDimensions);
+                                _Bounds.Encapsulate(_bounds);
+            
+                            }
+                            else // Add new Spherical Node.
+                            {
+                                var dimensions = (node as CaveNodeSphere).Radius * 0.9f;
+                                CaveNodeSphere caveNodeSphere = new(nodePosition, false, dimensions);
+                                nodes.Add(caveNodeSphere);
+                                _currentDepth.Add(caveNodeSphere);
+                                var _bounds = new Bounds(nodePosition, Vector3.one * dimensions);
+                                _Bounds.Encapsulate(_bounds);
+                            }
+                        }
+                    }
+                }
+                currentDepth.Clear();
+                currentDepth.AddRange(_currentDepth);
+            }
+            
+            nodePositions.Clear();
+            nodeDimensions.Clear();
+            sNodes.Clear();
+            _Bounds = new();
+            foreach (var n in nodes)
+            {
+                Bounds b = new Bounds();
+                if (n is CaveNodeCuboid)
+                {
+                    var node = n as CaveNodeCuboid;
+                    nodePositions.Add(node.Position);
+                    nodeDimensions.Add(node.Dimensions);
+                    b = new Bounds(node.Position, node.Dimensions);
+                }
+                else if (n is CaveNodeSphere)
+                {
+                    var node = n as CaveNodeSphere;
+                    sNodes.Add(new Vector4(node.Position.x, node.Position.y, node.Position.z, node.Radius));
+                    b = new Bounds(node.Position, node.Radius * Vector3.one);
+                }
+                _Bounds = b;
+                break;
+            }
+            foreach (var n in nodes)
+            {
+                Bounds b = new Bounds();
+                if (n is CaveNodeCuboid)
+                {
+                    var node = n as CaveNodeCuboid;
+                    nodePositions.Add(node.Position);
+                    nodeDimensions.Add(node.Dimensions);
+                    b = new Bounds(node.Position, node.Dimensions);
+                }
+                else if (n is CaveNodeSphere)
+                {
+                    var node = n as CaveNodeSphere;
+                    sNodes.Add(new Vector4(node.Position.x, node.Position.y, node.Position.z, node.Radius));
+                    b = new Bounds(node.Position, node.Radius * Vector3.one);
+                }
+            
+            
+                if (b.size.x < 0.2f) continue;
+                _Bounds.Encapsulate(b);
+            }
+            
+            _Bounds.Expand(2f);
+                        </code>
+                </pre>
                 <br>
+                <p>
+                    Cascade stages.<br>
+                </p>
                 <img src="Media/Post02/CaveStage01.png">
                 <img src="Media/Post02/CaveStage02.png">
                 <img src="Media/Post02/CaveStage03.png">
@@ -169,7 +320,7 @@
                     fidelity of the generated mesh in the following steps.
                 </p>
                 <br>
-                    <pre><code class="language-csharp">
+                <pre><code class="language-csharp">
                         bool WithinBounds(float3 pos, float3 boundPos, float3 boundDim)
                         {
                             bool x = (pos.x < boundPos.x + boundDim.x * 0.5 && pos.x > boundPos.x - boundDim.x * 0.5);
@@ -232,9 +383,9 @@
                               
                         }
                     </code></pre>
-                <br>
                 <p>
-                    This comopute shader generated the points in a volume corresponding to if it is in the cave cascades or if it is manipulated by being inside a cavity or camber.<br>
+                    This comopute shader generated the points in a volume corresponding to if it is in the cave cascades
+                    or if it is manipulated by being inside a cavity or camber.<br>
                 </p>
                 <p>
                     The points generated by the compute shader, filtered out to only display those within the generated
@@ -244,19 +395,27 @@
                 <img src="Media/Post02/CaveStage07.png">
                 <br>
                 <p>
-                    The mesh generation is taken care of by the <strong style="color: rgb(255, 98, 0); font-weight:bolder">MARCHING CUBES</strong> algorithm.<br>
-                    This algorithm uses the relative relationship between the 8 vertices of a cube to decide how the intermediate surface should be.
-                    Based on the value of the whether the points are part of solid geometry or not. There are 256 permutations of how each vertex of a cube can be and how it's resulting surface would look like.<br>
-                    This can further be optimized to 15 cases, as the cube is symmetric and the surface can be mirrored across the axes. The algorithm uses a lookup table to determine how the surface should be generated based on the values of the vertices.
+                    The mesh generation is taken care of by the <strong
+                        style="color: rgb(255, 98, 0); font-weight:bolder">MARCHING CUBES</strong> algorithm.<br>
+                    This algorithm uses the relative relationship between the 8 vertices of a cube to decide how the
+                    intermediate surface should be.
+                    Based on the value of the whether the points are part of solid geometry or not. There are 256
+                    permutations of how each vertex of a cube can be and how it's resulting surface would look like.<br>
+                    This can further be optimized to 15 cases, as the cube is symmetric and the surface can be mirrored
+                    across the axes. The algorithm uses a lookup table to determine how the surface should be generated
+                    based on the values of the vertices.
                     <br>
                     <img src="Media/Post02/MarchingCubesCases.png"><br>
-                    The previous points generation stage is crucial for optimal mesh generation by the Marching Cubes algorithm.
-                    The density of the cells used by the Marching Cubes algorithm determines the quality and resolution of the generated mesh.<br>
+                    The previous points generation stage is crucial for optimal mesh generation by the Marching Cubes
+                    algorithm.
+                    The density of the cells used by the Marching Cubes algorithm determines the quality and resolution
+                    of the generated mesh.<br>
                     <img src="Media/Post02/polygonise3.gif"><br>
                 </p>
                 <br>
                 <p>
-                    Wireframe of the generated caves.
+
+                    Wireframe of sample generated caves with this method.
                 </p>
                 <br>
                 <img src="Media/Post02/CaveStage10.png">
@@ -280,7 +439,7 @@
             </div>
         </div>
 
-        
+
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Carving detail.</h2>
             <p class="date">February 19, 2025</p>
@@ -293,14 +452,17 @@
                     Procedurally generated seeded caves are a go! They have a moderate amout of detail and are within a
                     reasonable tri-count.<br>
                 </p>
-                <br> 
+                <br>
                 <p>
-                     Having seeded caves is very beneficial for the game, as it allows for a lot of flexibility in the design of the caves and the gameplay.<br>
-                     However, any detail that needs to be intentional cannot be baked into the seed and/or the algorithm itself.<br>
-                        This is where the next step comes in, where the cave volume can be manipulated to add detail and features to the cave.<br>
+                    Having seeded caves is very beneficial for the game, as it allows for a lot of flexibility in the
+                    design of the caves and the gameplay.<br>
+                    However, any detail that needs to be intentional cannot be baked into the seed and/or the algorithm
+                    itself.<br>
+                    This is where the next step comes in, where the cave volume can be manipulated to add detail and
+                    features to the cave.<br>
                     The cave volume can be manipulated in a few ways, such as:<br>
                     1. Defining a volume called "Cavities" that will remove parts of the cave that are within it.<br>
-                    2. Defining a colume called "Cambers" that will add it's volume to the cave.
+                    2. Defining a volume called "Cambers" that will add it's volume to the cave.
                 </p>
                 <h3>CAVITIES</h3>
                 <p>
@@ -310,13 +472,15 @@
                     <img src="Media/Post03/Cavities/Cave_Cavities_02.png"><br>
                     <img src="Media/Post03/Cavities/Cave_Cavities_11.png"><br>
                     <img src="Media/Post03/Cavities/Cave_Cavities_12.png"><br>
-                    <p>
-                        With the cavities in place, the cave can be manipulated to have very specific features to accomodate for visual or gameplay related purposes.<br>
-                    </p>
+                <p>
+                    With the cavities in place, the cave can be manipulated to have very specific features to accomodate
+                    for visual or gameplay related purposes.<br>
+                </p>
                 </p>
                 <h3>CAMBERS</h3>
                 <p>
-                    Similar to the cavities, bounds define the position and extends of the volume to be added into the cave.<br>
+                    Similar to the cavities, bounds define the position and extends of the volume to be added into the
+                    cave.<br>
                     <img src="Media/Post03/Cambers/Cave_NoCambers_01.png"><br>
                     <img src="Media/Post03/Cambers/Cave_Cambers_01.png"><br>
                     <img src="Media/Post03/Cambers/Cave_Cambers_02.png"><br>
@@ -324,14 +488,15 @@
                 <h3>COMBINATION FOR BETTER DETAIL</h3>
                 <p>
                     The cavities and cambers can be combined to create more complex shapes and features in the cave.<br>
-                    
+
                     <img src="Media/Post03/Cave_Combo_01.png"><br>
                     <img src="Media/Post03/Cave_Combo_02.png"><br>
                     Like this tavern bar area built right into the cave structure.<br>
                     <img src="Media/Post03/Cave_Combo_03.png"><br>
                     <br>
                     With this, the designers have full control of parts of the cave that needs a fixed appearance.<br>
-                    The designers can define the position and extends of the cavities and cambers to create a very specific look for the cave.<br>
+                    The designers can define the position and extends of the cavities and cambers to create a very
+                    specific look for the cave.<br>
                     This allows for a lot of flexibility in the design of the caves and the gameplay.<br><br><br><br>
                 </p>
             </div>
@@ -339,7 +504,7 @@
 
 
         <div class="blog-post" onclick="expandPost(this)">
-            <h2>The expansion.</h2>
+            <h2>The Expansion.</h2>
             <p class="date">February 23, 2025</p>
             <p>
                 From Cavity to Cave.<br>
@@ -348,23 +513,28 @@
             <a class="read-more">Read More</a>
             <div class="expanded-content">
                 <p>
-                    Caves have some organic looking detail and their volumes can be manipulated to add features and details.<br>
-                    The next step would be to expand it to form a cave system so players can have a more immersive experience.<br>
+                    Caves have some organic looking detail and their volumes can be manipulated to add features and
+                    details.<br>
+                    The next step would be to expand it to form a cave system so players can have a more immersive
+                    experience.<br>
                     The cave system is a 2D grid of caves in a layout defined by the syustem dimensions.<br><br>
                 </p>
                 <img src="Media/Post04/CaveSystem_04.png"><br><br>
                 <p>
                     With the basic layout of the caves in place, we needed a way to connect the caves to each other.<br>
-                    Fortunately, the cave manipulation can  also be used to create tunnels within the volumes. If we make each of the cave's bounds overlap with its neighbours, 
+                    Fortunately, the cave manipulation can also be used to create tunnels within the volumes. If we make
+                    each of the cave's bounds overlap with its neighbours,
                     The cavities will join the caves together and create a tunnel between them.<br>
-                    To generate the cavities that connect the caves, I first generate every axis-aligned connection between neighbouring caves.<br>
+                    To generate the cavities that connect the caves, I first generate every axis-aligned connection
+                    between neighbouring caves.<br>
                     There will be <br>
-                </p>    
+                </p>
                 <h3>2 * M * N - (M + N)</h3>
                 <p>
                     cave connections for a cave system with dimensions M and N.<br>
-                    If we pick a random number < (M + N) from this collection of connections, we can randomize the cave network to be more organic with tis links and tunnels.<br>
-                    This results in a overview that looks like this<br><br>
+                    If we pick a random number < (M + N) from this collection of connections, we can randomize the cave
+                        network to be more organic with tis links and tunnels.<br>
+                        This results in a overview that looks like this<br><br>
                 </p>
                 <img src="Media/Post04/CaveSystem_05.png"><br><br>
                 <p>
@@ -373,12 +543,14 @@
                 <img src="Media/Post04/CaveSystem_06.png"><br><br>
                 <img src="Media/Post04/CaveSystem_03.png"><br><br>
                 <p>
-                    The cave system generates in about 0.5 - 1 second and is very controllable in both the connections and dimensions.<br>
+                    The cave system generates in about 0.5 - 1 second and is very controllable in both the connections
+                    and dimensions.<br>
                 </p>
                 <img src="Media/Post04/CaveSystem_01.png"><br><br>
                 <img src="Media/Post04/CaveSystem_02.png"><br><br>
                 <p>
-                    With a shader I developed to look into the caves(next post), it works out-of-the-box with the entire system as well.<br>
+                    With a shader I developed to look into the caves(next post), it works out-of-the-box with the entire
+                    system as well.<br>
                 </p>
                 <img src="Media/Post04/CaveSystem_07.png"><br><br>
             </div>
@@ -386,7 +558,7 @@
 
 
         <div class="blog-post" onclick="expandPost(this)">
-            <h2>Looking into the pits.</h2>
+            <h2>Looking into the pits. 1/2</h2>
             <p class="date">March 2, 2025</p>
             <p>
                 Shader Magic ahead!
@@ -394,26 +566,363 @@
             <a class="read-more">Read More</a>
             <div class="expanded-content">
                 <p>
+                    MY ABSOLUTE FAVOURITE PART OF THE PROJECT.<br>
+                    I love shaders and shader programming, and this was a great opportunity to experiment with some
+                    ideas I had in mind for a long time.<br>
 
+                    One of the ideas was to use the signed distance functions and smoothmin concept.<br><br>
+
+                    Taking the minimum of two functions creates a rigid and disconnected result with sharp edges, as
+                    seen in the first figure. This is because it directly picks the lower value without any blending.
+                    The smoothmin function improves on this by introducing a blending parameter k, which smoothly merges
+                    the two functions near their intersection. This results in a more continuous and organic shape, as
+                    illustrated in the second figure.
+                </p>
+                <img src="Media/Post05/SmoothMin01.png" class="img-half">
+                <img src="Media/Post05/SmoothMin02.png" class="img-half"><br>
+                <p>
+                    This is the smoothmin function I wrote:<br>
+                </p>
+                <pre><code class="language-csharp">
+                        float smin( float a, float b, float k )
+                        {
+                            k *= 4.0;
+                            float h = max( k-abs(a-b), 0.0 )/k;
+                            return min(a,b) - h*h*k*(1.0/4.0);
+                        }
+                    </code></pre>
+                <br>
+                <p>
+                    Signed distance functions are mathematical operations that define distances and by extension, the
+                    topology of a bounded volume in 2D or 3D.
+                    And since they are mathematical functions, we can apply the smoothmin function to them as well,
+                    resulting in satisfying blending of defined shapes.<br>
+                </p>
+
+                <img src="Media/Post05/SmoothMin03.gif" class="img-half">
+                <img src="Media/Post05/SmoothMin04.gif" class="img-half"><br>
+                <p>
+                    I also explored dithering — a technique that simulates transparency by selectively omitting pixels
+                    in a pattern. This creates the illusion of see-through elements without the performance costs of
+                    true transparency, which can lead to issues like overdraw in games.
+                </p>
+                <img src="Media/Post05/Dithering01.png" class="img-half">
+                <img src="Media/Post05/Dithering02.jpg" class="img-half">
+                <img src="Media/Post05/Dithering03.gif" class="img-half">
+
+                <p>
+                    These concepts set up the foundation for the shader I developed to look into the caves.<br>
                 </p>
             </div>
         </div>
 
 
         <div class="blog-post" onclick="expandPost(this)">
+            <h2>Looking into the pits. 2/2</h2>
+            <p class="date">March 4, 2025</p>
+            <p>
+                Shader Magic ahead! continues...
+            </p>
+            <a class="read-more">Read More</a>
+            <div class="expanded-content">
+                <p>
+                    With the dithering and signed distance functions in place, it was time to put them to use in the
+                    shader.<br>
+                    To test out the implementation, I used a simple scene to see how the SDFs would behave and what
+                    values would work well.<br>
+                </p>
+                <img src="Media/Post06/SDFInteraction01.gif" class="img-full">
+                <p>
+                    This looked very organic and fluid, the SDFs combined very well and made it seem that combinations
+                    lead to a bigger result.<br>
+                    Extending this to make a shader that would look into the cave system was the next step.<br>
+
+                    I implemented this using Shader Graph, which is a visual shader programming tool in Unity that
+                    allows for the creation of shaders using a node-based interface.<br>
+                    This was a great learning experience for me, since getting these custom SDFs and smoothmin functions
+                    to work required writing custom function nodes.<br>
+                    Implementing the SDFs and smoothmin function in Shader Graph was a bit tricky, but I got it
+                    working.<br>
+                </p>
+                <pre>
+                    <code class="language-csharp">
+        int numPositions;
+        float3 screenPositions[8];
+
+        float sdCircle_float(float2 p, float2 screenDimensions, float2 c, float r)
+        {
+            float2 vec = p - c;
+            vec.x *= screenDimensions.x / screenDimensions.y;
+            return (length(vec) - r);
+        }
+
+        float SMOOTHMIN_float(float a, float b, float k)
+        {
+            if (k <= 0)
+                k = 0.075;
+            k *= 4;
+            float h = max(k - abs(a - b), 0.0) / k;
+            return min(a, b) - h * k * h * 0.25;
+        }
+
+        void SDF_float(float2 p, float2 screenDimensions, float k, out float SDFValue)
+        {   
+            SDFValue = 1.0;
+            for (int i = 0; i < numPositions; i++)
+            {
+                float sdfVal = sdCircle_float(p, screenDimensions, screenPositions[i].xy, screenPositions[i].z);
+                //float sdfVal = sdCircle_float(p, screenDimensions, float2(0.5, 0.5), 0.25);
+                SDFValue = SMOOTHMIN_float(sdfVal, SDFValue, k);
+            }
+            SDFValue = clamp(SDFValue, 0, 1);
+            SDFValue = saturate(SDFValue);
+        
+        }
+                    </code>
+                </pre>
+                <p>
+                    Using these functions in the graph made it very easy to implement the looks I wanted to achieve.<br>
+                </p>
+                <img src="Media/Post06/ShaderGraph01.png">
+                <img src="Media/Post06/ShaderGraph02.png"><br>
+                <img src="Media/Post06/ShaderGraph03.png"><br>
+
+                <p>
+                    This resulted in a material that allowed loking into the cave, whose window for looking into the
+                    cave was augmented by SDFs for every unit in screen space to smoothly blend inton each other
+                    allowing for a intuitive, fluid and organic looking structure for teammates in close proximity in
+                    the caves.<br>
+                </p>
+                <img src="Media/Post06/CaveShader02.png">
+                <img src="Media/Post06/CaveShader03.png"><br>
+                <img src="Media/Post06/CaveShader04.png">
+                <img src="Media/Post06/CaveShader05.png"><br>
+                <img src="Media/Post06/CaveShader06.png"><br>
+
+                <p>
+                    Dynamically changing SDFs example in the caves.<br>
+                    Notice you can see the outside of the caves not bounded by the SDFs.<br>
+                    <img src="Media/Post06/LookIntoCave01.gif" class="img-full"><br>
+                </p>
+
+                <p>
+                    Another feature I implemented was colors of the caves based on their world position.<br>
+                    I implemented this again in Shader graph and used custom functions in HLSL to get the colors and
+                    patterns I wanted.<br>
+                    I used lacunar noise to layer varying amplitude and frequency noise to get a more organic looking
+                    color pattern.<br>
+                    With this, I can alter the colors of the caves to get the desired look I want.<br>
+                </p>
+
+                <pre>
+                    <code class="language-csharp">
+            void CaveColor_float(float3 worldPosition, float lacunarity, float amplitude, float frequency, float4 ColorA, float4 ColorB, out float4 CaveColorOutput)
+            {
+                float noiseSum = 0;
+                lacunarity = (int) lacunarity;
+                for (int i = 0; i < lacunarity; i++)
+                {
+                    float3 pos = worldPosition * frequency;
+                    float noise = (snoise(pos * (snoise(worldPosition * 0.2) + 1) * 0.5) + 1) * 0.5 * amplitude;
+                    noiseSum += noise;
+                    amplitude *= 0.5;
+                    frequency *= 2;
+                }
+                noiseSum /= 5.0;
+                noiseSum = clamp(noiseSum, 0, 2);
+                float val = pow(abs(noiseSum), 2);
+                CaveColorOutput = val * ColorA + (1 - val) * ColorB;
+            }
+                        </code>
+                </pre>
+
+                <p>
+                    With this component of the shader complete, the cave's looks was done.<br>
+                </p>
+                <img src="Media/Post06/CaveColor01.png" class="img-full"><br>
+                <img src="Media/Post06/CaveColor02.png" class="img-full"><br>
+                <img src="Media/Post06/CaveColor03.png" class="img-full"><br>
+            </div>
+        </div>
+
+
+        <div class="blog-post" onclick="expandPost(this)">
             <h2>Mineables and Poison</h2>
-            <p class="date">March 14, 2025</p>
+            <p class="date">March 17, 2025</p>
             <p>
                 Populating the caves with mineables and poison.<br>
             </p>
             <a class="read-more">Read More</a>
             <div class="expanded-content">
                 <p>
+                    Caves, cave systems and the shader are all done.<br>
+                    Now it was time to populate the caves with mineables and poison.<br>
+                    The mineables are the ores that the players will be mining in the game.<br>
+                    The poison is a gas that will be present in the caves and will be harmful to the players.<br>
+
+                    An extension to the method for generating the points in the bounds while generating the mesh for the
+                    caves, was something I built to get certain desired positions in the cave.<br>
+                    Using another compute shader, I filtered out the points using information about their neighbouring
+                    points.<br>
+                    I once again took advantage of the opportunity and implemented a filter based on bits and bitwise
+                    operations. <br>
 
                 </p>
+                <pre>
+                    <code class="language-csharp">
+            float3 position;
+            float3 bounds;
+            float floorHeight;
+            StructuredBuffer<float4> positions;
+            int positionsCount;
+            AppendStructuredBuffer<float4> shellPositions;
+            
+            int GetIndexFromPosition(int3 pos, int3 bounds)
+            {
+                return pos.x + pos.y * bounds.x + pos.z * bounds.x * bounds.y;
+            }
+
+            [numthreads(8, 8, 8)]
+            void GenerateShellPoints(uint3 id : SV_DispatchThreadID)
+            {
+                int3 _bounds = ceil(bounds);
+                int index = GetIndexFromPosition(id.xyz, _bounds);
+
+                if (index >= positionsCount)
+                    return;
+
+                if (positions[index].w == 0)
+                    return;
+
+                int currentStateValue = positions[index].w;
+
+                int indexTop = GetIndexFromPosition(id.xyz + int3(0, 1, 0), _bounds);
+                int indexBottom = GetIndexFromPosition(id.xyz + int3(0, -1, 0), _bounds);
+                int indexRight = GetIndexFromPosition(id.xyz + int3(1, 0, 0), _bounds);
+                int indexLeft = GetIndexFromPosition(id.xyz + int3(-1, 0, 0), _bounds);
+                int indexForward = GetIndexFromPosition(id.xyz + int3(0, 0, 1), _bounds);
+                int indexBackward = GetIndexFromPosition(id.xyz + int3(0, 0, -1), _bounds);
+
+                bool indexTopExist = (positionsCount - indexTop) < positionsCount && indexTop > 0;
+                bool indexBottomExist = (positionsCount - indexBottom) < positionsCount && indexBottom > 0;
+                bool indexRightExist = (positionsCount - indexRight) < positionsCount && indexRight > 0;
+                bool indexLeftExist = (positionsCount - indexLeft) < positionsCount && indexLeft > 0;
+                bool indexForwardExist = (positionsCount - indexForward) < positionsCount && indexForward > 0;
+                bool indexBackwardExist = (positionsCount - indexBackward) < positionsCount && indexBackward > 0;
+
+                //bool allExist = indexTopExist && indexBackwardExist && indexRightExist && indexLeftExist && indexForwardExist && indexBackwardExist;
+
+                int num = 0;
+
+                num += pow(2, 6) * currentStateValue;
+                num += pow(2, 5) * (indexTopExist ? positions[indexTop].w : currentStateValue);
+                num += pow(2, 4) * (indexBottomExist ? positions[indexBottom].w : currentStateValue);
+                num += pow(2, 3) * (indexRightExist ? positions[indexRight].w : currentStateValue);
+                num += pow(2, 2) * (indexLeftExist ? positions[indexLeft].w : currentStateValue);
+                num += pow(2, 1) * (indexForwardExist ? positions[indexForward].w : currentStateValue);
+                num += pow(2, 0) * (indexBackwardExist ? positions[indexBackward].w : currentStateValue);
+
+                // 0 or 127 means they are bounded.
+                if (num == 127)
+                    return;
+
+                if(positions[indexBottom].w == 1)
+                    return;
+
+                if(positions[index].y > floorHeight + 0.5)
+                    return;
+
+                float minDim = min(_bounds.x, _bounds.y);
+                minDim = min(minDim, _bounds.z);
+                minDim = ceil(minDim * 0.5);
+
+                if (distance(positions[index].xyz, position.xyz) >= minDim * 0.5)
+                    return;
+
+                int _index = id.x + id.x * id.y + id.x * id.y * id.z;
+                shellPositions.Append(float4(positions[index].xyz, _index));
+
+            }
+                        </code>
+                </pre>
+                <p>
+                    Further filtering based on distance from the center of the caves, gives positions that are
+                    sufficiently spaced yet don't extend too far out into the corners and crevices of the caves that
+                    could be inaccessible by the player.<br>
+                </p>
+                <img src="Media/Post07/ShellPositions01.png" class="img-full"><br>
+                <p>
+                    This produced a set of points that could all potentially be mineables or poison.<br>
+                    Unfortunately, an easy way out that I took was to use an AppendBuffer.<br>
+                    This is a compute buffer that allows data to be appended by the shader in parallel.<br>
+                    This means that while the set of points that are generated for a given seed might be the same in
+                    different iterations, the order of the points might not be the same.<br>
+                    This means that the mineables and poison will be in different locations every time the game is run
+                    if they are just picked by a set of indices.<br>
+                    To overcome this, I used a seeded random number generator to generate positions on the CPU and then
+                    used another compute buffer to approximate the closest point generated by the shader.<br>
+                    This ensures that the mineables and poison are in the same locations every time the game is run.<br>
+                </p>
+                <pre>
+                    <code class="language-csharp">
+            int positionCount;
+            int shellPositionsCount;
+            StructuredBuffer<float4> computedShellPositions;
+            RWStructuredBuffer<float4> mineablesPositions;
+            
+            [numthreads(4, 1, 1)]
+            void ApproximatePoints(uint3 id : SV_DispatchThreadID)
+            {
+                if(id.x > positionCount)
+                    return;
+
+                float minDist = 100000;
+                float3 pos = 0;
+                for (int i = 0; i < shellPositionsCount; i++)
+                {
+                    float d = distance(mineablesPositions[id.x].xyz, computedShellPositions[i].xyz);
+
+                    if (d <= minDist)
+                    {
+                        minDist = d;
+                        pos = computedShellPositions[i];
+                    }
+                }
+
+                mineablesPositions[id.x] = float4(pos, 0);
+            }
+                        </code> 
+                </pre>
+                <p>
+                    This is the section that generates the seeded random positions.<br>
+                </p>
+                <pre>
+                    <code class="language-csharp">
+            mineables = new();
+            numMineable = (int)Helper.Randomize(ref seed, ref output, 3, 8);
+
+            positions = new Vector4[numMineable];
+            for (int i = 0; i < numMineable; i++)
+            {
+                positions[i] = new Vector4(Helper.Randomize(ref seed, ref output, -_Bounds.extents.x, _Bounds.extents.x),
+                                           Helper.Randomize(ref seed, ref output, -_Bounds.extents.y, _Bounds.extents.y),
+                                           Helper.Randomize(ref seed, ref output, -_Bounds.extents.z, _Bounds.extents.z),
+                                           0);
+            }   
+                        </code>
+                </pre>
+                <p>
+                    Red gizmos show the mineables.<br>
+                </p>
+                <img src="Media/Post07/ShellPositions02.png" class="img-full"><br>
+                <p>
+                    Similar to the mineables, the positions for the poison are generated using the same method.<br>
+                    Green gizmos show the poison.<br>
+                </p>
+                <img src="Media/Post07/ShellPositions03.png" class="img-full"><br>
             </div>
         </div>
-        
+
 
         <div class="blog-post" onclick="expandPost(this)">
             <h2>DISASTER</h2>
@@ -424,41 +933,242 @@
             </p>
             <a class="read-more">Read More</a>
             <div class="expanded-content">
+                <p>
+                    The systems responsible for generating the caves, meshes and positions for the mineables and poison
+                    are all based on compute shaders.<br>
+                    And they were built this way because of the performance and efficiency the compute shaders
+                    provide.<br>
+                    We chose Photon Fusion and Hathora as the networtk platform and provider for our multiplayer
+                    experience.<br>
+                    Our physics, i.e. rigidbodies, collisions etc. are handled by the CPU of the server we are hosting
+                    the game on.<br>
+                    Unfortunately, compute shaders require a GPU to run and we don't have access to a GPU on the
+                    server.<br>
+                    So, frustrating as it is, we cannot use the procedural pipeline set up for the cave generaion.<br>
+
+                    We then made the hard decision to bake the caves and all the required information so that they can
+                    be packaged and spawned on the server both for the simplicity of having common elements like the
+                    caves spawned for every player automatically and for the fact that all the physics will work
+                    out-of-the-box by default since it is handled by the server.<br><br>
+
+                    This is the Scriptable Object container for all the cave data.<br>
+                </p>
+                <pre>
+                    <code class="language-csharp">
+                [CreateAssetMenu(fileName = "BakedCave", menuName = "Caves/BakedCave", order = 0)]
+                public class BakedCave : ScriptableObject
+                {
+                    [SerializeField] private Mesh m_mesh;
+                    [SerializeField] private List<Vector4> m_miningSpots;
+                    [SerializeField] private List<Vector4> m_poisonSpots;
+                    [SerializeField] private int m_caveLevel;
+                    
+                    public Mesh Mesh => m_mesh;
+                    public List<Vector4> MiningSpots => m_miningSpots;
+                    public List<Vector4> PoisonSpots => m_poisonSpots;
+                    
+                    public void Bake(Mesh mesh, List<Vector4> miningSpots, List<Vector4> poisonSpots, int caveLevel)
+                    {
+                        m_mesh = mesh;
+                        m_miningSpots = miningSpots;
+                        m_caveLevel = caveLevel;
+                        m_poisonSpots = poisonSpots;
+                    }
+                }
+                        </code>
+                </pre>
+
+                <p>
+                    And this is the Scriptable Object container for the cave system data.
+                </p>
+                <pre>
+                    <code class="language-csharp">
+                [CreateAssetMenu(fileName = "BakedCaveSystem", menuName = "Caves/BakedCaveSystem", order = 0)]
+                public class BakedCaveSystem : ScriptableObject
+                {
+                    [SerializeField] CaveData m_caveData;
+                    [SerializeField] BakedCave[] m_bakedCaves;
+                    
+                    public CaveData CaveData => m_caveData;
+                    public int m_level;
                 
+                    public void Bake(CaveData caveData, BakedCave[] bakedCaves, int level)
+                    {
+                        m_caveData = caveData;
+                        m_bakedCaves = bakedCaves;
+                        m_level = level;
+                    }
+                    
+                    public BakedCave this[int i, int j]
+                    {
+                        get
+                        {
+                            if (i >= 0 && i < m_caveData.caveSystemDimensions.x && j >= 0 &&
+                                j < m_caveData.caveSystemDimensions.y)
+                                return m_bakedCaves[i * m_caveData.caveSystemDimensions.y + j];
+                            throw new System.IndexOutOfRangeException(
+                                $"Index {i}, {j} is out of range for BakedCaveSystem with dimensions {m_caveData.caveSystemDimensions.x}, {m_caveData.caveSystemDimensions.y}");
+                        }
+                    }
+                }
+                        </code>
+                </pre>
+                <p>
+                    With the containers in place, an editor-time script is used to generate the caves, cave systems and
+                    required positions, bake them and save them as respective asset files in our Unity directory.<br>
+                </p>
+                <pre>
+                    <code class="language-csharp">
+            [ExecuteInEditMode]
+            public class CaveBaker : MonoBehaviour
+            {
+                [SerializeField] private CaveSystem m_caveSystem;
+                [SerializeField] private int m_startingSeed;
+                [SerializeField] private int m_bakingCount = 1;
+                
+                private bool m_generationInProgress;
+                
+                private void Start()
+                {
+                    if (m_caveSystem == null)
+                    {
+                        Debug.LogError("CaveSystem is not assigned.");
+                    }
+                }
+            
+                public IEnumerator Bake()
+                {
+                    #if UNITY_EDITOR
+                    m_caveSystem.OnCavesGenerated.AddListener(OnCavesGenerated);
+                    for (int i = m_startingSeed; i < m_startingSeed + m_bakingCount; i++)
+                    {
+                        m_generationInProgress = true;
+                        m_caveSystem.Initialize(i);
+                        
+                        yield return new WaitUntil(() => !m_generationInProgress);
+                        
+                        // Save the baked cave system
+                        var caves = m_caveSystem.CaveGrid;
+                        var bakedCaves = new BakedCave[m_caveSystem.caveData.caveSystemDimensions.x * m_caveSystem.caveData.caveSystemDimensions.y];
+                        for (int x = 0; x < m_caveSystem.caveData.caveSystemDimensions.x; x++)
+                        {
+                            for (int y = 0; y < m_caveSystem.caveData.caveSystemDimensions.y; y++)
+                            {
+                                var cave = caves[x, y];
+                                var mesh = !Application.isPlaying ? cave.GetComponent<MeshFilter>().sharedMesh : cave.GetComponent<MeshFilter>().mesh;
+                                
+                                if (!mesh)
+                                {
+                                    Debug.LogError($"Cave mesh is null for cave at {x}, {y}");
+                                    continue;
+                                }
+                                
+                                if(!Directory.Exists($"Assets/Bakes/BakedMeshes"))
+                                    Directory.CreateDirectory($"Assets/Bakes/BakedMeshes");
+                                
+                                // Save the mesh asset
+                                var meshPath = $"Assets/Bakes/BakedMeshes/CaveMesh_{i}_{x}_{y}.asset";
+                                AssetDatabase.CreateAsset(mesh, meshPath);
+                                
+                                var bakedCave = ScriptableObject.CreateInstance<BakedCave>();
+                                bakedCave.Bake(mesh, cave.GetComponent<Cave>().positions.ToList(), cave.GetComponent<Cave>().poisonPoints.ToList(), i);
+                                
+                                if(!Directory.Exists($"Assets/Bakes/BakedCaves"))
+                                    Directory.CreateDirectory($"Assets/Bakes/BakedCaves");
+                                
+                                AssetDatabase.CreateAsset(bakedCave, $"Assets/Bakes/BakedCaves/BakedCave_{i}_{x}_{y}.asset");
+                                
+                                bakedCaves[x * m_caveSystem.caveData.caveSystemDimensions.y + y] = bakedCave;
+                            }
+                            
+                            // Save the baked cave system
+                            // Save the baked cave system
+                            var bakedCaveSystem = ScriptableObject.CreateInstance<BakedCaveSystem>();
+                            bakedCaveSystem.Bake(m_caveSystem.caveData, bakedCaves, i);
+                                
+                            if(!Directory.Exists($"Assets/Bakes/BakedCaveSystems"))
+                                Directory.CreateDirectory($"Assets/Bakes/BakedCaveSystems");
+                                
+                            AssetDatabase.CreateAsset(bakedCaveSystem, $"Assets/Bakes/BakedCaveSystems/BakedCaveSystem_{i}.asset");
+                        }
+                    }
+                    #endif
+                    yield return null;
+                }
+            
+                public void OnCavesGenerated()
+                {
+                    m_generationInProgress = false;
+                }
+            }
+                        </code>
+                        </pre>
+                <p>
+                    With the caves and cave systems baked, and the mesh data referenced, we can use the addressables
+                    system in Unity to load the assets when needed.<br>
+                </p>
+                <img src="Media/Post08/CaveSystemData01.png" class="img-half">
+                <img src="Media/Post08/CaveSystemData02.png" class="img-half"><br>
+                <p>
+                    Some examples of the baked cave meshes.<br>
+                </p>
+                <img src="Media/Post08/BakedCaves01.png" class="img-half">
+                <img src="Media/Post08/BakedCaves02.png" class="img-half"><br>
+                <img src="Media/Post08/BakedCaves03.png" class="img-half">
+                <img src="Media/Post08/BakedCaves04.png" class="img-half"><br>
+                <p>
+                    Alright! Crisis averted! albiet in a very unsatisfying way, especially to programmers that love
+                    procedural generation and compute shaders.<br>
+                    However, we are back on track and the project is moving forward.<br>
+                </p>
             </div>
         </div>
 
 
         <div class="blog-post" onclick="expandPost(this)">
             <h2>Fixes and Extras<h2>
-            <p class="date">April 20, 2025</p>
-            <p>
-                Miscellaneous odd jobs to get it running.<br>
-            </p>
-            <a class="read-more">Read More</a>
-            <div class="expanded-content">
-                
-            </div>
+                    <p class="date">April 20, 2025</p>
+                    <p>
+                        Miscellaneous odd jobs to get it running.<br>
+                    </p>
+                    <a class="read-more">Read More</a>
+                    <div class="expanded-content">
+
+                    </div>
         </div>
 
 
         <div class="blog-post" onclick="expandPost(this)">
-            <h2>Finishing Touches</h2>
+            <h2>The Conclusion</h2>
             <p class="date">May 1, 2025</p>
             <p>
-                THE CONCLUSION.
+                What a wild ride!
             </p>
             <a class="read-more">Read More</a>
             <div class="expanded-content">
                 <p>
                     This project was awesome!<br>
                     Unfortunately, we don't have another month to work on it.<br>
-                    Many things broke, had to be replaced, or sacrificed in scope to complete it, but it was an amazing learning experience.<br>
+                    Many things broke, had to be replaced, or sacrificed in scope to complete it, but it was an amazing
+                    learning experience.<br>
                     <br>
                     I am delighted to experiment with concepts and ideas I have been thinking about for a long time.<br>
-                    Using compute shaders is something I always look forward to, and the tasks I implemented in this project helped me enhance not 
-                    just my knowledge of compute shaders but the extent to which they can be used to create complex systems.<br> 
-                   
+                    Using compute shaders is something I always look forward to, and the tasks I implemented in this
+                    project helped me enhance not
+                    just my knowledge of compute shaders but the extent to which they can be used to create complex
+                    systems.<br>
+
+                </p>
+                <p>
+                    I would like to extend my gratitude to my teammates for their hard work, contribution and dedication
+                    to the project.<br>
+                    The designers did a great job with the concept, intricacies and progression of the game, and
+                    personally, brought forth a very interseting game idea that I would gladly continue working on.<br>
+                    Finally, best for last, I would like to thank my fellow programmer, Marco, for not only building
+                    many of the core systems of the game in a way that was both inspiring and efficient, but to
+                    compliment my proficiency of shaders to bring the game to a point that I can be proud of in the time
+                    we had.<br>
+                    Thank you
                 </p>
             </div>
         </div>

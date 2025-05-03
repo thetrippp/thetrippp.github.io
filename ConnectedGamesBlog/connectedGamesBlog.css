@@ -173,6 +173,26 @@ a:hover{
   align-self: center; 
 }
 
+.expanded-content img.img-half {
+  width: 48%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 5px;
+  display: inline-block;
+  margin: 1%;
+  vertical-align: top;
+}
+
+.expanded-content img.img-full {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  border-radius: 5px;
+  display: inline-block;
+  margin: 1%;
+  vertical-align: top;
+}
+
 .expanded-content {
   display: none;
 }
@@ -265,5 +285,16 @@ a:hover{
 @media (max-width: 600px) {
   .blog-container {
     grid-template-columns: 1fr; /* Stack posts on small screens */
+  }
+
+  .expanded-content img.img-half {
+    width: 100%;       /* Full width */
+    margin: 5px 0;      /* Vertical spacing */
+    display: block;     /* Stack images */
+  }
+  .expanded-content img.img-full {
+    width: 100%;       /* Full width */
+    margin: 5px 0;      /* Vertical spacing */
+    display: block;     /* Stack images */
   }
 }
