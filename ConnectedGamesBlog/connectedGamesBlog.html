@@ -34,9 +34,11 @@
         for the CI7825 Connected Games module as part of the MSc. Game Developement(Programming) course at Kingston
         University with an awesome co-developer <a href="https://requieem.github.io/#blog" class="a1"
             target="_blank">Marco Farace</a>
-        and amazing design team <a href="" class="a1" target="_blank">Roland Thomas</a>,
-        <a href="https://trello.com/invite/b/679be0151d0327d0727659e8/ATTIb152c4c42def7534595b390d7e86dc21948B5F8B/blog" class="a1" target="_blank">Achitphon Rungcharoenwikrai</a> and
-        <a href="" class="a1" target="_blank">Nana Baah</a>.<br>
+        and amazing design team <a href="https://rthomasgames.wixsite.com/portfolio/post/profit-pits-design-blog"
+            class="a1" target="_blank">Roland Thomas</a>,
+        <a href="https://trello.com/invite/b/679be0151d0327d0727659e8/ATTIb152c4c42def7534595b390d7e86dc21948B5F8B/blog"
+            class="a1" target="_blank">Achitphon Rungcharoenwikrai</a> and
+        <a href="https://kuconnectedgames.blogspot.com/" class="a1" target="_blank">Nana Baah</a>.<br>
         Check out my blog posts below to see the progress made so far.
     </p>
     <br><br>
@@ -1200,11 +1202,68 @@
             <h2>Fixes and Extras<h2>
                     <p class="date">April 20, 2025</p>
                     <p>
-                        Miscellaneous odd jobs to get it running.<br>
+                        Miscellaneous additions.<br>
                     </p>
                     <a class="read-more">Read More</a>
                     <div class="expanded-content">
+                        <p>
+                            Among the shaders I wrote for this project, the shader for the Poison cloud was a lot fo
+                            fun.<br>
+                            We needed a volumetric effect for the poison cloud, so we opted to implement it as a
+                            particle system.<br>
+                            At other times, the poison cloud is invidible, but players can use an item, the canary, to
+                            reveal the poison cloud in the cave.<br>
+                            So the shader I created culls pixels that lie outside the extends of the canary.<br>
+                        </p>
+                        <pre>
+                            <code class="language-csharp">
+            float _PoisonDistance;
+            float3 _CanaryPosition;
 
+            v2f vert (appdata v)
+            {
+                UNITY_SETUP_INSTANCE_ID(v);
+                v2f o;
+                UNITY_TRANSFER_INSTANCE_ID(v, o);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+                o.worldPos = mul(v.vertex, unity_ObjectToWorld);
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.color = v.color;
+                return o;
+            }
+
+            float rand(float2 co)
+            {
+                return frac(sin(dot(co.xy , float2(12.9898, 78.233))) * 43758.5453);
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+
+                UNITY_SETUP_INSTANCE_ID(i);
+            
+                float dist = distance(i.worldPos, _CanaryPosition);
+                float random = rand(i.worldPos.xz);
+                random = random * 2.0 - 1.0;
+            
+                if(dist + random * 0.1 > _PoisonDistance)
+                    discard;
+            
+                return i.color * tex2D(_MainTex, i.uv);
+            }
+                                </code>
+
+                        </pre>
+                        <p>
+                            This gives a nice revealing effect for the particle system when they come into the range.<br>
+                        </p>
+                        <img src="Media/Post09/CavePoisonShader01.gif" class="img-full"><br>
+                        <p>
+                            Another small addition was to introduce some randomness to break up the harsh edge defined by the bounds.<br>
+                            This also gave a nice smoke/cloud effect to the poison.<br>
+                        </p>
+                        <img src="Media/Post09/CavePoisonShader02.gif" class="img-full"><br>
                     </div>
         </div>
 
@@ -1225,8 +1284,13 @@
                         <img src="Media/Post10/Profiler02.png" class="img-half">
                         <img src="Media/Post10/Profiler03.png" class="img-half">
                         <p>
-                            Looking into the profiler for better information, the majority of the processing and resources are dedicated to the instantiation and setting up of the cave system elements.<br>
-                            The cave and mesh generation doesn't even register in the profiler, whereas the instantiation is taking nearly 900ms.<br>
+                            Looking into the profiler for better information, the majority of the processing and
+                            resources are dedicated to the instantiation and setting up of the cave system elements.<br>
+                            The cave and mesh generation doesn't even register in the profiler, whereas the
+                            instantiation is taking nearly 900ms.<br>
+                        </p>
+                        <p>
+                            
                         </p>
 
                     </div>
