@@ -165,3 +165,114 @@ p {
   margin-right: auto;
   max-width: 30%;
 }
+
+pre code {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bolder;
+  font-size: 1rem;
+  display: block;
+  overflow-x: scroll;
+  white-space: pre-wrap; /* Enables wrapping */
+  word-break: break-word;
+  background-color: #1e1e2f; /* Distinct from dark body */
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 16px;
+  margin: 20px auto;
+  max-width: 90%;
+  color: #eee;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Make sure the <pre> tag doesn’t break layout */
+pre {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/*.hljs-ln {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.hljs-ln-line {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.hljs-ln-numbers {
+  text-align: right;
+  color: #888;
+  border-right: 1px solid #444;
+  padding-right: 10px;
+  user-select: none;
+}*/
+
+.responsive-table {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 20px auto;
+  border-radius: 6px;
+}
+
+.responsive-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.responsive-table thead {
+  background-color: #333;
+}
+
+.responsive-table th,
+.responsive-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+.responsive-table tbody tr:hover {
+  background-color: #292929;
+}
+
+@media screen and (max-width: 768px) {
+  .responsive-table table,
+  .responsive-table thead,
+  .responsive-table tbody,
+  .responsive-table th,
+  .responsive-table td,
+  .responsive-table tr {
+    display: block;
+  }
+
+  .responsive-table thead {
+    display: none;
+  }
+
+  .responsive-table td {
+    padding-left: 50%;
+    position: relative;
+    border: none;
+    border-bottom: 1px solid #333;
+  }
+
+  .responsive-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #999;
+  }
+
+  .responsive-table tr {
+    margin-bottom: 20px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #111;
+    padding: 10px;
+  }
+}

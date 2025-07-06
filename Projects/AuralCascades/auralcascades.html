@@ -26,18 +26,62 @@
             <br>
             <h1>Aural Cascades</h1>
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin efficitur ac purus in eleifend. Praesent gravida vestibulum neque nec eleifend. Quisque non facilisis enim, eu porttitor lorem. Nullam lorem mi, dignissim id suscipit vel, consectetur in nunc. Sed vitae nibh sed leo blandit efficitur et sed ex. Donec ullamcorper lectus non tellus semper elementum. Ut mi eros, pretium in quam ac, sodales tincidunt tortor.
-
-                Nunc pharetra metus at augue fermentum, ac lacinia massa fermentum. Quisque molestie, ante non feugiat aliquet, magna diam vestibulum sapien, eget viverra metus nisi consectetur dui. Maecenas convallis mi ut dignissim placerat. Vestibulum feugiat odio et nibh feugiat rhoncus. Nam fermentum ornare urna, quis consequat sem pretium in. Vivamus faucibus tortor vitae purus ullamcorper molestie. Mauris hendrerit erat nisl, vel dictum nisl efficitur a. Aenean accumsan, metus eget feugiat sodales, ante mi blandit velit, a vehicula massa est non velit. Vivamus tristique lacinia ex, eu euismod enim porta sed. Nam eget maximus mi. Integer molestie blandit dapibus. Ut a gravida nibh. Sed congue sagittis massa, sit amet varius dolor facilisis vel.
-
-                Vestibulum sed nunc at sem commodo laoreet. Cras et enim vitae leo bibendum pellentesque ut et lacus. Quisque eget placerat tellus. Suspendisse eget purus ex. Ut ornare eu sem sed facilisis. Praesent a molestie justo. Duis eget ornare ligula. Aenean pulvinar gravida ligula non condimentum. Mauris dolor justo, posuere id consequat nec, vestibulum sed ex. Pellentesque non tempor ex. Donec ultrices ex ac posuere ullamcorper. Maecenas ornare ante sed purus molestie, ut consequat enim efficitur. Duis id sem molestie, auctor massa sit amet, tincidunt quam. Pellentesque mattis, eros ut cursus maximus, erat nibh maximus felis, in porta justo sapien rhoncus tortor.
-
-                Maecenas vitae enim sed libero auctor consequat. Maecenas porttitor laoreet ex, ut pharetra eros cursus non. Ut at finibus velit. Vestibulum lorem diam, fermentum sed iaculis sed, semper at turpis. Donec ultrices, mauris at tincidunt tincidunt, lectus nibh ornare ante, eget imperdiet nisl quam eget nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec id diam odio. Etiam odio magna, scelerisque at pulvinar eget, ornare a diam. Vestibulum eget posuere odio.
-
-                Nulla odio elit, mollis vitae gravida sed, convallis vel eros. In at ornare lectus, ac ornare elit. Etiam mi tellus, convallis id nibh nec, rutrum feugiat velit. Etiam fringilla vulputate diam vitae molestie. Integer porttitor a ex vel aliquam. Cras dictum, libero a faucibus volutpat, tellus purus cursus ante, vitae sollicitudin ipsum libero a lectus. Sed sodales consectetur sagittis.
+                Welcome to my Final Project/Dissertation for my master's degree in Game Development(Programming) at
+                Kingston University.<br>
+                Being heavily inspired by Alexander Sannikov's implemention of <a
+                    href="https://drive.google.com/file/d/1L6v1_7HY2X-LV3Ofb6oyTIxgEaP4LOI6/view" class="link"
+                    target="_blank">Radiance Cascades</a> to generate beautiful and not to forget, performant Global
+                Illumination, I felt that a similar approach could be used to compute environment aware, spatial audio
+                using cascading ray-tracing.
+            </p>
+            <p>
+                With Unity's spatial audio implementation, audio attenuation does not occur accurately to the
+                environment, as seen in the first set of images. Here, the speaker symbol is the audio source that is
+                playing a continous tone.<br>
+                The colors refer to the intensity of the audio at that position, with redder colors being higher and
+                bluer being lower passing through a spectrum of intermediate colors.
             </p>
             <br>
-            
+            <img src="../../Images/PageImages/AuralCascades/Unity Audio Volume Intensity Map 01.png" class="five">
+            <img src="../../Images/PageImages/AuralCascades/Unity Audio Volume Intensity Map 02.png" class="five">
+            <img src="../../Images/PageImages/AuralCascades/Unity Audio Volume Intensity Map 03.png" class="five"><br>
+            <p>
+                Other than the falloff in intensity with distance, there is no attenuation with the environment as there
+                is a radial drop off in the intensities recorded.<br>
+                To solve this, I am developing the Aural Cascades method.
+            </p>
+            <p>
+                The method involves using a grid of "Aural Probes" to continuously perform spatial ray-tracing around
+                the environment to gather potential paths to audio sources.<br>
+                With the grid in place, we can tap into the audio stream using the OnFilteredRead method to intercept
+                the current audion and manipulate the intensity as per required.<br>
+                Once calculated, the audio listener then performs a bilinear interpolation sampling of its grid cell
+                vertices to apply the final attenuation to the audio source.<br>
+                This provides for a very intuitive and organic audio experience.<br>
+                This is the resultant sound intensity profile with Aural Cascades enabled.<br>
+            </p>
+            <img src="../../Images/PageImages/AuralCascades/AuralCascades Audio Volume Intensity Map 01.png"
+                class="five">
+            <img src="../../Images/PageImages/AuralCascades/AuralCascades Audio Volume Intensity Map 02.png"
+                class="five">
+            <img src="../../Images/PageImages/AuralCascades/AuralCascades Audio Volume Intensity Map 03.png"
+                class="five"><br>
+            <p>
+                Here is a small fly through the world with the audio source playing a continuous tone.<br>
+            </p>
+            <video width="100%" controls>
+                <source src="../AuralCascades/AuralCascades.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <br>
+            <p>
+                While this current method's performance is dependant on the number of audio sources in the scene, there are many optimizations that I will be implementing, such as spreading the calculations across frames, spatially hashing the audio sources and performing a flood fill algorithm to determing those which will be encountered etc. <br>
+                Stay tuned for more updates.
+            </p>
+            <br>
+            <p>
+                This is a work in progress and I will not be sharing any code .
+            </p>
         </div>
     </div>
     </div>
