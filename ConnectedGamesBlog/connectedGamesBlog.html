@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../required.css">
 
     <script src="../required.js" defer></script>
-    <link rel="icon" type="image/x-icon" href="Images/joystick.png">
+    <link rel="icon" type="image/x-icon" href="../Images/joystick.png">
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
@@ -109,13 +109,13 @@
                     Through some thought cycles, I settled on a custom solution, a method where volumes
                     are layered additively in stages to form a complex outer hull that defines the cave structure.<br>
                     I'm calling this method <strong style="color: rgb(255, 98, 0); font-weight:bolder">CAVE
-                        CASCADES</strong>.
+                        Fields</strong>.
 
                 </p>
                 <br>
                 <br>
                 <pre><code>
-        PSEUDO CODE FOR THE CAVE CASCADES
+        PSEUDO CODE FOR THE CAVE Fields
         1. Define a base cascade volume.
         2. For every cascade stage iterated through with a depth value, append volumes along the surface of the previous cascade stage.
         3. Randomize between cuboidal and spherical volumes in each stage.
@@ -386,7 +386,7 @@
                         }
                     </code></pre>
                 <p>
-                    This comopute shader generated the points in a volume corresponding to if it is in the cave cascades
+                    This comopute shader generated the points in a volume corresponding to if it is in the cave Fields
                     or if it is manipulated by being inside a cavity or camber.<br>
                 </p>
                 <p>
