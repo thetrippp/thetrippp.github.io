@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+
+/* Core Layout */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    background: #121212;
+    color: white;
+    scroll-snap-type: y mandatory; 
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    scrollbar-width: none; 
+    text-shadow:
+    1px 1px 0px #000,
+    -1px -1px 0px #000,
+    1px -1px 0px #000,
+    -1px 1px 0px #000;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+body::-webkit-scrollbar { display: none; }
+
+.carousel-section {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.carousel-section h1, 
+.carousel-section h2, 
+.carousel-section h3, 
+.carousel-section p {
+    text-align: center;
+    width: 90vw;
+}
+
+.carousel-section h1 {
+    font-size: 2.5rem;
+}
+
+.carousel-section h2 {
+    font-size: 1.5rem;
+}
+
+.carousel-section p {
+    font-size: 1.25rem;
+}
+
+
+.carousel-viewport {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 80px; 
+    box-sizing: border-box;
+    text-align: center;
+    scroll-padding: 0 80px;
+}
+
+.carousel-viewport a
+{
+    font-size: 1.2rem;
+}
+
+.carousel-viewport::-webkit-scrollbar { display: none; }
+
+.page-container {
+    flex-shrink: 0; 
+    width: 100vw;
+    display: grid;
+    /* We define the rows as auto so they don't force stretch tiles vertically */
+    grid-template-rows: repeat(2, min-content); 
+    align-content: center; /* Centers the whole grid vertically in the section */
+    justify-content: center; /* Centers the tiles horizontally */
+    gap: 30px;
+    padding: 30px;
+    box-sizing: border-box;
+    scroll-snap-align: start;
+}
+
+.test-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    min-height: 150px;
+    max-height: 300px;
+    width: 100%;
+    background: #333;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease, filter 0.5s ease;
+    filter: brightness(0.7);
+    user-select: none; 
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    text-align: center;
+}
+
+.test-card:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+  transform: scale(1.05) translate3d(0, 0, 0);
+  filter: brightness(1);
+}
+
+.scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    opacity: 0; /* Hidden by default */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Creating the arrow shape */
+.scroll-indicator::after {
+    content: '';
+    width: 15px;
+    height: 15px;
+    border-right: 3px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.6);
+}
+
+.left-hint { 
+    left: 25px; 
+}
+.left-hint::after {
+    transform: rotate(135deg);
+}
+
+.right-hint { 
+    right: 25px; 
+}
+.right-hint::after {
+    transform: rotate(-45deg);
+}
+
+.scroll-indicator.is-visible {
+    opacity: 1;
+}
+
