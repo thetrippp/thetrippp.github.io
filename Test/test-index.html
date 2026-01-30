@@ -9,23 +9,27 @@
 <body>
     <div class="container">
 
-        
+        <section class="hero-section">
+            <div class="hero-background"></div>
+            <div class="hero-content">
+                <div class="profile-container">
+                    <img src="../Images/myface.jpg" alt="Raghav Suriyashekar" class="profile-pic">
+                </div>
+                <div class="hero-text-area">
+                    <h1>Hello and Welcome!</h1>
+                    <p>
+                        I'm <span class="highlight-orange">Raghav Suriyashekar</span>, a gameplay developer and shader programmer. 
+                        I build experiences that are as efficient as they are immersive. 
+                        Dive into my <a href="#experimentCarousel" class="hero-link highlight-purple">Experiments</a> and <a href="#projectCarousel" class="hero-link highlight-green">Projects</a> below.
+                    </p>
 
-        <section class="carousel-section">
-            <h1>Projects</h1>
-             <h3>Working on these for coursework or for clients. Lots of fun and learning!</h3>
-
-            
-            <div class="scroll-indicator left-hint" id="leftHint-experimentCarousel"></div>
-            <div class="scroll-indicator right-hint" id="rightHint-experimentCarousel"></div>
-
-            <div class="carousel-viewport" id="projectCarousel">
-                <a href="../Projects/AuralFields/auralfields.html" class="test-card" style="background-image: url('../Images/UnknownBG.jpg');">AURAL FIELDS</a>
-                <a href="../ConnectedGamesBlog/connectedGamesBlog.html" class="test-card" style="background-image: url('../ConnectedGamesBlog/Media/Post06/LookIntoCave01.gif');">PROFIT PITS</a>
-                <a href="test.html" class="test-card" style="background-image: url('../Images/UnknownBG.jpg');">AUDIENCE SYSTEM</a>
-                <a href="test.html" class="test-card" style="background-image: url('../Images/UnknownBG.jpg');">CRiCKET BATSMAN IK SYSTEM</a>
-                <a href="../Projects/BOSSBORNE/bossborne.html" class="test-card" style="background-image: url('../Images/PageImages/BOSSBORNE/BOSSBORNE\ Splash\ FullHD.png');"></a>
-                
+                    <div class="hero-socials">
+                        <a href="https://github.com/thetrippp" target="_blank" class="social-icon github" title="GitHub"></a>
+                        <a href="https://thetrippp.itch.io/" target="_blank" class="social-icon itch" title="Itch.io"></a>
+                        <a href="https://in.linkedin.com/in/raghav-suriyashekar-ab160b203" target="_blank" class="social-icon linkedin" title="LinkedIn"></a>
+                        <a href="../Raghav Suriyashekar.pdf" class="social-icon resume" title="Resume" download></a>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -39,11 +43,69 @@
             <div class="carousel-viewport" id="experimentCarousel">
                 <a href="../Experiments/LOLFOW/lolfow.html" class="test-card" style="background-image: url('../Images/PageImages/LOLFOW/FOWStage4.gif');">League of Legends: Fog of War</a>
                 <a href="../Experiments/Waterways/waterways.html" class="test-card" style="background-image: url('../Images/PageImages/Waterways/WaterwaysDemo.gif');">WATERWAYS!</a>
-                <a href="test.html" class="test-card" style="background-image: url('../Images/PageImages/Scenari/Scenari.gif');">Scenari Foliage</a>
-                <a href="test.html" class="test-card" style="background-image: url('../Images/PageImages/2DLights/2DLightsShadows.gif');">2D Lights and Shadows</a>
-                <a href="test.html" class="test-card" style="background-image: url('../Images/PageImages/GPUShadows/GPUShadows02.gif');">GPU Instancing: Dynamic mesh-based Shadows</a>
+                <a href="../Experiments/Scenari/scenari.html" class="test-card" style="background-image: url('../Images/PageImages/Scenari/Scenari.gif');">Scenari Foliage</a>
+                <a href="../Experiments/2D Shadows/2dshadows.html" class="test-card" style="background-image: url('../Images/PageImages/2DLights/2DLightsShadows.gif');">2D Lights and Shadows</a>
+                <a href="../Experiments/GPUShadows/gpushadows.html" class="test-card" style="background-image: url('../Images/PageImages/GPUShadows/GPUShadows02.gif');">GPU Instancing: Dynamic mesh-based Shadows</a>
                 </div>
         </section>
+
+        <section class="carousel-section">
+            <h1>Projects</h1>
+            <h3>Working on these for coursework or for clients. Either way, lots of fun and learning!</h3>
+
+            <div class="scroll-indicator left-hint" id="leftHint-experimentCarousel"></div>
+            <div class="scroll-indicator right-hint" id="rightHint-experimentCarousel"></div>
+
+            <div class="carousel-viewport" id="projectCarousel">
+                <a href="../Projects/AuralFields/auralfields.html" class="test-card" style="background-image: url('../Images/UnknownBG.jpg');">AURAL FIELDS</a>
+                <a href="../ConnectedGamesBlog/connectedGamesBlog.html" class="test-card" style="background-image: url('../ConnectedGamesBlog/Media/Post06/LookIntoCave01.gif');">PROFIT PITS</a>
+                <a href="../Projects/BOSSBORNE/bossborne.html" class="test-card" style="background-image: url('../Images/PageImages/BOSSBORNE/BOSSBORNE\ Splash\ FullHD.png');"></a>
+                <a href="#" class="test-card" style="background-image: url('../Images/UnknownBG.jpg');">AUDIENCE SYSTEM<br> Coming Soon!</a>
+                <a href="#" class="test-card" style="background-image: url('../Images/UnknownBG.jpg');">CRiCKET BATSMAN IK SYSTEM<br> Coming Soon!</a>
+            </div>
+        </section>
+
+        
+
+        <!--<section class="carousel-section about-me-section" id="aboutSection">
+            <h1>About Me</h1>
+
+            <p>I've always been fascinated by how things work — and more importantly, how they can be transformed into something extraordinary. For me, making games isn't just about creating mechanics or visuals — it's about discovery.
+                        It's about chasing the unknown, turning complexity into beauty, and crafting experiences that surprise, inspire, and feel like magic.
+                    <br>Currently in London, pursuing my Masters in Game Development at Kingston University. I specialize in <strong>gameplay systems</strong> and <strong>shader programming</strong>.</p>
+                        <a href="../About/Galio/galio.html" target="_blank" class="hobby-box">Galio Figurine</a>
+                        <p>Check out my latest hobby project!</p>
+
+            <!--<div class="scroll-indicator left-hint" id="leftHint-aboutCarousel"></div>
+            <div class="scroll-indicator right-hint" id="rightHint-aboutCarousel"></div>
+
+            <div class="carousel-viewport about-viewport" id="aboutCarousel">
+                <div class="about-card">
+                    <div class="about-content">
+                        <p>I've always been fascinated by how things work — and more importantly, how they can be transformed into something extraordinary. For me, making games isn't just about creating mechanics or visuals — it's about discovery.</p>
+                        <p>It's about chasing the unknown, turning complexity into beauty, and crafting experiences that surprise, inspire, and feel like magic.</p>
+                    </div>
+                </div>
+            
+                <div class="about-card">
+                    <div class="about-content">
+                        <p>Currently in London, pursuing my Masters in Game Development at Kingston University. I specialize in <strong>gameplay systems</strong> and <strong>shader programming</strong>.</p>
+                        <div class="hobby-box">Galio Figurine</div>
+                        <p>Check out my latest hobby project!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about-footer">
+                <div class="social-links">
+                    <a href="#" class="social-btn">GitHub</a>
+                    <a href="#" class="social-btn">LinkedIn</a>
+                    <a href="#" class="social-btn">Resume</a>
+                    <a href="#" class="social-btn">Itch.io</a>
+                </div>
+            </div>
+        </section>
+        -->
+
     </div>
     <script src="test-script.js"></script>
 </body>

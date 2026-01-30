@@ -47,11 +47,11 @@ function createCarousel(containerId) {
 
 // Call this after your createCarousel logic finishes rendering the cards
 window.addEventListener('DOMContentLoaded', () => {
-    // 1. Run your existing grid/card generation logic first
-    const ids = ['experimentCarousel', 'projectCarousel'];
-    ids.forEach(id => createCarousel(id));
+    // 1. ONLY build grids for these two IDs
+    const gridIds = ['experimentCarousel', 'projectCarousel'];
+    gridIds.forEach(id => createCarousel(id));
 
-    // 2. Initialize the "Smart" indicators
+    // 2. Initialize "Smart" indicators for EVERY carousel (including About)
     initAllCarousels();
 });
 
@@ -59,14 +59,16 @@ let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-        const ids = ['experimentCarousel', 'projectCarousel'];
-        ids.forEach(id => createCarousel(id));
+        const gridIds = ['experimentCarousel', 'projectCarousel'];
+        gridIds.forEach(id => createCarousel(id));
+        
+        // Refresh arrow visibility for the About section manually
+        const aboutV = document.getElementById('aboutCarousel');
+        if (aboutV) updateIndicatorVisibility(aboutV);
     }, 200);
 });
-window.addEventListener('resize', () => {
-    const viewports = document.querySelectorAll('.carousel-viewport');
-    viewports.forEach(v => updateIndicatorVisibility(v));
-});
+
+
 
 function updateIndicators(containerId) {
     const container = document.getElementById(containerId);
@@ -132,15 +134,5 @@ function initAllCarousels() {
     });
 }
 
-// Update your initialization to listen for scrolls
-window.addEventListener('DOMContentLoaded', () => {
-    const ids = ['experimentCarousel', 'projectCarousel'];
-    ids.forEach(id => {
-        createCarousel(id);
-        const container = document.getElementById(id);
-        if (container) {
-            container.addEventListener('scroll', () => updateIndicatorVisibility(container));
-        }
-    });
-});
+
 
