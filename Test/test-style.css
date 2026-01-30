@@ -264,6 +264,12 @@ body::-webkit-scrollbar { display: none; }
     text-align: center;
 }
 
+@media (max-width: 1024px) {
+    .test-card {
+        background-position: top; /* Center icons when profile/text stacks on mobile */
+    }
+}
+
 .test-card:hover {
   background-color: rgba(0, 0, 0, 0.6);
   transform: scale(1.05) translate3d(0, 0, 0);
