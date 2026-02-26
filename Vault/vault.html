@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault — GitHub Password Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7c6af7;
+    --accent2: #4fd1c5;
+    --danger: #f56565;
+    --success: #68d391;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(124,106,247,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(79,209,197,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none !important; position: relative; z-index: 1; }
+  .screen.active { display: flex !important; }
+
+  /* ── SETUP SCREEN ── */
+  #setup-screen {
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .setup-card {
+    width: 100%;
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 3rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .logo-text {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text span { color: var(--accent); }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .field {
+    margin-bottom: 1.2rem;
+  }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .field input:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--muted); }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .btn-primary:hover { background: #9080f9; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid rgba(245,101,101,0.3);
+  }
+
+  .btn-danger:hover { background: rgba(245,101,101,0.1); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* ── UNLOCK SCREEN ── */
+  #unlock-screen {
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  /* ── MAIN APP ── */
+  #app-screen {
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar .logo { margin-bottom: 0; flex: 1; }
+
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+  .sync-status {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    background: var(--surface2);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .sync-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+
+  .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
+  .sync-dot.error { background: var(--danger); }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-box input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px 9px 36px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box input:focus { border-color: var(--accent); }
+  .search-box .search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .category-list { list-style: none; }
+
+  .category-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+
+  .category-item:hover { background: var(--surface2); color: var(--text); }
+  .category-item.active { background: rgba(124,106,247,0.15); color: var(--accent); }
+
+  .category-count {
+    margin-left: auto;
+    font-size: 11px;
+    background: var(--surface2);
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  /* ── VAULT LIST ── */
+  .vault-area { flex: 1; }
+
+  .vault-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .vault-title {
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .entry-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .entry-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .entry-card:hover { border-color: rgba(124,106,247,0.4); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .entry-card:hover::before { opacity: 1; }
+
+  .entry-favicon {
+    width: 36px;
+    height: 36px;
+    background: var(--surface2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .entry-name {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .entry-username {
+    color: var(--muted);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
+  }
+
+  .entry-actions {
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .entry-card:hover .entry-actions { opacity: 1; }
+
+  .icon-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 8px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: var(--mono);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+
+  .empty-state .big-icon { font-size: 48px; margin-bottom: 1rem; opacity: 0.3; }
+  .empty-state p { margin-bottom: 0.5rem; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 440px;
+    animation: fadeUp 0.2s ease both;
+  }
+
+  .modal-title {
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .close-btn:hover { color: var(--text); }
+
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 1.5rem;
+  }
+
+  .modal-actions .btn { flex: 1; justify-content: center; }
+
+  .password-field {
+    position: relative;
+  }
+
+  .password-field input { padding-right: 40px; }
+
+  .toggle-visibility {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+  }
+
+  .toggle-visibility:hover { color: var(--text); }
+
+  .strength-bar {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+
+  .strength-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s, background 0.3s;
+  }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toast {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.3s ease both;
+    max-width: 300px;
+  }
+
+  .toast.success { border-color: rgba(104,211,145,0.3); color: var(--success); }
+  .toast.error { border-color: rgba(245,101,101,0.3); color: var(--danger); }
+  .toast.info { border-color: rgba(124,106,247,0.3); color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── MISC ── */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(124,106,247,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(124,106,247,0.2);
+    margin-right: 4px;
+  }
+
+  .warning-box {
+    background: rgba(245,101,101,0.08);
+    border: 1px solid rgba(245,101,101,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #f56565cc;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+
+  .info-box {
+    background: rgba(124,106,247,0.08);
+    border: 1px solid rgba(124,106,247,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: rgba(200,195,255,0.8);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+
+  select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  .gen-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .gen-row .field { flex: 1; margin-bottom: 0; }
+
+  /* ── MOBILE NAV BAR (hidden on desktop) ── */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 200;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .mobile-nav-inner {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .mobile-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 10px 4px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-nav-btn .nav-icon { font-size: 18px; line-height: 1; }
+  .mobile-nav-btn.active { color: var(--accent); }
+  .mobile-nav-btn:active { opacity: 0.7; }
+
+  .mobile-fab {
+    position: fixed;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    right: 1.2rem;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(124,106,247,0.5);
+    z-index: 150;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .mobile-fab:active { transform: scale(0.92); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .setup-card { padding: 1.8rem 1.4rem; border-radius: 12px; }
+
+    #setup-screen, #unlock-screen {
+      padding: 1rem;
+      align-items: stretch;
+      justify-content: flex-start;
+      padding-top: max(2rem, env(safe-area-inset-top, 1rem));
+    }
+
+    .topbar { padding: 0 1rem; height: 54px; gap: 8px; }
+    .sync-status { display: none; }
+    .topbar-actions .btn-ghost { display: none; }
+
+    .main-content {
+      flex-direction: column;
+      padding: 1rem;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+      gap: 1rem;
+    }
+
+    .sidebar { display: none; }
+
+    .vault-search-mobile { display: block; margin-bottom: 1rem; }
+
+    .entry-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+
+    .entry-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.9rem 1rem;
+    }
+
+    .entry-favicon { width: 40px; height: 40px; flex-shrink: 0; margin-bottom: 0; }
+    .entry-card-body { flex: 1; min-width: 0; }
+    .entry-name { font-size: 14px; }
+    .entry-username { margin-bottom: 0; }
+
+    .entry-actions {
+      opacity: 1 !important;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn { font-size: 11px; padding: 5px 7px; white-space: nowrap; }
+
+    .mobile-fab { display: flex; }
+    .mobile-nav { display: block; }
+
+    .modal-overlay { align-items: flex-end; padding: 0; }
+
+    .modal {
+      border-radius: 20px 20px 0 0;
+      max-width: 100%;
+      padding: 1.5rem 1.2rem;
+      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .toast-container {
+      bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+      left: 1rem;
+      right: 1rem;
+    }
+
+    .toast { max-width: 100%; }
+
+    .vault-header { margin-bottom: 1rem; }
+    .vault-title { font-size: 16px; }
+  }
+
+  .vault-search-mobile { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ═══ SETUP SCREEN ═══ -->
+<div id="setup-screen" class="screen active">
+  <div class="setup-card">
+    <div class="logo">
+      <div class="logo-icon">🔐</div>
+      <div class="logo-text">Password<span>Vault</span></div>
+    </div>
+    <h2>First-time Setup</h2>
+    <div class="info-box">
+      Your passwords are encrypted with AES-256-GCM in your browser before being stored. Your master password never leaves this device.
+    </div>
+    <div class="field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="setup-token" placeholder="github_pat_xxxxxxxxxxxx" autocomplete="off">
+      <div class="field-hint">Fine-grained token with <strong>Contents: Read & Write</strong> on your vault repo.</div>
+    </div>
+    <div class="field">
+      <label>Repository (owner/repo)</label>
+      <input type="text" id="setup-repo" placeholder="yourusername/my-vault" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Vault file path</label>
+      <input type="text" id="setup-path" value="vault.enc" autocomplete="off">
+      <div class="field-hint">Filename to use in the repository for your encrypted vault.</div>
+    </div>
+    <hr class="divider">
+    <div class="field">
+      <label>Master Password</label>
+      <div class="password-field">
+        <input type="password" id="setup-master" placeholder="Choose a strong password" autocomplete="new-password">
+        <button class="toggle-visibility" onclick="toggleVis('setup-master', this)">👁</button>
+      </div>
+      <div class="strength-bar"><div class="strength-fill" id="setup-strength"></div></div>
+    </div>
+    <div class="field">
+      <label>Confirm Master Password</label>
+      <input type="password" id="setup-confirm" placeholder="Repeat password" autocomplete="new-password">
+    </div>
+    <div class="warning-box">
+      ⚠️ If you forget your master password, your vault cannot be recovered. There is no reset option.
+    </div>
+    <button class="btn btn-primary" onclick="setupVault()">
+      <span>Initialise Vault</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══ UNLOCK SCREEN ═══ -->
+<div id="unlock-screen" class="screen">
+  <div class="setup-card">
+    <div class="logo">
+      <div class="logo-icon">🔐</div>
+      <div class="logo-text">Git<span>Vault</span></div>
+    </div>
+    <h2>Unlock Vault</h2>
+    <div class="field">
+      <label>Vault</label>
+      <input type="text" id="unlock-repo-display" readonly style="opacity:0.5; cursor:default;">
+    </div>
+    <div class="field">
+      <label>Master Password</label>
+      <div class="password-field">
+        <input type="password" id="unlock-master" placeholder="Enter master password" autocomplete="current-password" onkeydown="if(event.key==='Enter') unlockVault()">
+        <button class="toggle-visibility" onclick="toggleVis('unlock-master', this)">👁</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="unlock-btn" onclick="unlockVault()">
+      <span>Unlock</span>
+    </button>
+    <hr class="divider">
+    <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:0" onclick="resetConfig()">
+      Reset &amp; reconfigure
+    </button>
+  </div>
+</div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div id="app-screen" class="screen">
+  <div class="topbar">
+    <div class="logo" style="margin-bottom:0">
+      <div class="logo-icon" style="width:32px;height:32px;font-size:15px;border-radius:8px;">🔐</div>
+      <div class="logo-text" style="font-size:17px;">Git<span>Vault</span></div>
+    </div>
+    <div id="sync-status" class="sync-status">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label">Synced</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="syncNow()" title="Push to GitHub">↑ Sync</button>
+      <button class="btn btn-ghost" onclick="pullNow()" title="Pull from GitHub">↓ Pull</button>
+      <button class="btn btn-ghost" onclick="openAddModal()">+ Add</button>
+      <button class="btn btn-ghost" onclick="lockVault()" title="Lock vault">🔒 Lock</button>
+    </div>
+  </div>
+
+  <!-- Mobile FAB -->
+  <button class="mobile-fab" onclick="openAddModal()">+</button>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <button class="mobile-nav-btn active" data-cat="all" onclick="mobileCat('all', this)">
+        <span class="nav-icon">⊞</span>All
+      </button>
+      <button class="mobile-nav-btn" data-cat="login" onclick="mobileCat('login', this)">
+        <span class="nav-icon">🔑</span>Logins
+      </button>
+      <button class="mobile-nav-btn" data-cat="card" onclick="mobileCat('card', this)">
+        <span class="nav-icon">💳</span>Cards
+      </button>
+      <button class="mobile-nav-btn" data-cat="note" onclick="mobileCat('note', this)">
+        <span class="nav-icon">📝</span>Notes
+      </button>
+      <button class="mobile-nav-btn" onclick="lockVault()">
+        <span class="nav-icon">🔒</span>Lock
+      </button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <!-- Mobile search (shown only on small screens) -->
+    <div class="vault-search-mobile">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input type="text" placeholder="Search..." id="search-input-mobile" oninput="syncMobileSearch(this.value)">
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input type="text" placeholder="Search..." id="search-input" oninput="renderEntries()">
+      </div>
+      <ul class="category-list" id="category-list">
+        <li class="category-item active" data-cat="all" onclick="selectCategory('all')">
+          <span>⊞</span> All
+          <span class="category-count" id="cat-count-all">0</span>
+        </li>
+        <li class="category-item" data-cat="login" onclick="selectCategory('login')">
+          <span>🔑</span> Logins
+          <span class="category-count" id="cat-count-login">0</span>
+        </li>
+        <li class="category-item" data-cat="card" onclick="selectCategory('card')">
+          <span>💳</span> Cards
+          <span class="category-count" id="cat-count-card">0</span>
+        </li>
+        <li class="category-item" data-cat="note" onclick="selectCategory('note')">
+          <span>📝</span> Notes
+          <span class="category-count" id="cat-count-note">0</span>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+          <div id="entry-count-footer">0 entries</div>
+          <div id="last-sync-label" style="margin-top:2px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vault-area">
+      <div class="vault-header">
+        <div class="vault-title" id="vault-section-title">All Items</div>
+      </div>
+      <div class="entry-grid" id="entry-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADD/EDIT MODAL ═══ -->
+<div class="modal-overlay" id="entry-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modal-title-text">Add Entry</span>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="field">
+      <label>Type</label>
+      <select id="entry-type" onchange="updateModalType()">
+        <option value="login">🔑 Login</option>
+        <option value="card">💳 Card</option>
+        <option value="note">📝 Secure Note</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Name / Title</label>
+      <input type="text" id="entry-name" placeholder="e.g. GitHub, Netflix..." autocomplete="off">
+    </div>
+    <div id="login-fields">
+      <div class="field">
+        <label>Username / Email</label>
+        <input type="text" id="entry-username" placeholder="user@example.com" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="gen-row">
+          <div class="field password-field" style="margin-bottom:0;flex:1;">
+            <input type="password" id="entry-password" placeholder="Password" autocomplete="new-password" oninput="updateStrength(this.value)">
+            <button class="toggle-visibility" onclick="toggleVis('entry-password', this)">👁</button>
+          </div>
+          <button class="btn btn-ghost" onclick="generatePassword()" style="padding:10px 12px;white-space:nowrap;">Generate</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="modal-strength"></div></div>
+      </div>
+      <div class="field">
+        <label>URL</label>
+        <input type="text" id="entry-url" placeholder="https://..." autocomplete="off">
+      </div>
+    </div>
+    <div id="card-fields" style="display:none">
+      <div class="field">
+        <label>Card Number</label>
+        <input type="text" id="entry-cardnum" placeholder="•••• •••• •••• ••••" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Expiry</label>
+        <input type="text" id="entry-expiry" placeholder="MM/YY" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>CVV</label>
+        <input type="password" id="entry-cvv" placeholder="•••" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Cardholder Name</label>
+        <input type="text" id="entry-cardholder" placeholder="Name on card" autocomplete="off">
+      </div>
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <input type="text" id="entry-notes" placeholder="Optional notes" autocomplete="off">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" id="delete-btn" onclick="deleteEntry()" style="display:none">Delete</button>
+      <button class="btn btn-primary" onclick="saveEntry()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  CRYPTO HELPERS (Web Crypto API - AES-256-GCM)
+// ═══════════════════════════════════════════════
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+
+async function deriveKey(password, salt) {
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false, ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptVault(data, password) {
+  const salt = crypto.getRandomValues(new Uint8Array(32));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(password, salt);
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    enc.encode(JSON.stringify(data))
+  );
+  // Pack: [salt 32][iv 12][ciphertext]
+  const packed = new Uint8Array(32 + 12 + ciphertext.byteLength);
+  packed.set(salt, 0);
+  packed.set(iv, 32);
+  packed.set(new Uint8Array(ciphertext), 44);
+  return btoa(String.fromCharCode(...packed));
+}
+
+async function decryptVault(b64, password) {
+  const packed = new Uint8Array(atob(b64).split('').map(c => c.charCodeAt(0)));
+  const salt = packed.slice(0, 32);
+  const iv = packed.slice(32, 44);
+  const ciphertext = packed.slice(44);
+  const key = await deriveKey(password, salt);
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+  return JSON.parse(dec.decode(plain));
+}
+
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let masterPassword = null;
+let vaultData = { entries: [] };
+let currentCategory = 'all';
+let editingId = null;
+let config = null;
+let lastFileSha = null;
+
+const CONFIG_KEY = 'gitvault_config';
+
+function loadConfig() {
+  const raw = localStorage.getItem(CONFIG_KEY);
+  return raw ? JSON.parse(raw) : null;
+}
+
+function saveConfig(cfg) {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+}
+
+function clearConfig() {
+  localStorage.removeItem(CONFIG_KEY);
+}
+
+// ═══════════════════════════════════════════════
+//  GITHUB API
+// ═══════════════════════════════════════════════
+async function githubGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${config.repo}/contents/${config.vaultPath}`, {
+    headers: {
+      'Authorization': `token ${config.token}`,
+      'Accept': 'application/vnd.github+json'
+    }
+  });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`GitHub API error: ${r.status} ${r.statusText}`);
+  return r.json();
+}
+
+async function githubPut(content, sha) {
+  const body = {
+    message: `vault update ${new Date().toISOString()}`,
+    content: btoa(unescape(encodeURIComponent(content))),
+  };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${config.repo}/contents/${config.vaultPath}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${config.token}`,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(`GitHub push failed: ${err.message || r.statusText}`);
+  }
+  return r.json();
+}
+
+// ═══════════════════════════════════════════════
+//  SETUP
+// ═══════════════════════════════════════════════
+async function setupVault() {
+  const token = document.getElementById('setup-token').value.trim();
+  const repo = document.getElementById('setup-repo').value.trim();
+  const vaultPath = document.getElementById('setup-path').value.trim() || 'vault.enc';
+  const master = document.getElementById('setup-master').value;
+  const confirm = document.getElementById('setup-confirm').value;
+
+  if (!token || !repo) return toast('Please fill in token and repository.', 'error');
+  if (!master) return toast('Please set a master password.', 'error');
+  if (master !== confirm) return toast('Passwords do not match.', 'error');
+  if (master.length < 8) return toast('Master password must be at least 8 characters.', 'error');
+
+  config = { token, repo, vaultPath };
+
+  try {
+    setSyncStatus('syncing', 'Setting up...');
+    const existing = await githubGet();
+    if (existing) {
+      // File exists — try to decrypt it
+      masterPassword = master;
+      const raw = decodeURIComponent(escape(atob(existing.content.replace(/\n/g, ''))));
+      vaultData = await decryptVault(raw, master);
+      lastFileSha = existing.sha;
+      toast('Existing vault found and unlocked!', 'success');
+    } else {
+      // New vault
+      masterPassword = master;
+      vaultData = { entries: [] };
+      const encrypted = await encryptVault(vaultData, master);
+      const result = await githubPut(encrypted, null);
+      lastFileSha = result.content.sha;
+      toast('Vault created and saved to GitHub!', 'success');
+    }
+    saveConfig(config);
+    showApp();
+  } catch (e) {
+    setSyncStatus('error', 'Error');
+    toast('Error: ' + e.message, 'error');
+    console.error(e);
+    masterPassword = null;
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  UNLOCK
+// ═══════════════════════════════════════════════
+async function unlockVault() {
+  const master = document.getElementById('unlock-master').value;
+  if (!master) return toast('Enter your master password.', 'error');
+
+  const btn = document.getElementById('unlock-btn');
+  btn.innerHTML = '<div class="spinner"></div> Unlocking...';
+  btn.disabled = true;
+
+  try {
+    setSyncStatus('syncing', 'Fetching...');
+    const file = await githubGet();
+    if (!file) {
+      toast('Vault file not found in repository.', 'error');
+      setSyncStatus('error', 'Not found');
+      return;
+    }
+    const raw = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+    vaultData = await decryptVault(raw, master);
+    lastFileSha = file.sha;
+    masterPassword = master;
+    setSyncStatus('ok', 'Synced');
+    toast('Vault unlocked!', 'success');
+    showApp();
+  } catch (e) {
+    setSyncStatus('error', 'Error');
+    toast('Wrong password or corrupted vault.', 'error');
+  } finally {
+    btn.innerHTML = 'Unlock';
+    btn.disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  SYNC
+// ═══════════════════════════════════════════════
+async function pushVault() {
+  setSyncStatus('syncing', 'Saving...');
+  const encrypted = await encryptVault(vaultData, masterPassword);
+  const result = await githubPut(encrypted, lastFileSha);
+  lastFileSha = result.content.sha;
+  setSyncStatus('ok', 'Synced');
+  const now = new Date();
+  document.getElementById('last-sync-label').textContent = `Last sync ${now.toLocaleTimeString()}`;
+}
+
+async function syncNow() {
+  try {
+    await pushVault();
+    toast('Vault pushed to GitHub ✓', 'success');
+  } catch(e) {
+    setSyncStatus('error', 'Error');
+    toast('Sync failed: ' + e.message, 'error');
+  }
+}
+
+async function pullNow() {
+  try {
+    setSyncStatus('syncing', 'Pulling...');
+    const file = await githubGet();
+    if (!file) return toast('Vault file not found.', 'error');
+    const raw = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+    vaultData = await decryptVault(raw, masterPassword);
+    lastFileSha = file.sha;
+    setSyncStatus('ok', 'Synced');
+    renderEntries();
+    updateCounts();
+    toast('Pulled latest from GitHub ✓', 'success');
+  } catch(e) {
+    setSyncStatus('error', 'Error');
+    toast('Pull failed: ' + e.message, 'error');
+  }
+}
+
+function setSyncStatus(state, label) {
+  const dot = document.getElementById('sync-dot');
+  dot.className = 'sync-dot' + (state !== 'ok' ? ' ' + state : '');
+  document.getElementById('sync-label').textContent = label;
+}
+
+// ═══════════════════════════════════════════════
+//  ROUTING / SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showApp() {
+  showScreen('app-screen');
+  renderEntries();
+  updateCounts();
+  setSyncStatus('ok', 'Synced');
+  document.getElementById('entry-count-footer').textContent = vaultData.entries.length + ' entries';
+}
+
+function lockVault() {
+  masterPassword = null;
+  vaultData = { entries: [] };
+  lastFileSha = null;
+  document.getElementById('unlock-master').value = '';
+  showScreen('unlock-screen');
+}
+
+function resetConfig() {
+  clearConfig();
+  location.reload();
+}
+
+// ═══════════════════════════════════════════════
+//  ENTRIES
+// ═══════════════════════════════════════════════
+function renderEntries() {
+  const query = document.getElementById('search-input').value.toLowerCase();
+  const grid = document.getElementById('entry-grid');
+  const filtered = vaultData.entries.filter(e => {
+    if (currentCategory !== 'all' && e.type !== currentCategory) return false;
+    if (query && !e.name.toLowerCase().includes(query) && !(e.username||'').toLowerCase().includes(query)) return false;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="big-icon">🔐</div>
+      <p style="font-family:var(--sans);font-size:16px;font-weight:600;color:var(--text)">No entries</p>
+      <p style="font-size:12px;">Click "+ Add" to create your first entry</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(e => `
+    <div class="entry-card" onclick="openEditModal('${e.id}')">
+      <div class="entry-favicon">${typeEmoji(e.type)}</div>
+      <div class="entry-card-body">
+        <div class="entry-name">${esc(e.name)}</div>
+        <div class="entry-username">${esc(e.username || e.cardholder || '—')}</div>
+      </div>
+      <div class="entry-actions">
+        ${e.password ? `<button class="icon-btn" onclick="copyField(event,'${e.id}','password')">📋 pw</button>` : ''}
+        ${e.username ? `<button class="icon-btn" onclick="copyField(event,'${e.id}','username')">📋 user</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function typeEmoji(t) {
+  return t === 'card' ? '💳' : t === 'note' ? '📝' : '🔑';
+}
+
+function updateCounts() {
+  const all = vaultData.entries.length;
+  document.getElementById('cat-count-all').textContent = all;
+  document.getElementById('cat-count-login').textContent = vaultData.entries.filter(e => e.type === 'login').length;
+  document.getElementById('cat-count-card').textContent = vaultData.entries.filter(e => e.type === 'card').length;
+  document.getElementById('cat-count-note').textContent = vaultData.entries.filter(e => e.type === 'note').length;
+  document.getElementById('entry-count-footer').textContent = all + ' ' + (all === 1 ? 'entry' : 'entries');
+}
+
+function selectCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.category-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.cat === cat);
+  });
+  const titles = { all: 'All Items', login: 'Logins', card: 'Cards', note: 'Secure Notes' };
+  document.getElementById('vault-section-title').textContent = titles[cat];
+  renderEntries();
+}
+
+async function copyField(e, id, field) {
+  e.stopPropagation();
+  const entry = vaultData.entries.find(x => x.id === id);
+  if (!entry) return;
+  await navigator.clipboard.writeText(entry[field] || '');
+  toast('Copied to clipboard', 'info');
+}
+
+// ═══════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title-text').textContent = 'Add Entry';
+  document.getElementById('delete-btn').style.display = 'none';
+  document.getElementById('entry-type').value = 'login';
+  document.getElementById('entry-name').value = '';
+  document.getElementById('entry-username').value = '';
+  document.getElementById('entry-password').value = '';
+  document.getElementById('entry-url').value = '';
+  document.getElementById('entry-notes').value = '';
+  document.getElementById('entry-cardnum').value = '';
+  document.getElementById('entry-expiry').value = '';
+  document.getElementById('entry-cvv').value = '';
+  document.getElementById('entry-cardholder').value = '';
+  document.getElementById('modal-strength').style.width = '0';
+  updateModalType();
+  document.getElementById('entry-modal').classList.add('open');
+}
+
+function openEditModal(id) {
+  const e = vaultData.entries.find(x => x.id === id);
+  if (!e) return;
+  editingId = id;
+  document.getElementById('modal-title-text').textContent = 'Edit Entry';
+  document.getElementById('delete-btn').style.display = 'block';
+  document.getElementById('entry-type').value = e.type || 'login';
+  document.getElementById('entry-name').value = e.name || '';
+  document.getElementById('entry-username').value = e.username || '';
+  document.getElementById('entry-password').value = e.password || '';
+  document.getElementById('entry-url').value = e.url || '';
+  document.getElementById('entry-notes').value = e.notes || '';
+  document.getElementById('entry-cardnum').value = e.cardnum || '';
+  document.getElementById('entry-expiry').value = e.expiry || '';
+  document.getElementById('entry-cvv').value = e.cvv || '';
+  document.getElementById('entry-cardholder').value = e.cardholder || '';
+  updateStrength(e.password || '');
+  updateModalType();
+  document.getElementById('entry-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('entry-modal').classList.remove('open');
+}
+
+function updateModalType() {
+  const t = document.getElementById('entry-type').value;
+  document.getElementById('login-fields').style.display = t === 'login' ? 'block' : 'none';
+  document.getElementById('card-fields').style.display = t === 'card' ? 'block' : 'none';
+}
+
+async function saveEntry() {
+  const type = document.getElementById('entry-type').value;
+  const name = document.getElementById('entry-name').value.trim();
+  if (!name) return toast('Please enter a name.', 'error');
+
+  const entry = {
+    id: editingId || crypto.randomUUID(),
+    type,
+    name,
+    username: document.getElementById('entry-username').value.trim(),
+    password: document.getElementById('entry-password').value,
+    url: document.getElementById('entry-url').value.trim(),
+    notes: document.getElementById('entry-notes').value.trim(),
+    cardnum: document.getElementById('entry-cardnum').value.trim(),
+    expiry: document.getElementById('entry-expiry').value.trim(),
+    cvv: document.getElementById('entry-cvv').value,
+    cardholder: document.getElementById('entry-cardholder').value.trim(),
+    updated: Date.now()
+  };
+
+  if (editingId) {
+    const idx = vaultData.entries.findIndex(e => e.id === editingId);
+    vaultData.entries[idx] = entry;
+  } else {
+    vaultData.entries.unshift(entry);
+  }
+
+  closeModal();
+  renderEntries();
+  updateCounts();
+  toast(editingId ? 'Entry updated' : 'Entry added', 'success');
+
+  try {
+    await pushVault();
+  } catch(e) {
+    setSyncStatus('error', 'Save failed');
+    toast('Saved locally but GitHub sync failed: ' + e.message, 'error');
+  }
+}
+
+async function deleteEntry() {
+  if (!editingId) return;
+  if (!confirm('Delete this entry? This cannot be undone.')) return;
+  vaultData.entries = vaultData.entries.filter(e => e.id !== editingId);
+  closeModal();
+  renderEntries();
+  updateCounts();
+  toast('Entry deleted', 'info');
+  try { await pushVault(); } catch(e) { toast('Sync error: ' + e.message, 'error'); }
+}
+
+// ═══════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════
+function generatePassword() {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}';
+  const arr = new Uint8Array(20);
+  crypto.getRandomValues(arr);
+  const pw = Array.from(arr).map(b => chars[b % chars.length]).join('');
+  const input = document.getElementById('entry-password');
+  input.value = pw;
+  input.type = 'text';
+  updateStrength(pw);
+  toast('Strong password generated', 'success');
+  setTimeout(() => { input.type = 'password'; }, 3000);
+}
+
+function updateStrength(pw) {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const bar = document.getElementById('modal-strength');
+  const colors = ['', '#f56565', '#ed8936', '#ecc94b', '#68d391', '#4fd1c5'];
+  const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
+  bar.style.width = widths[score];
+  bar.style.background = colors[score];
+
+  // Also update setup screen
+  const sb = document.getElementById('setup-strength');
+  if (sb) { sb.style.width = widths[score]; sb.style.background = colors[score]; }
+}
+
+function toggleVis(id, btn) {
+  const input = document.getElementById(id);
+  if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+  else { input.type = 'password'; btn.textContent = '👁'; }
+}
+
+document.getElementById('setup-master').addEventListener('input', e => updateStrength(e.target.value));
+
+function esc(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  el.textContent = (icons[type] || '') + ' ' + msg;
+  const c = document.getElementById('toast-container');
+  c.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 3000);
+}
+
+// Mobile category switching
+function mobileCat(cat, btn) {
+  selectCategory(cat);
+  document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Keep mobile and desktop search in sync
+function syncMobileSearch(val) {
+  document.getElementById('search-input').value = val;
+  renderEntries();
+}
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  config = loadConfig();
+  if (config) {
+    document.getElementById('unlock-repo-display').value = config.repo;
+    showScreen('unlock-screen');
+  } else {
+    showScreen('setup-screen');
+  }
+});
+
+// Close modal on overlay click
+document.getElementById('entry-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
