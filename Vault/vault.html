@@ -791,7 +791,7 @@
   <div class="setup-card">
     <div class="logo">
       <div class="logo-icon">🔐</div>
-      <div class="logo-text">Password<span>Vault</span></div>
+      <div class="logo-text">Git<span>Vault</span></div>
     </div>
     <h2>First-time Setup</h2>
     <div class="info-box">
@@ -1150,20 +1150,37 @@ async function setupVault() {
   if (master !== confirm) return toast('Passwords do not match.', 'error');
   if (master.length < 8) return toast('Master password must be at least 8 characters.', 'error');
 
+  // Clear any stale config from previous failed attempts
+  clearConfig();
   config = { token, repo, vaultPath };
 
   try {
     setSyncStatus('syncing', 'Setting up...');
+
+    // Step 1: verify token
+    const authTest = await fetch('https://api.github.com/user', {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if (authTest.status === 401) throw new Error('Invalid token — GitHub returned 401. Check your PAT is correct and not expired.');
+    if (authTest.status === 403) throw new Error('Token forbidden (403) — check it has the right permissions.');
+    if (!authTest.ok) throw new Error(`Token check failed: HTTP ${authTest.status} ${authTest.statusText}`);
+
+    // Step 2: verify repo is accessible
+    const repoTest = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if (repoTest.status === 404) throw new Error(`Repo "${repo}" not found. Check the owner/repo name and that your token has access to it.`);
+    if (!repoTest.ok) throw new Error(`Repo check failed: HTTP ${repoTest.status} ${repoTest.statusText}`);
+
+    // Step 3: read or create vault file
     const existing = await githubGet();
     if (existing) {
-      // File exists — try to decrypt it
       masterPassword = master;
       const raw = decodeURIComponent(escape(atob(existing.content.replace(/\n/g, ''))));
       vaultData = await decryptVault(raw, master);
       lastFileSha = existing.sha;
       toast('Existing vault found and unlocked!', 'success');
     } else {
-      // New vault
       masterPassword = master;
       vaultData = { entries: [] };
       const encrypted = await encryptVault(vaultData, master);
@@ -1175,9 +1192,12 @@ async function setupVault() {
     showApp();
   } catch (e) {
     setSyncStatus('error', 'Error');
-    toast('Error: ' + e.message, 'error');
-    console.error(e);
+    const msg = e.message || 'Unknown error — open browser console (F12) for details.';
+    toast('Error: ' + msg, 'error');
+    console.error('GitVault setup error:', e);
     masterPassword = null;
+    config = null;
+    clearConfig();
   }
 }
 
