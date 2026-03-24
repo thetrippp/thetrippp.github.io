@@ -4,58 +4,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My AI Intelligence Hub</title>
+    <title>AI Intelligence Hub</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; color: #333; }
-        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .date-badge { font-size: 0.9em; color: #7f8c8d; text-align: right; }
+        /* Modern Dark Mode Theme */
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --border: #30363d;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            line-height: 1.7; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 40px 20px; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+        }
+        
+        h1 { 
+            text-align: center; 
+            color: #ffffff; 
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+        
+        h2 { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        h3 { color: #ffffff; margin-top: 25px; }
+        
+        .header-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .date-badge { 
+            display: inline-block;
+            background-color: var(--border);
+            color: var(--text-main);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .card { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2); 
+        }
+        
+        /* Styling the AI's generated HTML */
+        .ai-content ul {
+            padding-left: 20px;
+        }
+        
+        .ai-content li {
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+        
+        .ai-content strong {
+            color: var(--accent);
+        }
+        
     </style>
 </head>
 <body>
-    <h1>🌍 Personal Intelligence Dashboard</h1>
-    <p class="date-badge">Last Updated: 2026-03-24 00:18</p>
+    <div class="header-container">
+        <h1>Global Intelligence Matrix</h1>
+        <div class="date-badge">Last Sync: 2026-03-24 00:38</div>
+    </div>
     
     <div class="card">
-        <h2>🔥 Current Global Briefing (Updated every 6 hours)</h2>
-        <h3>Global Geopolitical Outlook: Executive Summary</h3>
-
-<p>The global geopolitical landscape remains intensely volatile, marked by persistent conflicts and severe humanitarian crises across multiple regions. Tensions surrounding Iran are particularly acute, with conflicting reports from Tehran and Washington regarding peace prospects, even as reports emerge of Iranian civilians killed in ongoing hostilities, underscoring the human cost of prolonged geopolitical friction. Concurrently, Sudan is grappling with a profound humanitarian catastrophe, highlighted by a recent strike on a hospital that resulted in dozens of casualties. Furthermore, the Eastern Mediterranean continues to be a flashpoint, with escalating attacks by Israel prompting international concern and declarations of support for Lebanon's ongoing struggle, indicating a widening regional instability.</p>
-
-<p>Beyond direct conflict, the international arena is witnessing significant domestic political challenges and shifts towards authoritarian governance. In Europe, Italy's Prime Minister Meloni faces increased political vulnerability following a recent referendum defeat, signalling potential internal fragilities within a key European Union member state. Meanwhile, the military ruler of Madagascar has implemented draconian measures, including mandatory lie detector tests for ministers, which points towards a concerning tightening of state control and potential for political repression. These developments highlight a broader trend of internal governance struggles and challenges to democratic principles in various national contexts.</p>
-
-<p>The economic and humanitarian outlook remains precarious, especially for the world's most vulnerable populations. A substantial 56% cut in the UK's aid budget is poised to disproportionately impact some of the poorest countries, threatening to exacerbate existing humanitarian crises and undermine crucial development efforts. This reduction in international support, combined with the ongoing human toll from active conflicts in regions like Sudan and the Middle East, paints a dire picture for global humanitarian relief and long-term stability. The confluence of diminished international aid, internal political instability, and active conflict underscores a deepening global vulnerability and calls for concerted international attention.</p>
+        <h2>⚡ Live Briefing</h2>
+        <div class="ai-content">
+            <h3>🌍 Top Global Priorities</h3>
+<ul>
+  <li><strong>Middle East Conflict Dynamics:</strong> Headlines reveal escalating tensions with civilian casualties in ongoing conflicts, contradictory peace rhetoric between the US and Iran, and intensifying clashes between Israel and Lebanon. This signifies a highly volatile geopolitical landscape with significant human cost and the potential for wider regional escalation involving multiple international actors.</li>
+  <li><strong>African Instability and Foreign Interference:</strong> The continent faces severe humanitarian crises, exemplified by the hospital strike in Sudan, while external powers like Russia are allegedly engaging in operations to trigger anti-government protests in Angola. This highlights a region grappling with internal conflicts, governance challenges, and the destabilizing impact of foreign influence operations.</li>
+  <li><strong>Shifting Global Aid and Development Landscape:</strong> The UK's significant cuts to aid budgets for the world's poorest countries indicate a major recalibration of international development priorities. This policy shift is likely to exacerbate existing humanitarian crises and developmental challenges, potentially increasing instability and migration pressures globally.</li>
+</ul>
+<h3>🔍 Emerging Threads</h3>
+<p>A clear through-line emerging from these headlines is the interconnectedness of conflict, humanitarian crises, and the evolving dynamics of global power competition. From the direct human cost of war in the Middle East and Sudan to alleged foreign interference in Angola, instability is a pervasive theme. Concurrently, shifts in global aid policies highlight a potential withdrawal from collective responsibility, leaving vulnerable nations to navigate complex challenges, often exacerbated by external actors or internal authoritarian tendencies, creating a complex web of interconnected geopolitical vulnerabilities.</p>
+        </div>
     </div>
 
     <div class="card">
-        <h2>📅 The Weekly Recap (Evolving Storylines)</h2>
-        <p><strong>Weekly Geopolitical Recap: March 24, 2026</strong></p>
-
-<p>The global geopolitical landscape remains intensely volatile, characterized by persistent conflicts, escalating humanitarian crises, and significant internal political shifts across various regions. Key evolving storylines this week include:</p>
+        <h2>🗓️ 7-Day Context & Trajectory</h2>
+        <div class="ai-content">
+            <p>This week's intelligence highlights a landscape of **intensifying global volatility and humanitarian crises**, underscored by escalating conflicts, strategic aid withdrawals, and concerning shifts in internal governance across multiple regions.</p>
 
 <ul>
-    <li><strong>Intensifying Regional Conflicts and Tensions:</strong>
-        <ul>
-            <li><strong>Iran:</strong> Tensions surrounding Iran are acutely high, with conflicting reports on peace prospects amidst ongoing hostilities and reports of civilian casualties, underscoring the severe human cost.</li>
-            <li><strong>Sudan:</strong> The nation is grappling with a profound humanitarian catastrophe, highlighted by a recent strike on a hospital that resulted in dozens of casualties.</li>
-            <li><strong>Eastern Mediterranean:</strong> This region continues to be a significant flashpoint, with escalating attacks by Israel prompting international concern and declarations of support for Lebanon, indicating widening regional instability.</li>
-        </ul>
-    </li>
-    <li><strong>Deepening Humanitarian Crises and Aid Shortfalls:</strong>
-        <ul>
-            <li>The ongoing conflicts in regions like Iran and Sudan continue to exact a heavy human toll.</li>
-            <li>A substantial 56% cut in the UK's aid budget is poised to disproportionately impact some of the world's poorest countries, threatening to exacerbate existing humanitarian crises and undermine crucial development efforts globally.</li>
-        </ul>
-    </li>
-    <li><strong>Domestic Political Instability and Authoritarian Trends:</strong>
-        <ul>
-            <li><strong>Europe (Italy):</strong> Prime Minister Meloni faces increased political vulnerability following a recent referendum defeat, signaling potential internal fragilities within a key European Union member state.</li>
-            <li><strong>Africa (Madagascar):</strong> The military ruler has implemented draconian measures, including mandatory lie detector tests for ministers, pointing towards a concerning tightening of state control and potential for political repression.</li>
-        </ul>
-    </li>
+    <li>The **Middle East remains a critical flashpoint**, with ongoing conflicts, particularly intensifying clashes between Israel and Lebanon, and contradictory peace signals involving Iran, indicating broadening regional instability.</li>
+    <li>**Humanitarian crises are deepening**, notably in Sudan following a devastating hospital strike, a situation exacerbated by the **UK's significant cuts to international aid**, impacting the world's most vulnerable.</li>
+    <li>**African stability faces multifaceted threats**, ranging from severe internal humanitarian challenges to **allegations of foreign interference, such as Russian operations in Angola**, influencing political landscapes.</li>
+    <li>A trend of **internal political fragility and authoritarian consolidation** is evident, with Italy's Prime Minister facing increased vulnerability and Madagascar's military ruler implementing draconian measures.</li>
 </ul>
-
-<p>Overall, the confluence of diminished international aid, internal political instability, and active conflict underscores a deepening global vulnerability, demanding concerted international attention.</p>
+        </div>
     </div>
 </body>
 </html>
