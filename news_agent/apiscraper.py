@@ -80,7 +80,7 @@ for cat_name, feeds in categories.items():
     Return ONLY a plain list of 6 short titles (no bullet points, no asterisks, just the titles separated by a new line).
     Data: {cat_news_text}
     """
-    editor_response = client.models.generate_content(model='gemini-2.5-flash', contents=editor_prompt).text
+    editor_response = client.models.generate_content(model='gemini-2.5-flash-lite', contents=editor_prompt).text
     top_stories = [line.strip() for line in editor_response.strip().split('\n') if line.strip()][:6]
     time.sleep(5) # Strict 5-second sleep to respect the 15 RPM limit
 
@@ -104,7 +104,7 @@ for cat_name, feeds in categories.items():
             </ul>
         </div>
         """
-        story_coverage = client.models.generate_content(model='gemini-2.5-flash', contents=journalist_prompt).text
+        story_coverage = client.models.generate_content(model='gemini-2.5-flash-lite', contents=journalist_prompt).text
         daily_briefing_html += story_coverage + "\n"
         time.sleep(5) # Strict 5-second sleep to respect the 15 RPM limit
 
@@ -121,7 +121,7 @@ for cat_name, feeds in categories.items():
     Make it highly engaging and informative. Use <p> and <ul> with <strong> tags.
     History Log: {history[cat_name]}
     """
-    weekly_recap = client.models.generate_content(model='gemini-2.5-flash', contents=recap_prompt).text
+    weekly_recap = client.models.generate_content(model='gemini-2.5-flash-lite', contents=recap_prompt).text
     time.sleep(5) # Strict 5-second sleep to respect the 15 RPM limit
 
     # F. Build UI
