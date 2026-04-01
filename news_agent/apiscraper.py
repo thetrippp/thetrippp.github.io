@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from google import genai
 import json
+import re
 import os
 import time
 from datetime import datetime
@@ -50,6 +51,14 @@ if os.path.exists(history_file):
 today_str = datetime.now().strftime("%Y-%m-%d %H:%M")
 tab_buttons_html = ""
 tab_content_html = ""
+
+# Helper function to convert markdown bold/italics to HTML
+def markdown_to_html(text):
+    # Replace bold first: **text** -> <strong>text</strong>
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+    # Replace italics next: *text* -> <em>text</em>
+    text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
+    return text
 
 # --- 3. THE MASTERCLASS NEWSROOM ---
 for cat_name, feeds in categories.items():
@@ -116,6 +125,9 @@ for cat_name, feeds in categories.items():
         daily_briefing_html = parts[0].replace("```html", "").replace("```", "").strip()
         weekly_recap_html = parts[1].replace("```html", "").replace("```", "").strip() if len(parts) > 1 else "<p>Recap generating...</p>"
         
+        # Apply markdown to HTML conversion
+        daily_briefing_html = markdown_to_html(daily_briefing_html)
+        weekly_recap_html = markdown_to_html(weekly_recap_html)
         history[cat_name].append({"date": today_str, "briefing": daily_briefing_html})
         if len(history[cat_name]) > 28:
             history[cat_name] = history[cat_name][-28:]
@@ -151,38 +163,266 @@ html_content = f"""
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omni-Channel Intelligence Hub</title>
+    <title>Daily Intelligence Briefing</title>
     <style>
-        :root {{ --bg-color: #0d1117; --card-bg: #161b22; --text-main: #c9d1d9; --text-muted: #8b949e; --accent: #58a6ff; --accent-green: #3fb950; --border: #30363d; }}
-        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.8; max-width: 1000px; margin: 0 auto; padding: 40px 20px; background-color: var(--bg-color); color: var(--text-main); }}
-        h1 {{ text-align: center; color: #ffffff; font-size: 2.5em; margin-bottom: 5px; }}
-        h2 {{ color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 30px;}}
-        
-        .header-container {{ text-align: center; margin-bottom: 30px; }}
-        .date-badge {{ display: inline-block; background-color: var(--border); color: var(--text-main); padding: 5px 15px; border-radius: 20px; font-size: 0.85em; font-weight: 600; margin-top: 10px;}}
-        
-        .tab {{ display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }}
-        .tab button {{ background-color: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 12px 24px; cursor: pointer; border-radius: 8px; font-size: 1em; font-weight: 600; transition: all 0.3s ease; }}
-        .tab button:hover {{ background-color: #30363d; color: #fff; }}
-        .tab button.active {{ background-color: var(--accent); color: #0d1117; border-color: var(--accent); box-shadow: 0 0 10px rgba(88,166,255,0.3); }}
-        .tabcontent {{ display: none; animation: fadeEffect 0.5s; }}
-        @keyframes fadeEffect {{ from {{opacity: 0; transform: translateY(10px);}} to {{opacity: 1; transform: translateY(0);}} }}
-        
-        .card {{ background: var(--card-bg); padding: 40px; margin-bottom: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }}
-        
-        /* New Deep-Dive Styling */
-        .story-box {{ background: rgba(48, 54, 61, 0.4); border-left: 5px solid var(--accent); padding: 30px; margin-bottom: 40px; border-radius: 0 12px 12px 0; }}
-        .story-title {{ color: #ffffff; font-size: 1.8em; margin-top: 0; margin-bottom: 20px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }}
-        .section-head {{ color: var(--accent-green); font-size: 1.1em; text-transform: uppercase; letter-spacing: 1px; margin-top: 25px; margin-bottom: 10px; }}
-        
-        .ai-content p {{ margin-bottom: 20px; font-size: 1.05em; color: #e6edf3; }}
-        .ai-content strong {{ color: var(--accent); }}
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap');
+
+        :root {{
+            --bg-color: hsl(210, 36%, 96%);
+            /* Very light blue-grey */
+            --text-color: hsl(210, 10%, 20%);
+            /* Dark grey */
+            --muted-text-color: hsl(210, 5%, 45%);
+            /* Medium grey */
+            --accent-color: hsl(200, 70%, 40%);
+            /* Professional blue */
+            --card-bg: hsl(0, 0%, 100%);
+            /* White */
+            --border-color: hsl(210, 15%, 88%);
+            /* Light grey border */
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }}
+
+        body {{
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            /* Slightly tighter line height for readability */
+            max-width: 960px;
+            /* Slightly wider content area */
+            margin: 0 auto;
+            padding: 50px 25px;
+            /* More padding */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }}
+
+        h1,
+        h2,
+        .story-title {{
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            color: var(--text-color);
+        }}
+
+        h1 {{
+            font-size: 3.2rem;
+            /* Larger main title */
+            text-align: center;
+            margin-bottom: 0.2em;
+            color: var(--text-color);
+            line-height: 1.1;
+        }}
+
+        h2 {{
+            font-size: 1.8rem;
+            /* Larger section titles */
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            /* Thicker border */
+            padding-bottom: 12px;
+            margin-top: 40px;
+            /* More space above h2 */
+            margin-bottom: 25px;
+            margin-top: 0;
+        }}
+
+        .header-container {{
+            text-align: center;
+            margin-bottom: 50px;
+            /* More space below header */
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }}
+
+        .header-container p {{
+            color: var(--muted-text-color);
+            font-size: 1.2rem;
+            /* Slightly larger tagline */
+            margin: 0.5em 0 0;
+        }}
+
+        .date-badge {{
+            display: inline-block;
+            background-color: var(--border-color);
+            color: var(--muted-text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            /* More rounded badge */
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+        }}
+
+        .tab {{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            /* More space between tabs */
+            margin-bottom: 40px;
+            /* More space below tabs */
+            border-bottom: 1px solid var(--border-color);
+            /* Subtle line below tabs */
+            padding-bottom: 10px;
+        }}
+
+        .tab button {{
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            /* Thicker active border */
+            color: var(--muted-text-color);
+            padding: 12px 10px;
+            /* Adjusted padding */
+            cursor: pointer;
+            font-size: 1.05rem;
+            /* Slightly larger font */
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-bottom: -1px;
+            text-transform: uppercase;
+            /* Uppercase tabs */
+            letter-spacing: 0.8px;
+        }}
+
+        .tab button:hover {{
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            /* Highlight on hover */
+        }}
+
+        .tab button.active {{
+            color: var(--text-color);
+            border-bottom-color: var(--accent-color);
+        }}
+
+        .tabcontent {{
+            display: none;
+            animation: fadeEffect 0.5s;
+        }}
+
+        @keyframes fadeEffect {{
+            from {{
+                opacity: 0;
+                transform: translateY(10px);
+            }}
+
+            to {{
+                opacity: 1;
+                transform: translateY(0);
+            }}
+        }}
+
+        .card {{
+            background: var(--card-bg);
+            padding: 35px 45px;
+            /* More internal padding */
+            margin-bottom: 40px;
+            /* More space between cards */
+            border-radius: 10px;
+            /* Slightly more rounded corners */
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-medium);
+            /* More pronounced shadow */
+        }}
+
+        .story-box {{
+            padding: 30px 0;
+            /* More vertical padding */
+            margin-bottom: 30px;
+            border-bottom: 1px dashed var(--border-color);
+            /* Dashed separator */
+        }}
+
+        .story-box:last-child {{
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }}
+
+        .story-title {{
+            color: var(--accent-color);
+            /* Story title in accent color */
+            font-size: 2.2rem;
+            /* Larger story title */
+            margin-top: 0;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }}
+
+        .section-head {{
+            font-family: 'Inter', sans-serif;
+            color: var(--muted-text-color);
+            font-size: 0.9rem;
+            /* Slightly larger section head */
+            font-weight: 700;
+            /* Bolder */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            /* More letter spacing */
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }}
+
+        .ai-content p {{
+            margin-bottom: 1.2em;
+            /* More space between paragraphs */
+            font-size: 1.05rem;
+            /* Slightly larger body text */
+            color: hsl(210, 8%, 30%);
+            /* Slightly darker body text for contrast */
+        }}
+
+        .ai-content strong {{
+            color: var(--text-color);
+            font-weight: 700;
+            /* Bolder strong text */
+        }}
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {{
+            body {{
+                padding: 30px 15px;
+            }}
+
+            h1 {{
+                font-size: 2.5rem;
+            }}
+
+            h2 {{
+                font-size: 1.4rem;
+                margin-top: 30px;
+                margin-bottom: 20px;
+            }}
+
+            .header-container {{
+                margin-bottom: 30px;
+            }}
+
+            .card {{
+                padding: 25px 20px;
+                margin-bottom: 30px;
+            }}
+
+            .story-title {{
+                font-size: 1.7rem;
+            }}
+
+            .tab button {{
+                font-size: 0.95rem;
+                padding: 10px 8px;
+            }}
+        }}
     </style>
 </head>
 <body>
     <div class="header-container">
-        <h1>Omni-Channel Intelligence</h1>
-        <p style="color: var(--text-muted);">Your Daily Executive Masterclass.</p>
+        <h1>Daily Intelligence Briefing</h1>
+        <p>An AI-Powered Global News Analysis</p>
         <div class="date-badge">Last Sync: {today_str}</div>
     </div>
     <div class="tab">{tab_buttons_html}</div>
@@ -197,7 +437,12 @@ html_content = f"""
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
         }}
-        document.addEventListener("DOMContentLoaded", function() {{ document.getElementsByClassName("tablinks")[0].click(); }});
+        document.addEventListener("DOMContentLoaded", function() {{
+            const firstTab = document.getElementsByClassName("tablinks")[0];
+            if(firstTab) {{
+                firstTab.click();
+            }}
+        }});
     </script>
 </body>
 </html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Intelligence Briefing [MOCKUP]</title>
+    <!-- You can now edit the CSS directly in this file! -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --bg-color: hsl(210, 36%, 96%);
+            /* Very light blue-grey */
+            --text-color: hsl(210, 10%, 20%);
+            /* Dark grey */
+            --muted-text-color: hsl(210, 5%, 45%);
+            /* Medium grey */
+            --accent-color: hsl(200, 70%, 40%);
+            /* Professional blue */
+            --card-bg: hsl(0, 0%, 100%);
+            /* White */
+            --border-color: hsl(210, 15%, 88%);
+            /* Light grey border */
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            /* Slightly tighter line height for readability */
+            max-width: 960px;
+            /* Slightly wider content area */
+            margin: 0 auto;
+            padding: 50px 25px;
+            /* More padding */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1,
+        h2,
+        .story-title {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            /* Larger main title */
+            text-align: center;
+            margin-bottom: 0.2em;
+            color: var(--text-color);
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            /* Larger section titles */
+            color: var(--text-color);
+            border-bottom: 2px solid var(--border-color);
+            /* Thicker border */
+            padding-bottom: 12px;
+            margin-top: 40px;
+            /* More space above h2 */
+            margin-bottom: 25px;
+            margin-top: 0;
+        }
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 50px;
+            /* More space below header */
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-container p {
+            color: var(--muted-text-color);
+            font-size: 1.2rem;
+            /* Slightly larger tagline */
+            margin: 0.5em 0 0;
+        }
+
+        .date-badge {
+            display: inline-block;
+            background-color: var(--border-color);
+            color: var(--muted-text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            /* More rounded badge */
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .tab {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            /* More space between tabs */
+            margin-bottom: 40px;
+            /* More space below tabs */
+            border-bottom: 1px solid var(--border-color);
+            /* Subtle line below tabs */
+            padding-bottom: 10px;
+        }
+
+        .tab button {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            /* Thicker active border */
+            color: var(--muted-text-color);
+            padding: 12px 10px;
+            /* Adjusted padding */
+            cursor: pointer;
+            font-size: 1.05rem;
+            /* Slightly larger font */
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-bottom: -1px;
+            text-transform: uppercase;
+            /* Uppercase tabs */
+            letter-spacing: 0.8px;
+        }
+
+        .tab button:hover {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            /* Highlight on hover */
+        }
+
+        .tab button.active {
+            color: var(--text-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .tabcontent {
+            display: none;
+            animation: fadeEffect 0.5s;
+        }
+
+        @keyframes fadeEffect {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 35px 45px;
+            /* More internal padding */
+            margin-bottom: 40px;
+            /* More space between cards */
+            border-radius: 10px;
+            /* Slightly more rounded corners */
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-medium);
+            /* More pronounced shadow */
+        }
+
+        .story-box {
+            padding: 30px 0;
+            /* More vertical padding */
+            margin-bottom: 30px;
+            border-bottom: 1px dashed var(--border-color);
+            /* Dashed separator */
+        }
+
+        .story-box:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .story-title {
+            color: var(--accent-color);
+            /* Story title in accent color */
+            font-size: 2.2rem;
+            /* Larger story title */
+            margin-top: 0;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .section-head {
+            font-family: 'Inter', sans-serif;
+            color: var(--muted-text-color);
+            font-size: 0.9rem;
+            /* Slightly larger section head */
+            font-weight: 700;
+            /* Bolder */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            /* More letter spacing */
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        .ai-content p {
+            margin-bottom: 1.2em;
+            /* More space between paragraphs */
+            font-size: 1.05rem;
+            /* Slightly larger body text */
+            color: hsl(210, 8%, 30%);
+            /* Slightly darker body text for contrast */
+        }
+
+        .ai-content strong {
+            color: var(--text-color);
+            font-weight: 700;
+            /* Bolder strong text */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 15px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+                margin-top: 30px;
+                margin-bottom: 20px;
+            }
+
+            .header-container {
+                margin-bottom: 30px;
+            }
+
+            .card {
+                padding: 25px 20px;
+                margin-bottom: 30px;
+            }
+
+            .story-title {
+                font-size: 1.7rem;
+            }
+
+            .tab button {
+                font-size: 0.95rem;
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- This content will be dynamically generated by JavaScript -->
+    <div class="header-container">
+        <h1>Daily Intelligence Briefing</h1>
+        <p>An AI-Powered Global News Analysis</p>
+        <div class="date-badge" id="last-sync-date">Loading...</div>
+    </div>
+    <div class="tab" id="tab-buttons"></div>
+    <div id="tab-contents"></div>
+
+    <script>
+        // Tab switching function
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Main function to load and render data
+        async function buildMockup() {
+            try {
+                // 1. Fetch both data sources
+                const [historyResponse, indexHtmlResponse] = await Promise.all([
+                    fetch('history.json'),
+                    fetch('index.html')
+                ]);
+
+                if (!historyResponse.ok || !indexHtmlResponse.ok) {
+                    throw new Error('Could not load data files. Make sure history.json and index.html exist.');
+                }
+
+                const historyData = await historyResponse.json();
+                const indexHtmlText = await indexHtmlResponse.text();
+
+                // 2. Parse the live index.html to extract macro-trend analyses
+                const parser = new DOMParser();
+                const indexDoc = parser.parseFromString(indexHtmlText, 'text/html');
+
+                const tabButtonsContainer = document.getElementById('tab-buttons');
+                const tabContentsContainer = document.getElementById('tab-contents');
+
+                // 3. Loop through categories and build the HTML
+                for (const catName in historyData) {
+                    if (historyData.hasOwnProperty(catName) && historyData[catName].length > 0) {
+                        const latestEntry = historyData[catName][historyData[catName].length - 1];
+                        const dailyBriefingHtml = latestEntry.briefing;
+                        const syncDate = latestEntry.date;
+
+                        document.getElementById('last-sync-date').textContent = `Last Sync: ${syncDate}`;
+
+                        const safeId = catName.replace(/[^a-zA-Z0-9]/g, '');
+
+                        // Create Tab Button
+                        const button = document.createElement('button');
+                        button.className = 'tablinks';
+                        button.textContent = catName;
+                        button.onclick = (event) => openTab(event, safeId);
+                        tabButtonsContainer.appendChild(button);
+
+                        // Extract Macro-Trend from index.html
+                        const liveTabContent = indexDoc.getElementById(safeId);
+                        let weeklyRecapHtml = '<p>Macro-trend analysis not found in index.html.</p>';
+                        if (liveTabContent) {
+                            const macroCard = liveTabContent.querySelector('.card:nth-child(2) .ai-content');
+                            if (macroCard) {
+                                weeklyRecapHtml = macroCard.innerHTML;
+                            }
+                        }
+
+                        // Create Tab Content
+                        const contentDiv = document.createElement('div');
+                        contentDiv.id = safeId;
+                        contentDiv.className = 'tabcontent';
+                        contentDiv.innerHTML = `
+                            <div class="card">
+                                <h2>📚 The Daily Masterclass</h2>
+                                <div class="ai-content">${dailyBriefingHtml}</div>
+                            </div>
+                            <div class="card">
+                                <h2>🧵 Macro-Trend Analysis</h2>
+                                <div class="ai-content">${weeklyRecapHtml}</div>
+                            </div>
+                        `;
+                        tabContentsContainer.appendChild(contentDiv);
+                    }
+                }
+
+                // 4. Activate the first tab
+                const firstTabButton = tabButtonsContainer.querySelector('.tablinks');
+                if (firstTabButton) {
+                    firstTabButton.click();
+                }
+
+            } catch (error) {
+                console.error("Error building mockup:", error);
+                document.body.innerHTML = `<div style="padding: 40px; text-align: center; color: red;"><h2>Error loading mockup data</h2><p>${error.message}</p><p>Please ensure you have run the python script at least once to generate 'index.html' and 'history.json'.</p></div>`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", buildMockup);
+    </script>
+</body>
+
+</html>

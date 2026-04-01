@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeEdit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060608;
+            --surface: #060608;
+            --surface2: #13131a;
+            --border: #1e1e2a;
+            --hour-line: #1e1e2a;
+            --half-line: #131318;
+            --quarter-line: #0a0a0e;
+            --now-line: #ff3e3e;
+            --leisure: #a855f7;
+            --work-red: #ef4444;
+            --work-gold: #f59e0b;
+            --health: #22c55e;
+            --text-dim: #3a3a4a;
+            --text-mid: #666680;
+            --text: #c8c8d8;
+            --accent: #7c6af7;
+            --tile-h: 81px;
+            --row-gap: 9px;
+            --row-padding: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            user-select: none;
+            padding: 0;
+        }
+
+        /* subtle noise */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.4;
+        }
+
+        #app {
+            width: 75%;
+            height: 75%;
+            background: var(--surface);
+            border: none;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── HEADER ── */
+        #header {
+            padding: 20px 30px 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-shrink: 0;
+            background: transparent;
+        }
+
+        #header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #date-nav-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 48px;
+        }
+
+        #date-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 10px 4px 0;
+            border-radius: 6px;
+            transition: 0.15s;
+            position: relative;
+        }
+
+        #date-display:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        #date-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: white;
+        }
+
+        #date-arrow {
+            font-size: 16px;
+            color: var(--text-mid);
+            margin-top: 2px;
+        }
+
+        #date-picker-input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
+        }
+
+        #clock {
+            font-family: 'Roboto', monospace;
+            font-size: 30px;
+            color: var(--text-mid);
+            letter-spacing: 0.5px;
+            margin-bottom: 0;
+        }
+
+        #nav-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        #prev-day-btn,
+        #next-day-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            opacity: 0.5;
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+        }
+
+        #prev-day-btn:hover,
+        #next-day-btn:hover {
+            opacity: 0.75;
+        }
+
+        #prev-day-btn {
+            order: -1;
+        }
+
+        #nav-buttons span {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        /* ── VIEWPORT ── */
+        #viewport {
+            flex: 1;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            position: relative;
+            border: none;
+            margin: 0;
+            background: transparent;
+        }
+
+        #viewport::-webkit-scrollbar {
+            display: none;
+        }
+
+        #timeline {
+            position: relative;
+            height: 100%;
+            min-width: 4800px;
+            /* 24 * 200 */
+        }
+
+        /* time axis */
+        #time-axis {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: transparent;
+            border: none;
+            z-index: 20;
+        }
+
+        .v-line {
+            position: absolute;
+            top: 32px;
+            height: calc(100% - 32px);
+            width: 1px;
+            pointer-events: none;
+        }
+
+        .hour-v {
+            background: var(--hour-line);
+            width: 1px;
+            opacity: 0.4;
+        }
+
+        .half-v {
+            background: var(--half-line);
+            width: 2px;
+        }
+
+        .time-label {
+            position: absolute;
+            top: 8px;
+            transform: translateX(-50%);
+            font-family: 'Roboto', monospace;
+            font-size: 9px;
+            color: var(--text-dim);
+            z-index: 21;
+        }
+
+        .hour-label {
+            color: var(--text-mid);
+            font-size: 10px;
+        }
+
+        /* now */
+        #now-indicator {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--now-line);
+            z-index: 50;
+            box-shadow: 0 0 12px var(--now-line);
+            pointer-events: none;
+        }
+
+        #now-indicator::before {
+            content: '';
+            position: absolute;
+            top: 32px;
+            left: -4px;
+            width: 10px;
+            height: 10px;
+            background: var(--now-line);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--now-line);
+        }
+
+        /* ── TILES ── */
+        .tile {
+            position: absolute;
+            height: var(--tile-h);
+            border-radius: 7px;
+            padding: 0 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            color: rgba(0, 0, 0, 0.9);
+            cursor: move;
+            z-index: 10;
+            transition: box-shadow 0.1s, opacity 0.15s;
+            letter-spacing: 0.2px;
+        }
+
+        .tile:hover {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25), 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 30;
+        }
+
+        .tile.tentative {
+            opacity: 0.5 !important;
+            border: 2px dashed rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .tile.dragging {
+            opacity: 0.85;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            z-index: 100;
+        }
+
+        .tile-label {
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .resizer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 14px;
+            height: 100%;
+            cursor: e-resize;
+            z-index: 11;
+        }
+
+        .resizer::after {
+            content: '';
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 14px;
+            border-radius: 2px;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        /* ── CONTEXT MENU ── */
+        #ctx-menu {
+            position: fixed;
+            background: #111116;
+            border: 1px solid #2a2a38;
+            border-radius: 8px;
+            width: 210px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+            z-index: 500;
+            display: none;
+            overflow: hidden;
+            animation: menuIn 0.1s ease;
+        }
+
+        .ctx-scroll {
+            max-height: 320px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #2a2a38 transparent;
+        }
+
+        @keyframes menuIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .ctx-section {
+            padding: 4px 0;
+            border-bottom: 1px solid #1a1a24;
+        }
+
+        .ctx-label {
+            font-family: 'Roboto', sans-serif;
+            font-size: 8px;
+            padding: 7px 14px 2px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .ctx-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 14px;
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.1s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .ctx-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+        }
+
+        .ctx-item.danger {
+            color: #ff5555;
+        }
+
+        .ctx-item.danger:hover {
+            background: rgba(255, 50, 50, 0.1);
+        }
+
+        .ctx-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        @keyframes menuIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+
+
+        /* ── TIME NAVIGATION ── */
+        #time-nav {
+            padding: 8px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-shrink: 0;
+            background: transparent;
+            border-top: 1px solid var(--border);
+        }
+
+        .time-nav-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-mid);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            transition: 0.15s;
+        }
+
+        .time-nav-btn:hover {
+            border-color: #3a3a50;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .time-nav-btn:active {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        /* ── FOOTER ── */
+        #footer {
+            padding: 10px 30px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            background: transparent;
+        }
+
+        #legend {
+            flex: 1;
+            min-width: 0;
+        }
+
+        #footer-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        #toggle-legend-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-mid);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: 0.15s;
+        }
+
+        #toggle-legend-btn:hover {
+            border-color: #3a3a50;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        #legend.hidden {
+            display: none;
+        }
+
+        #toggle-legend-btn.collapsed {
+            border-color: #3a3a50;
+        }
+
+        #undo-btn,
+        #clear-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-mid);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            transition: 0.15s;
+        }
+
+        #undo-btn:hover,
+        #clear-btn:hover {
+            border-color: #3a3a50;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        #clear-btn:hover {
+            border-color: #ff5555;
+            color: #ff5555;
+        }
+
+        #add-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-mid);
+            padding: 12px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: 0.15s;
+        }
+
+        #add-btn:hover {
+            border-color: #3a3a50;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        #legend {
+            display: flex;
+            gap: 18px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            #header {
+                padding: 18px 24px 0;
+                gap: 12px;
+            }
+
+            #date-text {
+                font-size: 22px;
+            }
+
+            #footer {
+                padding: 12px 24px 16px;
+            }
+
+            #legend {
+                gap: 10px;
+            }
+
+            .legend-item {
+                font-size: 11px;
+            }
+
+            #add-btn {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+
+            #undo-btn,
+            #clear-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            #toggle-legend-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            #time-nav {
+                padding: 6px 24px;
+                gap: 6px;
+            }
+
+            .time-nav-btn {
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #header {
+                padding: 14px 16px 0;
+                gap: 8px;
+            }
+
+            #date-text {
+                font-size: 18px;
+            }
+
+            #clock {
+                font-size: 20px;
+            }
+
+            #footer {
+                padding: 10px 16px 14px;
+                gap: 8px;
+            }
+
+            #legend {
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .legend-item {
+                font-size: 11px;
+            }
+
+            #add-btn {
+                padding: 9px 18px;
+                font-size: 11px;
+            }
+
+            #undo-btn,
+            #clear-btn {
+                padding: 9px 14px;
+                font-size: 11px;
+            }
+
+            #toggle-legend-btn {
+                padding: 9px 14px;
+                font-size: 11px;
+            }
+
+            .tile {
+                font-size: 10px;
+            }
+
+            .tile-label {
+                font-size: 10px;
+            }
+
+            #time-nav {
+                padding: 6px 16px;
+            }
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            #header {
+                padding: 12px 14px 0;
+            }
+
+            #footer {
+                padding: 10px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #header {
+                padding: 10px 12px 0;
+                gap: 6px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            #date-text {
+                font-size: 16px;
+            }
+
+            #clock {
+                font-size: 16px;
+            }
+
+            #footer {
+                padding: 8px 12px 12px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            #legend {
+                gap: 6px;
+                flex-wrap: wrap;
+                width: 100%;
+                order: 2;
+            }
+
+            .legend-item {
+                font-size: 9px;
+            }
+
+            #add-btn {
+                width: 100%;
+                order: 1;
+                padding: 10px 12px;
+                font-size: 11px;
+            }
+
+            #undo-btn,
+            #clear-btn {
+                padding: 8px 12px;
+                font-size: 10px;
+                flex: 1;
+            }
+
+            #toggle-legend-btn {
+                padding: 8px 12px;
+                font-size: 10px;
+                flex: 1;
+            }
+
+            .tile {
+                font-size: 9px;
+                padding: 0 10px;
+            }
+
+            .tile-label {
+                font-size: 9px;
+            }
+
+            .ctx-item {
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+
+            .ctx-menu {
+                width: 180px;
+                max-height: 280px;
+            }
+
+            #time-nav {
+                padding: 6px 12px;
+            }
+
+            .time-nav-btn {
+                padding: 4px 8px;
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 480px) and (orientation: portrait) {
+            #header {
+                padding: 10px 12px 8px;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            #header {
+                padding: 12px 14px 0;
+            }
+
+            #footer {
+                padding: 8px 14px;
+            }
+
+            #date-text {
+                font-size: 16px;
+            }
+
+            #legend {
+                gap: 10px;
+            }
+
+            .legend-item {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <div id="header">
+            <div id="header-center">
+                <div id="date-nav-row">
+                    <button id="prev-day-btn" onclick="prevDay()" title="Previous day">
+                        <span id="prev-date-label">29th</span>
+                    </button>
+                    <div id="date-display" onclick="openDatePicker()">
+                        <span id="date-text">30th March</span>
+                        <span id="date-arrow">›</span>
+                        <input type="date" id="date-picker-input" onchange="onDateChange(this.value)">
+                    </div>
+                    <button id="next-day-btn" onclick="nextDay()" title="Next day">
+                        <span id="next-date-label">31st</span>
+                    </button>
+                </div>
+                <span id="clock">00:00:00</span>
+            </div>
+        </div>
+
+        <div id="viewport">
+            <div id="timeline">
+                <div id="time-axis"></div>
+                <div id="now-indicator"></div>
+            </div>
+        </div>
+
+        <div id="time-nav">
+            <button class="time-nav-btn" onclick="scrollToTime(0)">12 AM</button>
+            <button class="time-nav-btn" onclick="scrollToTime(6)">6 AM</button>
+            <button class="time-nav-btn" onclick="scrollToTime(12)">12 PM</button>
+            <button class="time-nav-btn" onclick="scrollToTime(18)">6 PM</button>
+        </div>
+
+        <div id="footer">
+            <div id="legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#f97316"></div>Work
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#38bdf8"></div>Learn
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#a855f7"></div>Leisure
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#22c55e"></div>Health
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#4f46e5"></div>Sleep
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#64748b"></div>Maintenance
+                </div>
+            </div>
+            <div id="footer-right">
+                <button id="toggle-legend-btn" onclick="toggleLegendVisibility()" title="Toggle legend">◀
+                    Legend</button>
+                <button id="undo-btn" onclick="undoLastChange()">← Undo</button>
+                <button id="clear-btn" onclick="clearAllSlots()">Clear All</button>
+                <button id="add-btn" onclick="addNewSlot()">+ Add slot</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="ctx-menu">
+        <div class="ctx-scroll">
+            <!-- WORK -->
+            <div class="ctx-section">
+                <div class="ctx-label" style="color:#f97316">Work</div>
+                <div class="ctx-item" onclick="ctxUpdate('Work: HotSwap', '#f97316')">
+                    <div class="ctx-dot" style="background:#f97316"></div>HotSwap
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Work: ETHERRA', '#ef4444')">
+                    <div class="ctx-dot" style="background:#ef4444"></div>ETHERRA
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Work: Misfits', '#fb923c')">
+                    <div class="ctx-dot" style="background:#fb923c"></div>Misfits
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Work: Heads Will Roll', '#f59e0b')">
+                    <div class="ctx-dot" style="background:#f59e0b"></div>Heads Will Roll
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Work: AEGIS', '#fbbf24')">
+                    <div class="ctx-dot" style="background:#fbbf24"></div>AEGIS
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Work: JOB!', '#ef4444')">
+                    <div class="ctx-dot" style="background:#ef4444"></div>JOB!
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Work: Miscellaneous', '#78716c')">
+                    <div class="ctx-dot" style="background:#78716c"></div>Miscellaneous
+                </div>
+            </div>
+            <!-- LEARN -->
+            <div class="ctx-section">
+                <div class="ctx-label" style="color:#38bdf8">Learn</div>
+                <div class="ctx-item" onclick="ctxUpdate('Learn: Unity', '#38bdf8')">
+                    <div class="ctx-dot" style="background:#38bdf8"></div>Unity
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Learn: Unreal Engine', '#0ea5e9')">
+                    <div class="ctx-dot" style="background:#0ea5e9"></div>Unreal Engine
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Learn: C++', '#7dd3fc')">
+                    <div class="ctx-dot" style="background:#7dd3fc"></div>C++
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Learn: OpenGL', '#0284c7')">
+                    <div class="ctx-dot" style="background:#0284c7"></div>OpenGL
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Learn: Touch Typing', '#bae6fd')">
+                    <div class="ctx-dot" style="background:#bae6fd"></div>Touch Typing
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Learn: Explore', '#67e8f9')">
+                    <div class="ctx-dot" style="background:#67e8f9"></div>Explore
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Learn: Miscellaneous', '#64748b')">
+                    <div class="ctx-dot" style="background:#64748b"></div>Miscellaneous
+                </div>
+            </div>
+            <!-- LEISURE -->
+            <div class="ctx-section">
+                <div class="ctx-label" style="color:#a855f7">Leisure</div>
+                <div class="ctx-item" onclick="ctxUpdate('Leisure: Game', '#a855f7')">
+                    <div class="ctx-dot" style="background:#a855f7"></div>Game
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Leisure: TV', '#c084fc')">
+                    <div class="ctx-dot" style="background:#c084fc"></div>TV
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Leisure: Relax/Talk', '#d8b4fe')">
+                    <div class="ctx-dot" style="background:#d8b4fe"></div>Relax/Talk
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Leisure: Read', '#818cf8')">
+                    <div class="ctx-dot" style="background:#818cf8"></div>Read
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Leisure: Music', '#a78bfa')">
+                    <div class="ctx-dot" style="background:#a78bfa"></div>Music
+                </div>
+            </div>
+            <!-- HEALTH -->
+            <div class="ctx-section">
+                <div class="ctx-label" style="color:#22c55e">Health</div>
+                <div class="ctx-item" onclick="ctxUpdate('Health: Eat', '#22c55e')">
+                    <div class="ctx-dot" style="background:#22c55e"></div>Eat
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Health: Cook', '#4ade80')">
+                    <div class="ctx-dot" style="background:#4ade80"></div>Cook
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Health: Meditate', '#86efac')">
+                    <div class="ctx-dot" style="background:#86efac"></div>Meditate
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Health: Bath + Pray', '#bbf7d0')">
+                    <div class="ctx-dot" style="background:#bbf7d0"></div>Bath + Pray
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Health: Work Out', '#16a34a')">
+                    <div class="ctx-dot" style="background:#16a34a"></div>Work Out
+                </div>
+            </div>
+            <!-- SLEEP -->
+            <div class="ctx-section">
+                <div class="ctx-label" style="color:#6366f1">Sleep</div>
+                <div class="ctx-item" onclick="ctxUpdate('Sleep', '#4f46e5')">
+                    <div class="ctx-dot" style="background:#4f46e5"></div>Sleep
+                </div>
+            </div>
+            <!-- MAINTENANCE -->
+            <div class="ctx-section">
+                <div class="ctx-label" style="color:#94a3b8">Maintenance</div>
+                <div class="ctx-item" onclick="ctxUpdate('Maintenance: Chores', '#64748b')">
+                    <div class="ctx-dot" style="background:#64748b"></div>Chores
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Maintenance: Grocery Shopping', '#94a3b8')">
+                    <div class="ctx-dot" style="background:#94a3b8"></div>Grocery Shopping
+                </div>
+                <div class="ctx-item" onclick="ctxUpdate('Travel', '#e2e8f0')">
+                    <div class="ctx-dot" style="background:#e2e8f0"></div>Travel
+                </div>
+            </div>
+        </div>
+        <!-- Actions always visible at bottom -->
+        <div style="border-top:1px solid #1e1e28; padding: 4px 0;">
+            <div class="ctx-item" id="ctx-tentative" onclick="ctxToggleTentative()" style="color:#94a3b8">Make tentative
+            </div>
+            <div class="ctx-item danger" onclick="ctxRemove()">Remove slot</div>
+        </div>
+    </div>
+
+    <script>
+        const PX_PER_HOUR = 350;
+        const SNAP = 87.5; // 15min = 87.5px
+        const ROWS = 4;
+        const timeline = document.getElementById('timeline');
+        const viewport = document.getElementById('viewport');
+        const ctxMenu = document.getElementById('ctx-menu');
+
+        // ── State ──
+        let currentDate = getTodayStr();
+        let allData = JSON.parse(localStorage.getItem('lifeEdit_v5') || '{}');
+        let ctxTargetId = null;
+        let history = [];
+
+        function getTodayStr() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getSlots() { return allData[currentDate] || []; }
+        function setSlots(s) { allData[currentDate] = s; save(); }
+
+        // ── Init ──
+        function init() {
+            buildGrid();
+            render();
+            updateTime();
+            setInterval(updateTime, 1000);
+            setDateLabel(currentDate);
+            document.addEventListener('click', hideCtxMenu);
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') hideCtxMenu(); });
+
+            // Add scroll snap to day boundaries
+            let isChangingDay = false;
+            let wheelScrollCount = 0;
+            let wheelScrollTimeout = null;
+            const wheelThreshold = 3; // Snap after 3 consecutive wheel scrolls at boundary
+
+            viewport.addEventListener('wheel', (e) => {
+                if (isChangingDay) return;
+
+                const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+                const scrollLeft = viewport.scrollLeft;
+
+                // Clear timeout if it exists
+                if (wheelScrollTimeout) clearTimeout(wheelScrollTimeout);
+
+                // Try to scroll right (positive deltaX) at max boundary
+                if (e.deltaX > 0 && scrollLeft >= maxScroll) {
+                    wheelScrollCount++;
+                    if (wheelScrollCount >= wheelThreshold) {
+                        isChangingDay = true;
+                        wheelScrollCount = 0;
+                        nextDay();
+                        setTimeout(() => {
+                            viewport.scrollLeft = 0;
+                            isChangingDay = false;
+                        }, 50);
+                    }
+                    e.preventDefault();
+                }
+                // Try to scroll left (negative deltaX) at min boundary
+                else if (e.deltaX < 0 && scrollLeft === 0) {
+                    wheelScrollCount++;
+                    if (wheelScrollCount >= wheelThreshold) {
+                        isChangingDay = true;
+                        wheelScrollCount = 0;
+                        prevDay();
+                        setTimeout(() => {
+                            const newMaxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+                            viewport.scrollLeft = newMaxScroll;
+                            isChangingDay = false;
+                        }, 50);
+                    }
+                    e.preventDefault();
+                } else {
+                    // Reset counter if scrolling normally
+                    wheelScrollCount = 0;
+                }
+
+                // Reset counter after 500ms of inactivity
+                wheelScrollTimeout = setTimeout(() => {
+                    wheelScrollCount = 0;
+                }, 500);
+            }, { passive: false });
+        }
+
+        function buildGrid() {
+            const axis = document.getElementById('time-axis');
+            axis.innerHTML = '';
+            // Remove old lines
+            timeline.querySelectorAll('.v-line, .time-label').forEach(e => e.remove());
+
+            const quarterPx = PX_PER_HOUR / 4;
+
+            for (let i = 0; i < 24; i++) {
+                // Create all 4 positions in an hour: 0, 15, 30, 45 minutes
+                for (let q = 0; q < 4; q++) {
+                    const pos = i * PX_PER_HOUR + q * quarterPx;
+
+                    // Line element
+                    const line = document.createElement('div');
+                    line.className = 'v-line';
+                    line.style.left = pos + 'px';
+
+                    // Half-hour markers (prominent) at :00 and :30
+                    if (q % 2 === 0) {
+                        line.classList.add('half-v');
+
+                        // Add label
+                        const label = document.createElement('div');
+                        label.className = 'time-label hour-label';
+                        label.style.left = pos + 'px';
+                        label.textContent = String(i).padStart(2, '0') + ':' + (q === 0 ? '00' : '30');
+                        axis.appendChild(label);
+                    } else {
+                        // Quarter markers (dim) at :15 and :45
+                        line.classList.add('hour-v');
+                    }
+
+                    timeline.appendChild(line);
+                }
+            }
+
+            // Add final 24:00 marker
+            const finalPos = 24 * PX_PER_HOUR;
+            const fh = document.createElement('div');
+            fh.className = 'v-line half-v';
+            fh.style.left = finalPos + 'px';
+            timeline.appendChild(fh);
+
+            const flb = document.createElement('div');
+            flb.className = 'time-label hour-label';
+            flb.style.left = finalPos + 'px';
+            flb.textContent = '24:00';
+            axis.appendChild(flb);
+        }
+
+        // ── Render ──
+        function getRowTop(row) {
+            const tileH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tile-h'));
+            const rowGap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--row-gap'));
+            const rowPad = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--row-padding'));
+            return 32 + rowPad + row * (tileH + rowGap);
+        }
+
+        function saveState() {
+            history.push(JSON.parse(JSON.stringify(allData)));
+            if (history.length > 20) history.shift(); // Keep last 20 states
+        }
+
+        function undoLastChange() {
+            if (history.length === 0) return;
+            allData = history.pop();
+            save();
+            render();
+        }
+
+        function clearAllSlots() {
+            if (getSlots().length === 0) return;
+            if (!confirm('Are you sure you want to remove all tiles?')) return;
+            saveState();
+            setSlots([]);
+            render();
+        }
+
+        function render() {
+            timeline.querySelectorAll('.tile').forEach(t => t.remove());
+            const slots = getSlots();
+            // Organize tiles by priority (start time) before rendering
+            organizeTilesByPriority(slots);
+            slots.forEach(s => {
+                const el = document.createElement('div');
+                el.className = 'tile' + (s.tentative ? ' tentative' : '');
+                el.dataset.id = s.id;
+                el.style.left = s.x + 'px';
+                el.style.top = getRowTop(s.row || 0) + 'px';
+                el.style.width = s.w + 'px';
+                el.style.backgroundColor = s.color;
+
+                el.innerHTML = `
+                <span class="tile-label">${s.text}</span>
+                <div class="resizer"></div>
+            `;
+
+                el.addEventListener('mousedown', e => {
+                    if (e.target.classList.contains('resizer')) {
+                        startAction(e, s.id, 'resize');
+                    } else {
+                        startAction(e, s.id, 'drag');
+                    }
+                });
+
+                el.addEventListener('contextmenu', e => {
+                    e.preventDefault();
+                    openCtxMenu(e, s.id);
+                });
+
+                timeline.appendChild(el);
+            });
+        }
+
+        function findAvailableRow(slots, x, w, excludeId) {
+            // Find the first available row where this tile doesn't overlap with others
+            outer: for (let row = 0; row < ROWS; row++) {
+                for (const other of slots) {
+                    if (other.id === excludeId) continue;  // Skip the tile being moved
+                    if ((other.row || 0) !== row) continue; // Check only tiles in this row
+
+                    // Check for horizontal overlap: [x, x+w) intersects with [other.x, other.x+other.w)
+                    if (x < other.x + other.w && x + w > other.x) {
+                        continue outer; // This row is occupied, try next row
+                    }
+                }
+                return row; // Row is available
+            }
+            return ROWS - 1; // Fallback to last row if all full
+        }
+
+        function organizeTilesByPriority(slots) {
+            // Sort tiles by start time (x position), then by duration
+            const sorted = [...slots].sort((a, b) => {
+                if (a.x !== b.x) return a.x - b.x; // Earlier start times first
+                return (b.w - a.w); // If same start time, longer tiles first
+            });
+
+            // Assign rows based on priority order
+            sorted.forEach(tile => {
+                tile.row = findAvailableRow(sorted, tile.x, tile.w, tile.id);
+            });
+
+            return slots; // Return original array (modified by reference)
+        }
+
+
+
+        function startAction(e, id, type) {
+            e.preventDefault();
+            e.stopPropagation();
+            const slots = getSlots();
+            const s = slots.find(x => x.id === id);
+            // Use viewport rect — stable regardless of timeline scroll position
+            const vRect = viewport.getBoundingClientRect();
+            const scrollLeft = viewport.scrollLeft;
+            // mouseX in timeline-space
+            const mouseXinTimeline = e.clientX - vRect.left + scrollLeft;
+
+            const el = timeline.querySelector(`[data-id="${id}"]`);
+            el.classList.add('dragging');
+
+            action = {
+                type, id,
+                vRect,                          // captured once, reused in onMove
+                offsetX: mouseXinTimeline - s.x, // for drag: cursor offset from tile left
+                resizeOffsetX: (s.x + s.w) - mouseXinTimeline, // for resize: cursor offset from right edge
+                origX: s.x, origRow: s.row || 0, origW: s.w
+            };
+
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onUp);
+        }
+
+        function onMove(e) {
+            if (!action) return;
+            const slots = getSlots();
+            const s = slots.find(x => x.id === action.id);
+            const scrollLeft = viewport.scrollLeft;
+
+            // Recapture vRect on each move to handle viewport changes
+            const currentVRect = viewport.getBoundingClientRect();
+
+            // Always compute mouseX relative to timeline using live scrollLeft
+            const mouseX = e.clientX - currentVRect.left + scrollLeft;
+            const mouseY = e.clientY - currentVRect.top;
+
+            if (action.type === 'drag') {
+                const rawX = mouseX - action.offsetX;
+                const dayBoundary = 24 * PX_PER_HOUR;
+                // Prevent dragging past the end of the day
+                const maxX = Math.max(0, dayBoundary - s.w);
+                s.x = Math.max(0, Math.min(maxX, Math.round(rawX / SNAP) * SNAP));
+                // Row will be auto-assigned based on priority during render
+            } else {
+                // right edge = mouseX + resizeOffsetX, then width = right - left
+                const rightEdge = mouseX + action.resizeOffsetX;
+                const rawW = rightEdge - s.x;
+                // Allow width to go beyond day boundary for overflow to next day
+                const maxWidth = Math.max(SNAP, Math.round(rawW / SNAP) * SNAP);
+
+                // 24-hour boundary check
+                const dayBoundary = 24 * PX_PER_HOUR;
+                if (s.x + maxWidth > dayBoundary) {
+                    // Tile extends beyond current day
+                    const overflow = s.x + maxWidth - dayBoundary;
+                    s.w = Math.round((dayBoundary - s.x) / SNAP) * SNAP;
+
+                    // Add overflow to next day
+                    const nextDate = new Date(currentDate + 'T12:00:00');
+                    nextDate.setDate(nextDate.getDate() + 1);
+                    const nextDateStr = nextDate.toISOString().split('T')[0];
+
+                    // Get or create next day's slots
+                    const nextDaySlots = allData[nextDateStr] || [];
+
+                    // Create new tile for next day
+                    const nextDayTile = {
+                        id: Date.now(),
+                        text: s.text,
+                        color: s.color,
+                        x: 0,
+                        row: s.row || 0,
+                        w: Math.round(overflow / SNAP) * SNAP,
+                        tentative: s.tentative
+                    };
+
+                    nextDaySlots.push(nextDayTile);
+                    allData[nextDateStr] = nextDaySlots;
+                    save();
+                } else {
+                    s.w = maxWidth;
+                }
+            }
+            setSlots(slots);
+            render();
+        }
+
+        function onUp() {
+            if (action) {
+                const el = timeline.querySelector(`[data-id="${action.id}"]`);
+                if (el) el.classList.remove('dragging');
+
+                // Handle overflow to next day on release if resizing
+                if (action.type === 'resize') {
+                    const slots = getSlots();
+                    const s = slots.find(x => x.id === action.id);
+                    const dayBoundary = 24 * PX_PER_HOUR;
+
+                    if (s.x + s.w > dayBoundary) {
+                        // Tile extends beyond current day - create overflow on next day
+                        const overflow = s.x + s.w - dayBoundary;
+                        s.w = dayBoundary - s.x;  // Cap current tile at midnight
+
+                        // Calculate next date
+                        const d = new Date(currentDate + 'T12:00:00');
+                        d.setDate(d.getDate() + 1);
+                        const nextDateStr = d.getFullYear() + '-' +
+                            String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                            String(d.getDate()).padStart(2, '0');
+
+                        // Get or create next day's slots
+                        const nextDaySlots = allData[nextDateStr] || [];
+
+                        // Create new tile for next day with overflow amount
+                        const nextDayTile = {
+                            id: Date.now() + Math.random(),
+                            text: s.text,
+                            color: s.color,
+                            x: 0,
+                            row: s.row || 0,
+                            w: overflow,
+                            tentative: s.tentative
+                        };
+
+                        nextDaySlots.push(nextDayTile);
+                        allData[nextDateStr] = nextDaySlots;
+                        save();
+
+                        setSlots(slots);
+                        render();
+                    }
+                }
+
+                saveState();
+            }
+            action = null;
+            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('mouseup', onUp);
+        }
+
+        // ── Add Slot ──
+        function addNewSlot() {
+            saveState();
+            const slots = getSlots();
+
+            // Always place at center of viewport
+            const scrollX = viewport.scrollLeft;
+            const x = Math.round((scrollX + viewport.clientWidth / 2) / SNAP) * SNAP;
+
+            slots.push({
+                id: Date.now(),
+                text: 'New Activity',
+                color: '#555566',
+                x, row: 0, w: 140,
+                tentative: false
+            });
+            setSlots(slots);
+            render();
+        }
+
+        // ── Context Menu ──
+        function openCtxMenu(e, id) {
+            e.stopPropagation();
+            ctxTargetId = id;
+            const slots = getSlots();
+            const s = slots.find(x => x.id === id);
+
+            // Update tentative label
+            document.getElementById('ctx-tentative').textContent =
+                s.tentative ? '✓ Tentative (remove)' : 'Make tentative';
+
+            ctxMenu.style.display = 'block';
+            const x = Math.min(e.clientX, window.innerWidth - 180);
+            const y = Math.min(e.clientY, window.innerHeight - 300);
+            ctxMenu.style.left = x + 'px';
+            ctxMenu.style.top = y + 'px';
+        }
+
+        function hideCtxMenu() {
+            ctxMenu.style.display = 'none';
+            ctxTargetId = null;
+        }
+
+        function ctxUpdate(text, color) {
+            if (!ctxTargetId) return;
+            saveState();
+            const slots = getSlots();
+            const s = slots.find(x => x.id === ctxTargetId);
+            if (s) { s.text = text; s.color = color; }
+            setSlots(slots);
+            render();
+            hideCtxMenu();
+        }
+
+        function ctxToggleTentative() {
+            if (!ctxTargetId) return;
+            saveState();
+            const slots = getSlots();
+            const s = slots.find(x => x.id === ctxTargetId);
+            if (s) s.tentative = !s.tentative;
+            setSlots(slots);
+            render();
+            hideCtxMenu();
+        }
+
+        function ctxRemove() {
+            if (!ctxTargetId) return;
+            saveState();
+            let slots = getSlots();
+            slots = slots.filter(x => x.id !== ctxTargetId);
+            setSlots(slots);
+            render();
+            hideCtxMenu();
+        }
+
+        // ── Date ──
+        function openDatePicker() {
+            const inp = document.getElementById('date-picker-input');
+            inp.value = currentDate;
+            inp.showPicker?.();
+            inp.focus();
+        }
+
+        function onDateChange(val) {
+            if (!val) return;
+            currentDate = val;
+            setDateLabel(val);
+            render();
+        }
+
+        function setDateLabel(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            const day = d.getDate();
+            const month = d.toLocaleString('en-GB', { month: 'long' });
+            const suffix = ['th', 'st', 'nd', 'rd'][Math.min((day % 10 > 3 || [11, 12, 13].includes(day % 100)) ? 0 : day % 10, 3)];
+            document.getElementById('date-text').textContent = `${day}${suffix} ${month}`;
+            updateAdjacentDates(dateStr);
+        }
+
+        function getDateSuffix(day) {
+            return ['th', 'st', 'nd', 'rd'][Math.min((day % 10 > 3 || [11, 12, 13].includes(day % 100)) ? 0 : day % 10, 3)];
+        }
+
+        function formatDateShort(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            const day = d.getDate();
+            const suffix = getDateSuffix(day);
+            return `${day}${suffix}`;
+        }
+
+        function updateAdjacentDates(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+
+            // Previous date
+            const prevDate = new Date(d);
+            prevDate.setDate(prevDate.getDate() - 1);
+            const prevStr = prevDate.toISOString().split('T')[0];
+            document.getElementById('prev-date-label').textContent = formatDateShort(prevStr);
+
+            // Next date
+            const nextDate = new Date(d);
+            nextDate.setDate(nextDate.getDate() + 1);
+            const nextStr = nextDate.toISOString().split('T')[0];
+            document.getElementById('next-date-label').textContent = formatDateShort(nextStr);
+        }
+
+        function prevDay() {
+            const d = new Date(currentDate + 'T12:00:00');
+            d.setDate(d.getDate() - 1);
+            const newDate = d.toISOString().split('T')[0];
+            onDateChange(newDate);
+        }
+
+        function nextDay() {
+            const d = new Date(currentDate + 'T12:00:00');
+            d.setDate(d.getDate() + 1);
+            const newDate = d.toISOString().split('T')[0];
+            onDateChange(newDate);
+        }
+
+        function scrollToTime(hours) {
+            const scrollLeft = (hours / 24) * (24 * PX_PER_HOUR);
+            viewport.scrollLeft = Math.max(0, scrollLeft - viewport.clientWidth / 4);
+        }
+
+        // ── Legend toggle ──
+        function toggleLegendVisibility() {
+            const legend = document.getElementById('legend');
+            const btn = document.getElementById('toggle-legend-btn');
+            legend.classList.toggle('hidden');
+            btn.classList.toggle('collapsed');
+            // Update button text
+            btn.textContent = legend.classList.contains('hidden') ? '▶ Legend' : '◀ Legend';
+        }
+
+
+        function updateTime() {
+            const now = new Date();
+            // Only show now line if viewing today
+            const todayStr = getTodayStr();
+            const indicator = document.getElementById('now-indicator');
+            if (currentDate === todayStr) {
+                const x = ((now.getHours() * 60 + now.getMinutes()) / 60) * PX_PER_HOUR;
+                indicator.style.left = x + 'px';
+                indicator.style.display = 'block';
+            } else {
+                indicator.style.display = 'none';
+            }
+
+            document.getElementById('clock').textContent =
+                now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+
+            // Initial scroll to now
+            if (!window._scrolled && currentDate === todayStr) {
+                const x = ((now.getHours() * 60 + now.getMinutes()) / 60) * PX_PER_HOUR;
+                viewport.scrollLeft = Math.max(0, x - 280);
+                window._scrolled = true;
+            }
+        }
+
+        function save() { localStorage.setItem('lifeEdit_v5', JSON.stringify(allData)); }
+
+        init();
+    </script>
+</body>
+
+</html>
