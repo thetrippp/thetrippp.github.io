@@ -133,17 +133,18 @@ for cat_name, feeds in categories.items():
             history[cat_name] = history[cat_name][-28:]
             
         safe_id = "".join(e for e in cat_name if e.isalnum())
-        tab_buttons_html += f'<button class="tablinks" onclick="openTab(event, \'{safe_id}\')">{cat_name}</button>\n'
+        tab_buttons_html += f'<button onclick="openTab(event, \'{safe_id}\')">{cat_name}</button>\n'
         tab_content_html += f"""
         <div id="{safe_id}" class="tabcontent">
-            <div class="card">
-                <h2>📚 The Daily Masterclass</h2>
+            <section class="content-section">
+                <h2 class="section-heading daily">Daily Analysis</h2>
                 <div class="ai-content">{daily_briefing_html}</div>
-            </div>
-            <div class="card">
-                <h2>🧵 Macro-Trend Analysis</h2>
+            </section>
+            <hr class="section-divider">
+            <section class="content-section">
+                <h2 class="section-heading macro">Macro Trends</h2>
                 <div class="ai-content">{weekly_recap_html}</div>
-            </div>
+            </section>
         </div>
         """
         print("Success!")
@@ -163,282 +164,316 @@ html_content = f"""
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Intelligence Briefing</title>
+    <title>Daily Briefing</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         :root {{
-            --bg-color: hsl(210, 36%, 96%);
-            /* Very light blue-grey */
-            --text-color: hsl(210, 10%, 20%);
-            /* Dark grey */
-            --muted-text-color: hsl(210, 5%, 45%);
-            /* Medium grey */
-            --accent-color: hsl(200, 70%, 40%);
-            /* Professional blue */
-            --card-bg: hsl(0, 0%, 100%);
-            /* White */
-            --border-color: hsl(210, 15%, 88%);
-            /* Light grey border */
-            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --bg-color: #ffffff;
+            --surface-color: #f8f9fa;
+            --text-color: #1a1a1a;
+            --text-muted: #4a4a4a;
+            --text-light: #6b6b6b;
+            --accent-primary: #2563eb;
+            --accent-secondary: #059669;
+            --accent-tertiary: #dc2626;
+            --accent-warm: #ea580c;
+            --border-color: #e5e5e5;
+            --border-light: #f0f0f0;
+        }}
+
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }}
 
         body {{
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.6;
-            /* Slightly tighter line height for readability */
-            max-width: 960px;
-            /* Slightly wider content area */
+            line-height: 1.85;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 50px 25px;
-            /* More padding */
+            padding: 60px 48px;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }}
 
-        h1,
-        h2,
-        .story-title {{
-            font-family: 'Lora', serif;
-            font-weight: 700;
-            color: var(--text-color);
+        /* Header */
+        header {{
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border-color);
         }}
 
         h1 {{
-            font-size: 3.2rem;
-            /* Larger main title */
-            text-align: center;
-            margin-bottom: 0.2em;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
             color: var(--text-color);
-            line-height: 1.1;
         }}
 
-        h2 {{
-            font-size: 1.8rem;
-            /* Larger section titles */
-            color: var(--text-color);
-            border-bottom: 2px solid var(--border-color);
-            /* Thicker border */
-            padding-bottom: 12px;
-            margin-top: 40px;
-            /* More space above h2 */
-            margin-bottom: 25px;
-            margin-top: 0;
+        .subtitle {{
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            font-weight: 400;
         }}
 
-        .header-container {{
-            text-align: center;
-            margin-bottom: 50px;
-            /* More space below header */
-            padding-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-        }}
-
-        .header-container p {{
-            color: var(--muted-text-color);
-            font-size: 1.2rem;
-            /* Slightly larger tagline */
-            margin: 0.5em 0 0;
-        }}
-
-        .date-badge {{
-            display: inline-block;
-            background-color: var(--border-color);
-            color: var(--muted-text-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            /* More rounded badge */
+        .date {{
             font-size: 0.8rem;
-            font-weight: 600;
-            margin-top: 15px;
-            letter-spacing: 0.5px;
-        }}
-
-        .tab {{
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            /* More space between tabs */
-            margin-bottom: 40px;
-            /* More space below tabs */
-            border-bottom: 1px solid var(--border-color);
-            /* Subtle line below tabs */
-            padding-bottom: 10px;
-        }}
-
-        .tab button {{
-            background: none;
-            border: none;
-            border-bottom: 3px solid transparent;
-            /* Thicker active border */
-            color: var(--muted-text-color);
-            padding: 12px 10px;
-            /* Adjusted padding */
-            cursor: pointer;
-            font-size: 1.05rem;
-            /* Slightly larger font */
-            font-weight: 600;
-            transition: all 0.2s ease;
-            margin-bottom: -1px;
+            color: var(--text-light);
+            margin-top: 20px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            /* Uppercase tabs */
-            letter-spacing: 0.8px;
         }}
 
-        .tab button:hover {{
-            color: var(--accent-color);
-            border-bottom-color: var(--accent-color);
-            /* Highlight on hover */
+        /* Navigation Tabs */
+        nav {{
+            display: flex;
+            gap: 12px;
+            margin-bottom: 56px;
+            flex-wrap: wrap;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
         }}
 
-        .tab button.active {{
+        nav button {{
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 14px 28px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }}
+
+        nav button:hover {{
             color: var(--text-color);
-            border-bottom-color: var(--accent-color);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
         }}
 
+        nav button.active {{
+            color: var(--bg-color);
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }}
+
+        /* Tab Content */
         .tabcontent {{
             display: none;
-            animation: fadeEffect 0.5s;
+            animation: fadeIn 0.4s ease;
         }}
 
-        @keyframes fadeEffect {{
-            from {{
-                opacity: 0;
-                transform: translateY(10px);
-            }}
-
-            to {{
-                opacity: 1;
-                transform: translateY(0);
-            }}
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(10px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
         }}
 
-        .card {{
-            background: var(--card-bg);
-            padding: 35px 45px;
-            /* More internal padding */
-            margin-bottom: 40px;
-            /* More space between cards */
-            border-radius: 10px;
-            /* Slightly more rounded corners */
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-medium);
-            /* More pronounced shadow */
-        }}
-
-        .story-box {{
-            padding: 30px 0;
-            /* More vertical padding */
-            margin-bottom: 30px;
-            border-bottom: 1px dashed var(--border-color);
-            /* Dashed separator */
-        }}
-
-        .story-box:last-child {{
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }}
-
-        .story-title {{
-            color: var(--accent-color);
-            /* Story title in accent color */
-            font-size: 2.2rem;
-            /* Larger story title */
-            margin-top: 0;
-            margin-bottom: 10px;
-            line-height: 1.2;
-        }}
-
-        .section-head {{
-            font-family: 'Inter', sans-serif;
-            color: var(--muted-text-color);
-            font-size: 0.9rem;
-            /* Slightly larger section head */
+        /* Section Headings */
+        .section-heading {{
+            font-size: 0.875rem;
             font-weight: 700;
-            /* Bolder */
             text-transform: uppercase;
-            letter-spacing: 1px;
-            /* More letter spacing */
-            margin-top: 20px;
-            margin-bottom: 8px;
+            letter-spacing: 0.15em;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid;
+        }}
+
+        .section-heading.daily {{
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }}
+
+        .section-heading.macro {{
+            color: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+        }}
+
+        /* Content Container */
+        .content-section {{
+            margin-bottom: 64px;
+        }}
+
+        /* Seamless Content */
+        .ai-content {{
+            font-size: 1.125rem;
+            line-height: 1.9;
+            color: var(--text-color);
         }}
 
         .ai-content p {{
-            margin-bottom: 1.2em;
-            /* More space between paragraphs */
-            font-size: 1.05rem;
-            /* Slightly larger body text */
-            color: hsl(210, 8%, 30%);
-            /* Slightly darker body text for contrast */
+            margin-bottom: 0;
+            text-indent: 2em;
         }}
 
+        .ai-content p:first-of-type {{
+            text-indent: 0;
+        }}
+
+        .ai-content p:first-of-type::first-letter {{
+            font-size: 3.5rem;
+            font-weight: 700;
+            float: left;
+            line-height: 1;
+            padding-right: 12px;
+            padding-top: 8px;
+            color: var(--accent-primary);
+        }}
+
+        /* Headings within content */
+        .ai-content h3 {{
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 48px 0 24px 0;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent-warm);
+            line-height: 1.3;
+        }}
+
+        .ai-content h4 {{
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-tertiary);
+            margin: 36px 0 16px 0;
+        }}
+
+        /* Lists */
+        .ai-content ul,
+        .ai-content ol {{
+            margin: 24px 0;
+            padding-left: 0;
+            list-style: none;
+        }}
+
+        .ai-content li {{
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 16px;
+            font-size: 1.0625rem;
+            line-height: 1.8;
+        }}
+
+        .ai-content ul li::before {{
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+        }}
+
+        .ai-content ol {{
+            counter-reset: item;
+        }}
+
+        .ai-content ol li {{
+            counter-increment: item;
+        }}
+
+        .ai-content ol li::before {{
+            content: counter(item);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 24px;
+            height: 24px;
+            background: var(--accent-secondary);
+            color: var(--bg-color);
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }}
+
+        /* Strong text */
         .ai-content strong {{
             color: var(--text-color);
-            font-weight: 700;
-            /* Bolder strong text */
+            font-weight: 600;
         }}
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {{
+        /* Links */
+        .ai-content a {{
+            color: var(--accent-primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }}
+
+        .ai-content a:hover {{
+            border-bottom-color: var(--accent-primary);
+        }}
+
+        /* Horizontal rule between major sections */
+        .section-divider {{
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            margin: 64px 0;
+            border: none;
+        }}
+
+        /* Responsive */
+        @media (max-width: 640px) {{
             body {{
-                padding: 30px 15px;
+                padding: 48px 24px;
             }}
 
             h1 {{
+                font-size: 2rem;
+            }}
+
+            .subtitle {{
+                font-size: 1rem;
+            }}
+
+            nav button {{
+                padding: 12px 20px;
+                font-size: 0.875rem;
+            }}
+
+            .ai-content {{
+                font-size: 1rem;
+            }}
+
+            .ai-content h3 {{
+                font-size: 1.25rem;
+            }}
+
+            .ai-content p:first-of-type::first-letter {{
                 font-size: 2.5rem;
-            }}
-
-            h2 {{
-                font-size: 1.4rem;
-                margin-top: 30px;
-                margin-bottom: 20px;
-            }}
-
-            .header-container {{
-                margin-bottom: 30px;
-            }}
-
-            .card {{
-                padding: 25px 20px;
-                margin-bottom: 30px;
-            }}
-
-            .story-title {{
-                font-size: 1.7rem;
-            }}
-
-            .tab button {{
-                font-size: 0.95rem;
-                padding: 10px 8px;
             }}
         }}
     </style>
 </head>
 <body>
-    <div class="header-container">
-        <h1>Daily Intelligence Briefing</h1>
-        <p>An AI-Powered Global News Analysis</p>
-        <div class="date-badge">Last Sync: {today_str}</div>
-    </div>
-    <div class="tab">{tab_buttons_html}</div>
-    {tab_content_html}
+    <header>
+        <h1>Daily Briefing</h1>
+        <p class="subtitle">Curated news analysis</p>
+        <p class="date">{today_str}</p>
+    </header>
+
+    <nav>{tab_buttons_html}</nav>
+    <main>{tab_content_html}</main>
+
     <script>
         function openTab(evt, tabName) {{
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {{ tabcontent[i].style.display = "none"; }}
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {{ tablinks[i].className = tablinks[i].className.replace(" active", ""); }}
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
+            document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).style.display = 'block';
+            evt.currentTarget.classList.add('active');
         }}
         document.addEventListener("DOMContentLoaded", function() {{
-            const firstTab = document.getElementsByClassName("tablinks")[0];
+            const firstTab = document.querySelector('nav button');
             if(firstTab) {{
                 firstTab.click();
             }}
