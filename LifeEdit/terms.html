@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service — LifeEdit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060608;
+            --surface: #0e0e14;
+            --border: #1e1e2a;
+            --text-dim: #3a3a4a;
+            --text-mid: #666680;
+            --text: #c8c8d8;
+            --text-bright: #ffffff;
+            --accent: #7c6af7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(6, 6, 8, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-bright);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-logo span {
+            color: var(--accent);
+        }
+
+        .nav-back {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-mid);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            padding: 7px 16px;
+            border-radius: 6px;
+            transition: 0.15s;
+        }
+
+        .nav-back:hover {
+            color: var(--text);
+            border-color: #3a3a50;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 72px 48px 120px;
+        }
+
+        .page-tag {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--text-bright);
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .meta {
+            font-size: 13px;
+            color: var(--text-mid);
+            margin-bottom: 56px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section {
+            margin-bottom: 48px;
+        }
+
+        h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-bright);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            background: var(--accent);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        ul {
+            margin: 8px 0 12px 0;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        ul li {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text);
+            padding: 4px 0 4px 20px;
+            position: relative;
+        }
+
+        ul li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--text-dim);
+        }
+
+        .highlight-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 18px 22px;
+            margin: 16px 0;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-mid);
+        }
+
+        .highlight-box strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 28px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        footer p {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin: 0;
+        }
+
+        footer a {
+            font-size: 12px;
+            color: var(--text-mid);
+        }
+
+        @media (max-width: 640px) {
+            nav {
+                padding: 14px 20px;
+            }
+
+            .container {
+                padding: 48px 20px 80px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            footer {
+                padding: 20px;
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="LifeEdit.html" class="nav-logo">Life<span>Edit</span></a>
+        <a href="LifeEdit.html" class="nav-back">← Back to app</a>
+    </nav>
+
+    <div class="container">
+        <div class="page-tag">Legal</div>
+        <h1>Terms of Service</h1>
+        <p class="meta">Last updated: April 2026 &nbsp;·&nbsp; Applies to LifeEdit</p>
+
+        <div class="section">
+            <h2>About LifeEdit</h2>
+            <p>LifeEdit is a free, browser-based personal day planning tool. By using LifeEdit, you agree to these
+                terms. If you do not agree, please stop using the app.</p>
+            <div class="highlight-box">
+                <p><strong>Short version:</strong> LifeEdit is a personal tool provided as-is, free of charge. Use it
+                    responsibly and don't misuse the Google Calendar integration.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Use of the app</h2>
+            <p>You may use LifeEdit for personal, non-commercial day planning. You agree not to:</p>
+            <ul>
+                <li>Use the app in any way that violates applicable laws or regulations</li>
+                <li>Attempt to reverse engineer, copy, or redistribute the app for commercial purposes</li>
+                <li>Use the Google Calendar integration to spam, flood, or otherwise abuse Google's services</li>
+                <li>Attempt to gain unauthorised access to any systems or networks connected to the app</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Google services</h2>
+            <p>LifeEdit uses Google's OAuth 2.0 system and the Google Calendar API. Your use of these services is also
+                subject to <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Google's Terms of
+                    Service</a>. By signing in with Google, you grant LifeEdit permission to interact with your Google
+                Calendar on your behalf, as described in the <a href="privacy-policy.html">Privacy Policy</a>.</p>
+            <p>You can revoke this permission at any time from your <a href="https://myaccount.google.com/permissions"
+                    target="_blank" rel="noopener">Google Account settings</a>.</p>
+        </div>
+
+        <div class="section">
+            <h2>Your data</h2>
+            <p>All planning data you create in LifeEdit is stored locally in your browser. You are responsible for
+                maintaining backups of any data you wish to preserve. Clearing your browser data will permanently delete
+                your tiles and planning history.</p>
+            <p>Any events synced to Google Calendar remain in your Google account and are not affected by clearing
+                browser data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Availability</h2>
+            <p>LifeEdit is provided free of charge and on an "as available" basis. There is no guarantee of uptime,
+                continued availability, or that the app will meet your specific requirements. The app may be updated,
+                changed, or discontinued at any time without notice.</p>
+        </div>
+
+        <div class="section">
+            <h2>Disclaimer of warranties</h2>
+            <p>LifeEdit is provided "as is" without warranties of any kind, either express or implied. This includes but
+                is not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
+            </p>
+            <p>In particular, no warranty is made that the Google Calendar sync will function without errors, or that
+                synced events will always accurately reflect the tiles in the app.</p>
+        </div>
+
+        <div class="section">
+            <h2>Limitation of liability</h2>
+            <p>To the fullest extent permitted by law, LifeEdit and its developer shall not be liable for any indirect,
+                incidental, special, consequential, or punitive damages arising from your use of the app — including but
+                not limited to loss of data, missed appointments, or calendar errors resulting from the sync feature.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Changes to these terms</h2>
+            <p>These terms may be updated from time to time. The "Last updated" date at the top of this page will
+                reflect any changes. Continued use of the app after changes are posted constitutes acceptance of the
+                revised terms.</p>
+        </div>
+
+        <div class="section">
+            <h2>Contact</h2>
+            <p>For any questions about these terms, contact <a
+                    href="mailto:basketballsinmyblood@gmail.com">basketballsinmyblood@gmail.com</a>.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 LifeEdit</p>
+        <a href="privacy-policy.html">Privacy Policy</a>
+    </footer>
+
+</body>
+
+</html>
