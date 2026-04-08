@@ -11,6 +11,29 @@ from datetime import datetime
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
+# Model selection - try multiple options
+possible_models = ['gemini-pro', 'gemini-1.5-pro', 'gemini-2.0-flash', 'gemini-1.5-flash']
+MODEL_NAME = None
+
+print("Detecting available Gemini models...")
+try:
+    models_list = client.models.list()
+    available_models_str = [m.name for m in models_list]
+    print(f"Available models from API: {available_models_str}")
+    
+    # Find first available from our preferred list
+    for model in possible_models:
+        if any(model in str(m) for m in available_models_str):
+            MODEL_NAME = model
+            print(f"Selected model: {MODEL_NAME}")
+            break
+except Exception as e:
+    print(f"Warning: Could not list models: {e}")
+
+if not MODEL_NAME:
+    MODEL_NAME = 'gemini-1.5-pro'  # Fallback
+    print(f"Using fallback model: {MODEL_NAME}")
+
 categories = {
     "🌍 Geopolitics": {
         "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
@@ -119,7 +142,27 @@ for cat_name, feeds in categories.items():
     """
     
     try:
-        response_text = client.models.generate_content(model='gemini-1.5-flash', contents=prompt).text
+        # Try primary model first
+        response_text = client.models.generate_content(model=MODEL_NAME, contents=prompt).text
+    except Exception as e:
+        # If primary model fails, try fallback models
+        if "not found" in str(e).lower() or "not supported" in str(e).lower():
+            print(f"  Model {MODEL_NAME} failed, trying alternatives...")
+            response_text = None
+            for fallback_model in possible_models:
+                if fallback_model == MODEL_NAME:
+                    continue
+                try:
+                    print(f"  Trying {fallback_model}...")
+                    response_text = client.models.generate_content(model=fallback_model, contents=prompt).text
+                    break
+                except Exception as e2:
+                    print(f"    {fallback_model} also failed: {e2}")
+                    continue
+            if not response_text:
+                raise e  # Re-raise original exception if all models failed
+        else:
+            raise
         parts = response_text.split("|||DIVIDER|||")
         
         daily_briefing_html = parts[0].replace("```html", "").replace("```", "").strip()
