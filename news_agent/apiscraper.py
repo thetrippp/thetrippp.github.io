@@ -119,7 +119,7 @@ for cat_name, feeds in categories.items():
     """
     
     try:
-        response_text = client.models.generate_content(model='gemini-2.5-flash', contents=prompt).text
+        response_text = client.models.generate_content(model='gemini-1.5-flash', contents=prompt).text
         parts = response_text.split("|||DIVIDER|||")
         
         daily_briefing_html = parts[0].replace("```html", "").replace("```", "").strip()
@@ -147,9 +147,13 @@ for cat_name, feeds in categories.items():
             </section>
         </div>
         """
-        print("Success!")
+        print(f"Success! Generated content for {cat_name}")
     except Exception as e:
-        print(f"Failed to generate content for {cat_name}: {e}")
+        import traceback
+        print(f"ERROR: Failed to generate content for {cat_name}")
+        print(f"Exception: {e}")
+        print("Traceback:")
+        traceback.print_exc()
         
     time.sleep(3) 
 
@@ -483,5 +487,15 @@ html_content = f"""
 </html>
 """
 
+print(f"\nFinal HTML generation:")
+print(f"  - Categories processed: {len([k for k in categories.keys()])}")
+print(f"  - Tab buttons generated: {len(tab_buttons_html) > 0}")
+print(f"  - Tab content generated: {len(tab_content_html) > 0}")
+print(f"  - History entries: {sum(len(v) for v in history.values())}")
+
+if not tab_buttons_html or not tab_content_html:
+    print("WARNING: No content was generated! Check API key and Gemini API availability.")
+
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
+    print(f"HTML written to index.html ({len(html_content)} bytes)")
