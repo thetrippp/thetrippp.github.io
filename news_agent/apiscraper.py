@@ -11,8 +11,8 @@ from datetime import datetime
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# Model selection - try multiple options
-possible_models = ['gemini-pro', 'gemini-1.5-pro', 'gemini-2.0-flash', 'gemini-1.5-flash']
+# Model selection - prioritize newer models that should have free tier
+possible_models = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-flash-latest', 'gemini-pro-latest']
 MODEL_NAME = None
 
 print("Detecting available Gemini models...")
@@ -21,17 +21,26 @@ try:
     available_models_str = [m.name for m in models_list]
     print(f"Available models from API: {available_models_str}")
     
-    # Find first available from our preferred list
+    # Clean model names (remove 'models/' prefix) and find first available from our preferred list
+    cleaned_available = [m.replace('models/', '') for m in available_models_str]
     for model in possible_models:
-        if any(model in str(m) for m in available_models_str):
+        if model in cleaned_available:
             MODEL_NAME = model
             print(f"Selected model: {MODEL_NAME}")
             break
+    
+    # If no preferred model found, use the first available text generation model
+    if not MODEL_NAME:
+        for m in cleaned_available:
+            if 'flash' in m or 'pro' in m:
+                MODEL_NAME = m
+                print(f"Selected available model: {MODEL_NAME}")
+                break
 except Exception as e:
     print(f"Warning: Could not list models: {e}")
 
 if not MODEL_NAME:
-    MODEL_NAME = 'gemini-1.5-pro'  # Fallback
+    MODEL_NAME = 'gemini-2.5-flash'  # Fallback
     print(f"Using fallback model: {MODEL_NAME}")
 
 categories = {
@@ -146,8 +155,9 @@ for cat_name, feeds in categories.items():
         response_text = client.models.generate_content(model=MODEL_NAME, contents=prompt).text
     except Exception as e:
         # If primary model fails, try fallback models
-        if "not found" in str(e).lower() or "not supported" in str(e).lower():
-            print(f"  Model {MODEL_NAME} failed, trying alternatives...")
+        error_msg = str(e).lower()
+        if "not found" in error_msg or "not supported" in error_msg or "resource_exhausted" in error_msg or "quota" in error_msg:
+            print(f"  Model {MODEL_NAME} failed ({type(e).__name__}), trying alternatives...")
             response_text = None
             for fallback_model in possible_models:
                 if fallback_model == MODEL_NAME:
@@ -155,9 +165,10 @@ for cat_name, feeds in categories.items():
                 try:
                     print(f"  Trying {fallback_model}...")
                     response_text = client.models.generate_content(model=fallback_model, contents=prompt).text
+                    print(f"  Success with {fallback_model}!")
                     break
                 except Exception as e2:
-                    print(f"    {fallback_model} also failed: {e2}")
+                    print(f"    {fallback_model} failed: {type(e2).__name__}")
                     continue
             if not response_text:
                 raise e  # Re-raise original exception if all models failed
