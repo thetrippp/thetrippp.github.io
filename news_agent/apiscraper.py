@@ -268,255 +268,189 @@ if not global_sync_success:
 html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Briefing | Premium Intelligence</title>
-    <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap)');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Briefing</title>
 
-        :root {{
-            --bg-color: #ffffff;
-            --surface-color: #fcfcfc;
-            --text-color: #111827;
-            --text-muted: #4b5563;
-            --text-light: #9ca3af;
-            --accent-primary: #000000;
-            --accent-blue: #2563eb;
-            --border-color: #e5e7eb;
-            --max-width: 850px;
-        }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+<style>
+:root {{
+    --ink:#0a0a0a;
+    --paper:#f5f0e8;
+    --accent:#c8102e;
+    --muted:#6b6459;
+    --rule:#c9bfaf;
+    --max-width:800px;
+}}
 
-        body {{
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }}
+* {{margin:0;padding:0;box-sizing:border-box;}}
 
-        /* Progress Bar */
-        .progress-container {{
-            position: fixed;
-            top: 0;
-            z-index: 100;
-            width: 100%;
-            height: 4px;
-            background: #eee;
-        }}
+body {{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'DM Sans',sans-serif;
+    user-select:none;
+}}
 
-        .progress-bar {{
-            height: 4px;
-            background: var(--accent-blue);
-            width: 0%;
-        }}
+.ai-content {{
+    user-select:text;
+}}
 
-        /* Header Layout */
-        header {{
-            max-width: var(--max-width);
-            margin: 80px auto 40px;
-            padding: 0 24px;
-            text-align: center;
-        }}
+header {{
+    border-bottom:3px double var(--ink);
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+}}
 
-        h1 {{
-            font-family: 'Lora', serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            margin-bottom: 12px;
-        }}
+h1 {{
+    font-family:'Bebas Neue';
+    font-size:clamp(5rem,7vw,7rem);
+    flex:1;
+    text-align:center;
+}}
 
-        .subtitle {{
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 500;
-        }}
+.subtitle,.date {{
+    font-size:1rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+}}
 
-        .date {{
-            display: inline-block;
-            margin-top: 24px;
-            padding: 4px 12px;
-            background: var(--text-color);
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 700;
-            border-radius: 4px;
-        }}
+.category-stage {{
+    overflow:hidden;
+    padding:32px 0;
+    border-bottom:2px solid var(--ink);
+}}
 
-        /* Warnings */
-        .global-warning, .sync-warning {{
-            max-width: var(--max-width);
-            margin: 0 auto 40px auto;
-            background-color: #fef3c7;
-            color: #92400e;
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid #fcd34d;
-            font-weight: 500;
-            text-align: center;
-        }}
+.category-track {{
+    display:flex;
+    transition:transform .4s ease;
+}}
 
-        /* Sticky Navigation */
-        nav {{
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            z-index: 90;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 60px;
-        }}
+.cat-item {{
+    font-family:'Bebas Neue';
+    font-size:clamp(3rem,8vw,6rem);
+    padding:0 36px;
+    opacity:.15;
+    transform:scale(.6);
+    filter:blur(1px);
+    transition:.4s;
+    cursor:pointer;
+}}
 
-        nav button {{
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 16px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }}
+.cat-item.active {{
+    opacity:1;
+    transform:scale(1.05);
+    filter:none;
+}}
 
-        nav button:hover {{ background: var(--border-color); color: var(--text-color); }}
-        nav button.active {{ background: var(--text-color); color: white; }}
+.cat-item.adjacent {{
+    opacity:.35;
+    transform:scale(.75);
+}}
 
-        /* Main Content Container */
-        main {{
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 0 24px 100px;
-        }}
+main {{
+    max-width:var(--max-width);
+    margin:auto;
+    padding:40px;
+}}
 
-        .tabcontent {{ display: none; animation: slideUp 0.5s ease-out; }}
-        @keyframes slideUp {{ from {{ opacity: 0; transform: translateY(20px); }} to {{ opacity: 1; transform: translateY(0); }} }}
+.section-heading {{
+    font-family:'Bebas Neue';
+    font-size:.85rem;
+    letter-spacing:.18em;
+    color:var(--muted);
+    margin-top:40px;
+    display:flex;
+    gap:12px;
+}}
 
-        /* Category Headings */
-        .section-heading {{
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--accent-primary);
-            margin: 60px 0 30px;
-            border-bottom: 2px solid var(--accent-primary);
-            padding-bottom: 10px;
-            display: inline-block;
-        }}
-        
-        .section-divider {{ border: none; border-top: 1px solid var(--border-color); margin: 60px 0; }}
+.section-heading::after {{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--rule);
+}}
 
-        /* AI Generated Content Targeting */
-        .ai-content {{
-            font-family: 'Lora', serif;
-            font-size: 1.25rem;
-            line-height: 1.8;
-            color: #2d3748;
-        }}
+.section-divider {{
+    border:none;
+    border-top:1px solid var(--rule);
+    margin:32px 0;
+}}
 
-        .story-box {{ margin-bottom: 48px; }}
+.tabcontent {{display:none;}}
 
-        .story-title {{
-            font-family: 'Inter', sans-serif;
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 0 0 20px 0;
-            letter-spacing: -0.02em;
-            color: var(--text-color);
-        }}
+.ai-content p {{
+    font-size:.95rem;
+    line-height:1.8;
+    margin-bottom:16px;
+}}
 
-        .section-head {{
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--accent-blue);
-            margin: 24px 0 8px 0;
-            letter-spacing: 0.05em;
-        }}
-
-        .ai-content p {{ margin-bottom: 24px; }}
-
-        /* First letter drop cap */
-        .content-section:first-of-type .ai-content .story-box:first-of-type p:first-of-type::first-letter {{
-            font-family: 'Inter', sans-serif;
-            font-size: 4.5rem;
-            font-weight: 800;
-            float: left;
-            line-height: 0.8;
-            padding-right: 12px;
-            color: var(--text-color);
-        }}
-
-        .ai-content strong {{ font-weight: 700; color: var(--text-color); }}
-        
-        .ai-content ul, .ai-content ol {{
-            background: var(--surface-color);
-            padding: 32px 40px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin: 32px 0;
-        }}
-
-        .ai-content li {{ margin-bottom: 12px; font-size: 1.1rem; color: var(--text-muted); }}
-
-        @media (max-width: 640px) {{
-            h1 {{ font-size: 2.25rem; }}
-            body {{ padding-top: 20px; }}
-            .ai-content {{ font-size: 1.1rem; }}
-            nav button {{ padding: 6px 12px; font-size: 0.85rem; }}
-        }}
-    </style>
+</style>
 </head>
+
 <body>
-    <div class="progress-container">
-        <div class="progress-bar" id="myBar"></div>
+
+<header>
+<h1>Daily Briefing</h1>
+<div class="subtitle">What's going on today?</div>
+<div class="date">{today_str}</div>
+</header>
+
+<div class="category-stage">
+    <div class="category-track" id="category-track">
+        {tab_buttons_html.replace('<button onclick="openTab(event, \\'', '<div class="cat-item" data-target="').replace('\\')">', '">').replace('</button>', '</div>')}
     </div>
+</div>
 
-    <header>
-        <p class="subtitle">Intelligence for Professionals</p>
-        <h1>Daily Briefing</h1>
-        <div class="date">{today_str}</div>
-    </header>
+{global_warning_html}
 
-    {global_warning_html}
+<main id="tab-contents">
+{tab_content_html}
+</main>
 
-    <nav>{tab_buttons_html}</nav>
-    <main>{tab_content_html}</main>
+<script>
 
-    <script>
-        // Tab switching logic
-        function openTab(evt, tabName) {{
-            document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabName).style.display = 'block';
-            evt.currentTarget.classList.add('active');
-        }}
+let currentIndex = 0;
+const track = document.getElementById('category-track');
+const items = track.children;
 
-        // Initialize first tab
-        document.addEventListener("DOMContentLoaded", function() {{
-            const firstTab = document.querySelector('nav button');
-            if(firstTab) {{
-                firstTab.click();
-            }}
-        }});
+function getOffset(i) {{
+    const stageWidth = track.parentElement.offsetWidth;
+    const el = items[i];
+    return stageWidth/2 - (el.offsetLeft + el.offsetWidth/2);
+}}
 
-        // Progress bar scroll logic
-        window.onscroll = function() {{
-            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = (winScroll / height) * 100;
-            document.getElementById("myBar").style.width = scrolled + "%";
-        }};
-    </script>
+function updateCats(i) {{
+    Array.from(items).forEach((el,idx)=>{{
+        el.classList.remove('active','adjacent');
+        let d=Math.abs(idx-i);
+        if(d===0) el.classList.add('active');
+        else if(d===1) el.classList.add('adjacent');
+    }});
+}}
+
+function goTo(i) {{
+    currentIndex=Math.max(0,Math.min(i,items.length-1));
+    updateCats(currentIndex);
+    track.style.transform=`translateX(${getOffset(currentIndex)}px)`;
+
+    document.querySelectorAll('.tabcontent').forEach(el=>el.style.display='none');
+    document.getElementById(items[currentIndex].dataset.target).style.display='block';
+}}
+
+Array.from(items).forEach((el,i)=>{{
+    el.addEventListener('click',()=>goTo(i));
+}});
+
+goTo(0);
+
+</script>
+
 </body>
 </html>
 """
