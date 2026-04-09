@@ -3,7 +3,7 @@ name: Update AI News Dashboard
 # This tells GitHub WHEN to run the script
 on:
   schedule:
-    - cron: '0 8 * * *' # Runs exactly once a day at 8:00 AM UTC
+    - cron: '15 12 * * *' # Runs exactly once a day at 12:15 PM UTC
   workflow_dispatch: # Allows you to trigger it manually via a button
 
 jobs:

@@ -11,7 +11,6 @@ from datetime import datetime
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# Model selection - prioritize newer models that should have free tier
 possible_models = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-flash-latest', 'gemini-pro-latest']
 MODEL_NAME = None
 
@@ -21,7 +20,6 @@ try:
     available_models_str = [m.name for m in models_list]
     print(f"Available models from API: {available_models_str}")
     
-    # Clean model names (remove 'models/' prefix) and find first available from our preferred list
     cleaned_available = [m.replace('models/', '') for m in available_models_str]
     for model in possible_models:
         if model in cleaned_available:
@@ -29,7 +27,6 @@ try:
             print(f"Selected model: {MODEL_NAME}")
             break
     
-    # If no preferred model found, use the first available text generation model
     if not MODEL_NAME:
         for m in cleaned_available:
             if 'flash' in m or 'pro' in m:
@@ -40,30 +37,40 @@ except Exception as e:
     print(f"Warning: Could not list models: {e}")
 
 if not MODEL_NAME:
-    MODEL_NAME = 'gemini-2.5-flash'  # Fallback
+    MODEL_NAME = 'gemini-2.5-flash'
     print(f"Using fallback model: {MODEL_NAME}")
 
+# --- MASSIVE GLOBAL EXPANSION ---
 categories = {
-    "🌍 Geopolitics": {
-        "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
-        "NPR World": "https://feeds.npr.org/1004/rss.xml",
-        "Al Jazeera": "https://www.aljazeera.com/xml/rss/all.xml",
-        "Reuters": "https://www.reutersagency.com/feed/?best-topics=political-general&type=latest"
+    "🌍 Global Geopolitics": {
+        "Reuters (Global)": "https://www.reutersagency.com/feed/?best-topics=political-general&type=latest",
+        "BBC World (UK)": "http://feeds.bbci.co.uk/news/world/rss.xml",
+        "Al Jazeera (Middle East)": "https://www.aljazeera.com/xml/rss/all.xml",
+        "France 24 (Europe)": "https://www.france24.com/en/rss",
+        "Deutsche Welle (Germany)": "https://rss.dw.com/rdf/rss-en-world",
+        "South China Morning Post (Asia)": "https://www.scmp.com/rss/91/feed",
+        "CNA (Singapore/Asia)": "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6511",
+        "The Hindu (India)": "https://www.thehindu.com/news/international/feeder/default.rss",
+        "ABC News (Australia)": "https://www.abc.net.au/news/feed/52278/rss.xml",
+        "UN News (Global)": "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
     },
     "💻 Tech & AI": {
-        "TechCrunch": "https://techcrunch.com/feed/",
-        "Ars Technica": "http://feeds.arstechnica.com/arstechnica/index",
-        "Wired": "https://www.wired.com/feed/rss"
+        "TechCrunch (US)": "https://techcrunch.com/feed/",
+        "Ars Technica (US)": "http://feeds.arstechnica.com/arstechnica/index",
+        "Wired (Global)": "https://www.wired.com/feed/rss",
+        "Rest of World (Global Tech)": "https://restofworld.org/feed/"
     },
     "🎮 Gaming": {
-        "Game Developer": "https://www.gamedeveloper.com/rss.xml",
-        "Polygon": "https://www.polygon.com/rss/index.xml",
-        "IGN": "https://feeds.feedburner.com/ign/games-all"
+        "Game Developer (Industry)": "https://www.gamedeveloper.com/rss.xml",
+        "Polygon (Culture/News)": "https://www.polygon.com/rss/index.xml",
+        "Eurogamer (Europe)": "https://www.eurogamer.net/feed/news",
+        "IGN (Mainstream)": "https://feeds.feedburner.com/ign/games-all"
     },
     "🚀 Space": {
         "Space.com": "https://www.space.com/feeds/all",
         "Universe Today": "https://www.universetoday.com/feed/",
-        "NASA Breaking": "https://www.nasa.gov/rss/dyn/breaking_news.rss"
+        "NASA Breaking": "https://www.nasa.gov/rss/dyn/breaking_news.rss",
+        "ESA (Europe Space)": "https://www.esa.int/rssfeed/Our_Activities/Space_News"
     }
 }
 
@@ -83,12 +90,10 @@ if os.path.exists(history_file):
 today_str = datetime.now().strftime("%Y-%m-%d %H:%M")
 tab_buttons_html = ""
 tab_content_html = ""
+global_sync_success = True
 
-# Helper function to convert markdown bold/italics to HTML
 def markdown_to_html(text):
-    # Replace bold first: **text** -> <strong>text</strong>
     text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
-    # Replace italics next: *text* -> <em>text</em>
     text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
     return text
 
@@ -96,7 +101,6 @@ def markdown_to_html(text):
 for cat_name, feeds in categories.items():
     print(f"\n--- Processing {cat_name} Deep Dive ---")
     
-    # Scrape massive amounts of data (Top 12 from each site)
     cat_news_text = ""
     for source, url in feeds.items():
         try:
@@ -106,7 +110,8 @@ for cat_name, feeds in categories.items():
                 soup = BeautifulSoup(response.content, features="xml")
                 articles = soup.find_all("item")
                 cat_news_text += f"\n--- {source} ---\n"
-                for article in articles[:12]: 
+                # Pull top 6 from each site to balance the massive new source list
+                for article in articles[:6]: 
                     title = article.title.text if article.title else ""
                     desc = article.description.text if article.description else ""
                     cat_news_text += f"Headline: {title} | Details: {desc}\n"
@@ -117,6 +122,7 @@ for cat_name, feeds in categories.items():
     prompt = f"""
     You are an elite, award-winning investigative journalist for {cat_name}. 
     Your reader is a highly intelligent professional who only checks the news once a day and wants deep, exhaustive explanations rather than quick summaries.
+    Because your data comes from global sources, actively synthesize differing regional perspectives when explaining global events.
     
     TASK 1: THE DAILY MASTERCLASS
     Identify the 4 most complex and important events from the News Data. Write a long-form, magazine-style deep dive for each.
@@ -124,16 +130,12 @@ for cat_name, feeds in categories.items():
     
     <div class="story-box">
         <h3 class="story-title">[Specific Event Name]</h3>
-        
         <h4 class="section-head">The Current Situation</h4>
         <p>[A detailed, multi-sentence paragraph explaining exactly what is happening right now].</p>
-        
         <h4 class="section-head">Historical & Technical Context</h4>
         <p>[A deep paragraph explaining the history leading up to this, the underlying causes, or the complex technical background. Assume the reader needs the foundational knowledge].</p>
-        
         <h4 class="section-head">Key Players & Motivations</h4>
         <p>[Identify the main countries, companies, or individuals involved and explain *why* they are taking these actions. What do they stand to gain or lose?].</p>
-        
         <h4 class="section-head">The Ripple Effect</h4>
         <p>[Explain the broader impact on the global economy, the specific industry, or everyday life. What is the worst-case and best-case scenario moving forward?].</p>
     </div>
@@ -146,17 +148,16 @@ for cat_name, feeds in categories.items():
     Do not use markdown blocks like ```html. Just return raw text/HTML.
     
     News Data: {cat_news_text}
-    
     History Log: {history[cat_name]}
     """
     
     try:
-        # Try primary model first
         response_text = client.models.generate_content(model=MODEL_NAME, contents=prompt).text
     except Exception as e:
-        # If primary model fails, try fallback models
         error_msg = str(e).lower()
-        if "not found" in error_msg or "not supported" in error_msg or "resource_exhausted" in error_msg or "quota" in error_msg:
+        fallback_triggers = ["not found", "not supported", "resource_exhausted", "quota", "503", "unavailable", "high demand", "servererror", "internal"]
+        
+        if any(trigger in error_msg for trigger in fallback_triggers):
             print(f"  Model {MODEL_NAME} failed ({type(e).__name__}), trying alternatives...")
             response_text = None
             for fallback_model in possible_models:
@@ -171,18 +172,19 @@ for cat_name, feeds in categories.items():
                     print(f"    {fallback_model} failed: {type(e2).__name__}")
                     continue
             if not response_text:
-                raise e  # Re-raise original exception if all models failed
+                raise Exception("All fallback models failed.") 
         else:
             raise
+
+    try:
         parts = response_text.split("|||DIVIDER|||")
-        
         daily_briefing_html = parts[0].replace("```html", "").replace("```", "").strip()
         weekly_recap_html = parts[1].replace("```html", "").replace("```", "").strip() if len(parts) > 1 else "<p>Recap generating...</p>"
         
-        # Apply markdown to HTML conversion
         daily_briefing_html = markdown_to_html(daily_briefing_html)
         weekly_recap_html = markdown_to_html(weekly_recap_html)
-        history[cat_name].append({"date": today_str, "briefing": daily_briefing_html})
+        
+        history[cat_name].append({"date": today_str, "briefing": daily_briefing_html, "recap": weekly_recap_html})
         if len(history[cat_name]) > 28:
             history[cat_name] = history[cat_name][-28:]
             
@@ -202,12 +204,44 @@ for cat_name, feeds in categories.items():
         </div>
         """
         print(f"Success! Generated content for {cat_name}")
+
     except Exception as e:
-        import traceback
-        print(f"ERROR: Failed to generate content for {cat_name}")
-        print(f"Exception: {e}")
-        print("Traceback:")
-        traceback.print_exc()
+        global_sync_success = False
+        print(f"ERROR: Complete failure generating content for {cat_name}. Attempting to recover from history...")
+        
+        safe_id = "".join(e for e in cat_name if e.isalnum())
+        tab_buttons_html += f'<button onclick="openTab(event, \'{safe_id}\')">{cat_name}</button>\n'
+        
+        if len(history[cat_name]) > 0:
+            last_good = history[cat_name][-1]
+            old_briefing = last_good.get("briefing", "<p>No prior daily briefing found.</p>")
+            old_recap = last_good.get("recap", "<p>No prior macro trend found.</p>")
+            old_date = last_good.get("date", "a previous session")
+            
+            tab_content_html += f"""
+            <div id="{safe_id}" class="tabcontent">
+                <div class="sync-warning">
+                    ⚠️ <strong>API Overwhelmed:</strong> Unable to sync new {cat_name} data today. Displaying the most recent available data from {old_date}.
+                </div>
+                <section class="content-section">
+                    <h2 class="section-heading daily">Daily Analysis</h2>
+                    <div class="ai-content">{old_briefing}</div>
+                </section>
+                <hr class="section-divider">
+                <section class="content-section">
+                    <h2 class="section-heading macro">Macro Trends</h2>
+                    <div class="ai-content">{old_recap}</div>
+                </section>
+            </div>
+            """
+        else:
+            tab_content_html += f"""
+            <div id="{safe_id}" class="tabcontent">
+                 <div class="sync-warning" style="background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;">
+                    ❌ <strong>Sync Failed:</strong> The AI models are currently overwhelmed, and no previous history exists for this category. Please try again later.
+                </div>
+            </div>
+            """
         
     time.sleep(3) 
 
@@ -215,6 +249,14 @@ for cat_name, feeds in categories.items():
 print("\nSaving history and compiling final website...")
 with open(history_file, "w") as f:
     json.dump(history, f)
+
+global_warning_html = ""
+if not global_sync_success:
+    global_warning_html = """
+    <div class="global-warning">
+        ⚠️ <strong>Notice:</strong> One or more categories could not be updated today due to high AI server demand. You are viewing cached data for those sections.
+    </div>
+    """
 
 html_content = f"""
 <!DOCTYPE html>
@@ -224,7 +266,7 @@ html_content = f"""
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Briefing</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap)');
 
         :root {{
             --bg-color: #ffffff;
@@ -257,268 +299,75 @@ html_content = f"""
             -webkit-font-smoothing: antialiased;
         }}
 
-        /* Header */
         header {{
-            margin-bottom: 48px;
+            margin-bottom: 30px;
             padding-bottom: 32px;
             border-bottom: 1px solid var(--border-color);
         }}
 
-        h1 {{
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 8px;
-            color: var(--text-color);
+        h1 {{ font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text-color); }}
+        .subtitle {{ font-size: 1.125rem; color: var(--text-muted); font-weight: 400; }}
+        .date {{ font-size: 0.8rem; color: var(--text-light); margin-top: 20px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }}
+
+        .global-warning {{
+            background-color: #fff3cd; color: #856404; padding: 16px; border-radius: 8px; 
+            margin-bottom: 40px; border: 1px solid #ffeeba; font-weight: 500; text-align: center;
+        }}
+        .sync-warning {{
+            background-color: #fff3cd; color: #856404; padding: 12px 20px; border-radius: 8px; 
+            margin-bottom: 32px; border: 1px solid #ffeeba; font-weight: 500;
         }}
 
-        .subtitle {{
-            font-size: 1.125rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }}
+        nav {{ display: flex; gap: 12px; margin-bottom: 56px; flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border-color); }}
+        nav button {{ background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-muted); padding: 14px 28px; cursor: pointer; font-size: 1rem; font-weight: 600; border-radius: 8px; transition: all 0.2s ease; }}
+        nav button:hover {{ color: var(--text-color); border-color: var(--accent-primary); transform: translateY(-2px); }}
+        nav button.active {{ color: var(--bg-color); background: var(--accent-primary); border-color: var(--accent-primary); }}
 
-        .date {{
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-top: 20px;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }}
+        .tabcontent {{ display: none; animation: fadeIn 0.4s ease; }}
+        @keyframes fadeIn {{ from {{ opacity: 0; transform: translateY(10px); }} to {{ opacity: 1; transform: translateY(0); }} }}
 
-        /* Navigation Tabs */
-        nav {{
-            display: flex;
-            gap: 12px;
-            margin-bottom: 56px;
-            flex-wrap: wrap;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-        }}
+        .section-heading {{ font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 3px solid; }}
+        .section-heading.daily {{ color: var(--accent-primary); border-color: var(--accent-primary); }}
+        .section-heading.macro {{ color: var(--accent-secondary); border-color: var(--accent-secondary); }}
 
-        nav button {{
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 14px 28px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }}
+        .content-section {{ margin-bottom: 64px; }}
+        .ai-content {{ font-size: 1.125rem; line-height: 1.9; color: var(--text-color); }}
+        .ai-content p {{ margin-bottom: 0; text-indent: 2em; }}
+        .ai-content p:first-of-type {{ text-indent: 0; }}
+        .ai-content p:first-of-type::first-letter {{ font-size: 3.5rem; font-weight: 700; float: left; line-height: 1; padding-right: 12px; padding-top: 8px; color: var(--accent-primary); }}
 
-        nav button:hover {{
-            color: var(--text-color);
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-        }}
+        .ai-content h3 {{ font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 48px 0 24px 0; padding-left: 20px; border-left: 4px solid var(--accent-warm); line-height: 1.3; }}
+        .ai-content h4 {{ font-size: 1.25rem; font-weight: 600; color: var(--accent-tertiary); margin: 36px 0 16px 0; }}
+        
+        .ai-content ul, .ai-content ol {{ margin: 24px 0; padding-left: 0; list-style: none; }}
+        .ai-content li {{ position: relative; padding-left: 28px; margin-bottom: 16px; font-size: 1.0625rem; line-height: 1.8; }}
+        .ai-content ul li::before {{ content: ''; position: absolute; left: 0; top: 12px; width: 8px; height: 8px; background: var(--accent-primary); border-radius: 50%; }}
 
-        nav button.active {{
-            color: var(--bg-color);
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-        }}
+        .ai-content strong {{ color: var(--text-color); font-weight: 600; }}
+        .ai-content a {{ color: var(--accent-primary); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }}
+        .ai-content a:hover {{ border-bottom-color: var(--accent-primary); }}
 
-        /* Tab Content */
-        .tabcontent {{
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }}
+        .section-divider {{ height: 1px; background: linear-gradient(90deg, transparent, var(--border-color), transparent); margin: 64px 0; border: none; }}
 
-        @keyframes fadeIn {{
-            from {{ opacity: 0; transform: translateY(10px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
-        }}
-
-        /* Section Headings */
-        .section-heading {{
-            font-size: 0.875rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-bottom: 32px;
-            padding-bottom: 16px;
-            border-bottom: 3px solid;
-        }}
-
-        .section-heading.daily {{
-            color: var(--accent-primary);
-            border-color: var(--accent-primary);
-        }}
-
-        .section-heading.macro {{
-            color: var(--accent-secondary);
-            border-color: var(--accent-secondary);
-        }}
-
-        /* Content Container */
-        .content-section {{
-            margin-bottom: 64px;
-        }}
-
-        /* Seamless Content */
-        .ai-content {{
-            font-size: 1.125rem;
-            line-height: 1.9;
-            color: var(--text-color);
-        }}
-
-        .ai-content p {{
-            margin-bottom: 0;
-            text-indent: 2em;
-        }}
-
-        .ai-content p:first-of-type {{
-            text-indent: 0;
-        }}
-
-        .ai-content p:first-of-type::first-letter {{
-            font-size: 3.5rem;
-            font-weight: 700;
-            float: left;
-            line-height: 1;
-            padding-right: 12px;
-            padding-top: 8px;
-            color: var(--accent-primary);
-        }}
-
-        /* Headings within content */
-        .ai-content h3 {{
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin: 48px 0 24px 0;
-            padding-left: 20px;
-            border-left: 4px solid var(--accent-warm);
-            line-height: 1.3;
-        }}
-
-        .ai-content h4 {{
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--accent-tertiary);
-            margin: 36px 0 16px 0;
-        }}
-
-        /* Lists */
-        .ai-content ul,
-        .ai-content ol {{
-            margin: 24px 0;
-            padding-left: 0;
-            list-style: none;
-        }}
-
-        .ai-content li {{
-            position: relative;
-            padding-left: 28px;
-            margin-bottom: 16px;
-            font-size: 1.0625rem;
-            line-height: 1.8;
-        }}
-
-        .ai-content ul li::before {{
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 12px;
-            width: 8px;
-            height: 8px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-        }}
-
-        .ai-content ol {{
-            counter-reset: item;
-        }}
-
-        .ai-content ol li {{
-            counter-increment: item;
-        }}
-
-        .ai-content ol li::before {{
-            content: counter(item);
-            position: absolute;
-            left: 0;
-            top: 2px;
-            width: 24px;
-            height: 24px;
-            background: var(--accent-secondary);
-            color: var(--bg-color);
-            border-radius: 50%;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }}
-
-        /* Strong text */
-        .ai-content strong {{
-            color: var(--text-color);
-            font-weight: 600;
-        }}
-
-        /* Links */
-        .ai-content a {{
-            color: var(--accent-primary);
-            text-decoration: none;
-            border-bottom: 1px solid transparent;
-            transition: border-color 0.2s;
-        }}
-
-        .ai-content a:hover {{
-            border-bottom-color: var(--accent-primary);
-        }}
-
-        /* Horizontal rule between major sections */
-        .section-divider {{
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
-            margin: 64px 0;
-            border: none;
-        }}
-
-        /* Responsive */
         @media (max-width: 640px) {{
-            body {{
-                padding: 48px 24px;
-            }}
-
-            h1 {{
-                font-size: 2rem;
-            }}
-
-            .subtitle {{
-                font-size: 1rem;
-            }}
-
-            nav button {{
-                padding: 12px 20px;
-                font-size: 0.875rem;
-            }}
-
-            .ai-content {{
-                font-size: 1rem;
-            }}
-
-            .ai-content h3 {{
-                font-size: 1.25rem;
-            }}
-
-            .ai-content p:first-of-type::first-letter {{
-                font-size: 2.5rem;
-            }}
+            body {{ padding: 48px 24px; }}
+            h1 {{ font-size: 2rem; }}
+            .subtitle {{ font-size: 1rem; }}
+            nav button {{ padding: 12px 20px; font-size: 0.875rem; }}
+            .ai-content {{ font-size: 1rem; }}
+            .ai-content h3 {{ font-size: 1.25rem; }}
+            .ai-content p:first-of-type::first-letter {{ font-size: 2.5rem; }}
         }}
     </style>
 </head>
 <body>
     <header>
         <h1>Daily Briefing</h1>
-        <p class="subtitle">Curated news analysis</p>
+        <p class="subtitle">Curated global news analysis</p>
         <p class="date">{today_str}</p>
     </header>
+
+    {global_warning_html}
 
     <nav>{tab_buttons_html}</nav>
     <main>{tab_content_html}</main>
