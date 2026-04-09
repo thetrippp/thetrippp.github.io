@@ -42,7 +42,7 @@ if not MODEL_NAME:
 
 # --- MASSIVE GLOBAL EXPANSION ---
 categories = {
-    "🌍 Global Geopolitics": {
+    "Global Geopolitics": {
         "Reuters (Global)": "https://www.reutersagency.com/feed/?best-topics=political-general&type=latest",
         "BBC World (UK)": "http://feeds.bbci.co.uk/news/world/rss.xml",
         "Al Jazeera (Middle East)": "https://www.aljazeera.com/xml/rss/all.xml",
@@ -54,19 +54,19 @@ categories = {
         "ABC News (Australia)": "https://www.abc.net.au/news/feed/52278/rss.xml",
         "UN News (Global)": "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
     },
-    "💻 Tech & AI": {
+    "Tech & AI": {
         "TechCrunch (US)": "https://techcrunch.com/feed/",
         "Ars Technica (US)": "http://feeds.arstechnica.com/arstechnica/index",
         "Wired (Global)": "https://www.wired.com/feed/rss",
         "Rest of World (Global Tech)": "https://restofworld.org/feed/"
     },
-    "🎮 Gaming": {
+    "Gaming": {
         "Game Developer (Industry)": "https://www.gamedeveloper.com/rss.xml",
         "Polygon (Culture/News)": "https://www.polygon.com/rss/index.xml",
         "Eurogamer (Europe)": "https://www.eurogamer.net/feed/news",
         "IGN (Mainstream)": "https://feeds.feedburner.com/ign/games-all"
     },
-    "🚀 Space": {
+    "Space": {
         "Space.com": "https://www.space.com/feeds/all",
         "Universe Today": "https://www.universetoday.com/feed/",
         "NASA Breaking": "https://www.nasa.gov/rss/dyn/breaking_news.rss",
@@ -87,8 +87,6 @@ if os.path.exists(history_file):
                 for key in history.keys():
                     if key in saved_history:
                         history[key] = saved_history[key]
-                    elif key == "🌍 Global Geopolitics" and "🌍 Geopolitics" in saved_history:
-                        history[key] = saved_history["🌍 Geopolitics"]
     except Exception as e:
         print("Could not load history, starting fresh.")
 
@@ -275,13 +273,17 @@ html_content = f"""<!DOCTYPE html>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
+
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
 :root {{
-    --ink:#0a0a0a;
-    --paper:#f5f0e8;
-    --accent:#c8102e;
-    --muted:#6b6459;
-    --rule:#c9bfaf;
-    --max-width:800px;
+    --ink: #0a0a0a;
+            --paper: #f5f0e8;
+            --accent: #c8102e;
+            --muted: #6b6459;
+            --rule: #c9bfaf;
+            --max-width: 800px;
 }}
 
 * {{margin:0;padding:0;box-sizing:border-box;}}
@@ -306,7 +308,7 @@ header {{
 }}
 
 h1 {{
-    font-family:'Bebas Neue';
+    font-family:'Poppins';
     font-size:clamp(5rem,7vw,7rem);
     flex:1;
     text-align:center;
@@ -331,7 +333,7 @@ h1 {{
 }}
 
 .cat-item {{
-    font-family:'Bebas Neue';
+    font-family:'Poppins';
     font-size:clamp(3rem,8vw,6rem);
     padding:0 36px;
     opacity:.15;
@@ -359,7 +361,7 @@ main {{
 }}
 
 .section-heading {{
-    font-family:'Bebas Neue';
+    font-family:'Poppins';
     font-size:.85rem;
     letter-spacing:.18em;
     color:var(--muted);
