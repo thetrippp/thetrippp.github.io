@@ -262,9 +262,8 @@ if not global_sync_success:
     </div>
     """
 
-# ==========================================
-# THE NEW "PREMIUM INTELLIGENCE" HTML INJECT
-# ==========================================
+processed_tabs = tab_buttons_html.replace('<button onclick="openTab(event, \'', '<div class="cat-item" data-target="').replace('\')">', '">').replace('</button>', '</div>')
+
 html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -403,7 +402,7 @@ main {{
 
 <div class="category-stage">
     <div class="category-track" id="category-track">
-        {tab_buttons_html.replace('<button onclick="openTab(event, \\'', '<div class="cat-item" data-target="').replace('\\')">', '">').replace('</button>', '</div>')}
+        {processed_tabs}
     </div>
 </div>
 
@@ -437,7 +436,7 @@ function updateCats(i) {{
 function goTo(i) {{
     currentIndex=Math.max(0,Math.min(i,items.length-1));
     updateCats(currentIndex);
-    track.style.transform=`translateX(${getOffset(currentIndex)}px)`;
+    track.style.transform=`translateX(${{getOffset(currentIndex)}}px)`;
 
     document.querySelectorAll('.tabcontent').forEach(el=>el.style.display='none');
     document.getElementById(items[currentIndex].dataset.target).style.display='block';
@@ -454,6 +453,7 @@ goTo(0);
 </body>
 </html>
 """
+
 
 print(f"\nFinal HTML generation:")
 print(f"  - Categories processed: {len([k for k in categories.keys()])}")
