@@ -83,7 +83,14 @@ if os.path.exists(history_file):
         with open(history_file, "r") as f:
             saved_history = json.load(f)
             if isinstance(saved_history, dict):
-                history = saved_history
+                # Safely merge old history into the new structure
+                for key in history.keys():
+                    # If the exact category name exists in the old file, keep it
+                    if key in saved_history:
+                        history[key] = saved_history[key]
+                    # Data Migration: If we renamed Geopolitics to Global Geopolitics, map it over!
+                    elif key == "🌍 Global Geopolitics" and "🌍 Geopolitics" in saved_history:
+                        history[key] = saved_history["🌍 Geopolitics"]
     except Exception as e:
         print("Could not load history, starting fresh.")
 
