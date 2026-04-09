@@ -85,10 +85,8 @@ if os.path.exists(history_file):
             if isinstance(saved_history, dict):
                 # Safely merge old history into the new structure
                 for key in history.keys():
-                    # If the exact category name exists in the old file, keep it
                     if key in saved_history:
                         history[key] = saved_history[key]
-                    # Data Migration: If we renamed Geopolitics to Global Geopolitics, map it over!
                     elif key == "🌍 Global Geopolitics" and "🌍 Geopolitics" in saved_history:
                         history[key] = saved_history["🌍 Geopolitics"]
     except Exception as e:
@@ -117,7 +115,6 @@ for cat_name, feeds in categories.items():
                 soup = BeautifulSoup(response.content, features="xml")
                 articles = soup.find_all("item")
                 cat_news_text += f"\n--- {source} ---\n"
-                # Pull top 6 from each site to balance the massive new source list
                 for article in articles[:6]: 
                     title = article.title.text if article.title else ""
                     desc = article.description.text if article.description else ""
@@ -265,113 +262,229 @@ if not global_sync_success:
     </div>
     """
 
-html_content = f"""
-<!DOCTYPE html>
+# ==========================================
+# THE NEW "PREMIUM INTELLIGENCE" HTML INJECT
+# ==========================================
+html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Briefing</title>
+    <title>Daily Briefing | Premium Intelligence</title>
     <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap)');
+        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap)');
 
         :root {{
             --bg-color: #ffffff;
-            --surface-color: #f8f9fa;
-            --text-color: #1a1a1a;
-            --text-muted: #4a4a4a;
-            --text-light: #6b6b6b;
-            --accent-primary: #2563eb;
-            --accent-secondary: #059669;
-            --accent-tertiary: #dc2626;
-            --accent-warm: #ea580c;
-            --border-color: #e5e5e5;
-            --border-light: #f0f0f0;
+            --surface-color: #fcfcfc;
+            --text-color: #111827;
+            --text-muted: #4b5563;
+            --text-light: #9ca3af;
+            --accent-primary: #000000;
+            --accent-blue: #2563eb;
+            --border-color: #e5e7eb;
+            --max-width: 850px;
         }}
 
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }}
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
 
         body {{
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.85;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 60px 48px;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }}
 
+        /* Progress Bar */
+        .progress-container {{
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            height: 4px;
+            background: #eee;
+        }}
+
+        .progress-bar {{
+            height: 4px;
+            background: var(--accent-blue);
+            width: 0%;
+        }}
+
+        /* Header Layout */
         header {{
-            margin-bottom: 30px;
-            padding-bottom: 32px;
+            max-width: var(--max-width);
+            margin: 80px auto 40px;
+            padding: 0 24px;
+            text-align: center;
+        }}
+
+        h1 {{
+            font-family: 'Lora', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 12px;
+        }}
+
+        .subtitle {{
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }}
+
+        .date {{
+            display: inline-block;
+            margin-top: 24px;
+            padding: 4px 12px;
+            background: var(--text-color);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 4px;
+        }}
+
+        /* Warnings */
+        .global-warning, .sync-warning {{
+            max-width: var(--max-width);
+            margin: 0 auto 40px auto;
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #fcd34d;
+            font-weight: 500;
+            text-align: center;
+        }}
+
+        /* Sticky Navigation */
+        nav {{
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 90;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 16px;
             border-bottom: 1px solid var(--border-color);
+            margin-bottom: 60px;
         }}
 
-        h1 {{ font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text-color); }}
-        .subtitle {{ font-size: 1.125rem; color: var(--text-muted); font-weight: 400; }}
-        .date {{ font-size: 0.8rem; color: var(--text-light); margin-top: 20px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }}
-
-        .global-warning {{
-            background-color: #fff3cd; color: #856404; padding: 16px; border-radius: 8px; 
-            margin-bottom: 40px; border: 1px solid #ffeeba; font-weight: 500; text-align: center;
+        nav button {{
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.2s;
         }}
-        .sync-warning {{
-            background-color: #fff3cd; color: #856404; padding: 12px 20px; border-radius: 8px; 
-            margin-bottom: 32px; border: 1px solid #ffeeba; font-weight: 500;
+
+        nav button:hover {{ background: var(--border-color); color: var(--text-color); }}
+        nav button.active {{ background: var(--text-color); color: white; }}
+
+        /* Main Content Container */
+        main {{
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px 100px;
         }}
 
-        nav {{ display: flex; gap: 12px; margin-bottom: 56px; flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border-color); }}
-        nav button {{ background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-muted); padding: 14px 28px; cursor: pointer; font-size: 1rem; font-weight: 600; border-radius: 8px; transition: all 0.2s ease; }}
-        nav button:hover {{ color: var(--text-color); border-color: var(--accent-primary); transform: translateY(-2px); }}
-        nav button.active {{ color: var(--bg-color); background: var(--accent-primary); border-color: var(--accent-primary); }}
+        .tabcontent {{ display: none; animation: slideUp 0.5s ease-out; }}
+        @keyframes slideUp {{ from {{ opacity: 0; transform: translateY(20px); }} to {{ opacity: 1; transform: translateY(0); }} }}
 
-        .tabcontent {{ display: none; animation: fadeIn 0.4s ease; }}
-        @keyframes fadeIn {{ from {{ opacity: 0; transform: translateY(10px); }} to {{ opacity: 1; transform: translateY(0); }} }}
-
-        .section-heading {{ font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 3px solid; }}
-        .section-heading.daily {{ color: var(--accent-primary); border-color: var(--accent-primary); }}
-        .section-heading.macro {{ color: var(--accent-secondary); border-color: var(--accent-secondary); }}
-
-        .content-section {{ margin-bottom: 64px; }}
-        .ai-content {{ font-size: 1.125rem; line-height: 1.9; color: var(--text-color); }}
-        .ai-content p {{ margin-bottom: 0; text-indent: 2em; }}
-        .ai-content p:first-of-type {{ text-indent: 0; }}
-        .ai-content p:first-of-type::first-letter {{ font-size: 3.5rem; font-weight: 700; float: left; line-height: 1; padding-right: 12px; padding-top: 8px; color: var(--accent-primary); }}
-
-        .ai-content h3 {{ font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 48px 0 24px 0; padding-left: 20px; border-left: 4px solid var(--accent-warm); line-height: 1.3; }}
-        .ai-content h4 {{ font-size: 1.25rem; font-weight: 600; color: var(--accent-tertiary); margin: 36px 0 16px 0; }}
+        /* Category Headings */
+        .section-heading {{
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin: 60px 0 30px;
+            border-bottom: 2px solid var(--accent-primary);
+            padding-bottom: 10px;
+            display: inline-block;
+        }}
         
-        .ai-content ul, .ai-content ol {{ margin: 24px 0; padding-left: 0; list-style: none; }}
-        .ai-content li {{ position: relative; padding-left: 28px; margin-bottom: 16px; font-size: 1.0625rem; line-height: 1.8; }}
-        .ai-content ul li::before {{ content: ''; position: absolute; left: 0; top: 12px; width: 8px; height: 8px; background: var(--accent-primary); border-radius: 50%; }}
+        .section-divider {{ border: none; border-top: 1px solid var(--border-color); margin: 60px 0; }}
 
-        .ai-content strong {{ color: var(--text-color); font-weight: 600; }}
-        .ai-content a {{ color: var(--accent-primary); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }}
-        .ai-content a:hover {{ border-bottom-color: var(--accent-primary); }}
+        /* AI Generated Content Targeting */
+        .ai-content {{
+            font-family: 'Lora', serif;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #2d3748;
+        }}
 
-        .section-divider {{ height: 1px; background: linear-gradient(90deg, transparent, var(--border-color), transparent); margin: 64px 0; border: none; }}
+        .story-box {{ margin-bottom: 48px; }}
+
+        .story-title {{
+            font-family: 'Inter', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            letter-spacing: -0.02em;
+            color: var(--text-color);
+        }}
+
+        .section-head {{
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            margin: 24px 0 8px 0;
+            letter-spacing: 0.05em;
+        }}
+
+        .ai-content p {{ margin-bottom: 24px; }}
+
+        /* First letter drop cap */
+        .content-section:first-of-type .ai-content .story-box:first-of-type p:first-of-type::first-letter {{
+            font-family: 'Inter', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 800;
+            float: left;
+            line-height: 0.8;
+            padding-right: 12px;
+            color: var(--text-color);
+        }}
+
+        .ai-content strong {{ font-weight: 700; color: var(--text-color); }}
+        
+        .ai-content ul, .ai-content ol {{
+            background: var(--surface-color);
+            padding: 32px 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin: 32px 0;
+        }}
+
+        .ai-content li {{ margin-bottom: 12px; font-size: 1.1rem; color: var(--text-muted); }}
 
         @media (max-width: 640px) {{
-            body {{ padding: 48px 24px; }}
-            h1 {{ font-size: 2rem; }}
-            .subtitle {{ font-size: 1rem; }}
-            nav button {{ padding: 12px 20px; font-size: 0.875rem; }}
-            .ai-content {{ font-size: 1rem; }}
-            .ai-content h3 {{ font-size: 1.25rem; }}
-            .ai-content p:first-of-type::first-letter {{ font-size: 2.5rem; }}
+            h1 {{ font-size: 2.25rem; }}
+            body {{ padding-top: 20px; }}
+            .ai-content {{ font-size: 1.1rem; }}
+            nav button {{ padding: 6px 12px; font-size: 0.85rem; }}
         }}
     </style>
 </head>
 <body>
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+
     <header>
+        <p class="subtitle">Intelligence for Professionals</p>
         <h1>Daily Briefing</h1>
-        <p class="subtitle">Curated global news analysis</p>
-        <p class="date">{today_str}</p>
+        <div class="date">{today_str}</div>
     </header>
 
     {global_warning_html}
@@ -380,18 +493,29 @@ html_content = f"""
     <main>{tab_content_html}</main>
 
     <script>
+        // Tab switching logic
         function openTab(evt, tabName) {{
             document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
             document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).style.display = 'block';
             evt.currentTarget.classList.add('active');
         }}
+
+        // Initialize first tab
         document.addEventListener("DOMContentLoaded", function() {{
             const firstTab = document.querySelector('nav button');
             if(firstTab) {{
                 firstTab.click();
             }}
         }});
+
+        // Progress bar scroll logic
+        window.onscroll = function() {{
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("myBar").style.width = scrolled + "%";
+        }};
     </script>
 </body>
 </html>

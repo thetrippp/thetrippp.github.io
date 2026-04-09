@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0a0a0a;
+            --paper: #f5f0e8;
+            --accent: #c8102e;
+            --muted: #6b6459;
+            --rule: #c9bfaf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── MASTHEAD ── */
+        .masthead {
+            border-bottom: 3px double var(--ink);
+            padding: 18px 40px 14px;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .masthead-meta {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .masthead-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            letter-spacing: 0.04em;
+            line-height: 1;
+            color: var(--ink);
+            text-align: center;
+            flex: 1;
+        }
+
+        .masthead-tagline {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .rule-double {
+            border-top: 1px solid var(--ink);
+            border-bottom: 1px solid var(--ink);
+            padding: 4px 0;
+            margin: 0 40px;
+        }
+
+        /* ── CATEGORY CAROUSEL ── */
+        .category-stage {
+            position: relative;
+            overflow: hidden;
+            padding: 32px 0 18px;
+            border-bottom: 2px solid var(--ink);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%);
+            cursor: grab;
+        }
+
+        .category-stage:active {
+            cursor: grabbing;
+        }
+
+        .category-track {
+            display: flex;
+            align-items: center;
+            will-change: transform;
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .category-track.no-transition {
+            transition: none;
+        }
+
+        .cat-item {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            letter-spacing: 0.04em;
+            line-height: 1;
+            white-space: nowrap;
+            padding: 0 36px;
+            color: var(--muted);
+            opacity: 0.28;
+            transform: scale(0.72);
+            transition: opacity 0.4s, transform 0.4s, color 0.4s;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .cat-item.active {
+            color: var(--ink);
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .cat-item.adjacent {
+            opacity: 0.2;
+            transform: scale(0.7);
+        }
+
+        .category-indicator {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0 0;
+        }
+
+        .category-indicator span {
+            width: 32px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* ── PANELS ── */
+        .panels-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+            overflow: hidden;
+        }
+
+        .panels-track {
+            display: flex;
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        .tab-panel {
+            min-width: 100%;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .section-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.18em;
+            color: var(--muted);
+            padding: 32px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--rule);
+        }
+
+        /* ── ARTICLE ── */
+        .article {
+            padding: 32px 0 28px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .article:last-child {
+            border-bottom: none;
+        }
+
+        .article-kicker {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .article-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            font-weight: 900;
+            line-height: 1.18;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: 12px;
+            transition: color 0.2s;
+        }
+
+        .article-headline:hover {
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .article-deck {
+            font-size: 0.97rem;
+            line-height: 1.65;
+            color: var(--muted);
+            font-weight: 300;
+            max-width: 620px;
+        }
+
+        /* Toggle */
+        .article-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 14px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            transition: color 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .article-toggle:hover {
+            color: var(--accent);
+        }
+
+        .toggle-icon {
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid currentColor;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 1;
+            transition: transform 0.35s ease;
+            flex-shrink: 0;
+        }
+
+        /* Expand / collapse using grid trick — no JS height needed */
+        .article-body {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease;
+        }
+
+        .article-body.open {
+            grid-template-rows: 1fr;
+        }
+
+        .article-body-inner {
+            overflow: hidden;
+        }
+
+        .article-body-text {
+            margin-top: 22px;
+            padding-top: 22px;
+            border-top: 1px solid var(--rule);
+            font-size: 0.98rem;
+            line-height: 1.82;
+            color: #2a2520;
+            max-width: 620px;
+        }
+
+        .article-body-text p {
+            margin-bottom: 16px;
+        }
+
+        .article-body-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 600px) {
+            .masthead {
+                padding: 14px 20px 10px;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .masthead-tagline {
+                display: none;
+            }
+
+            .rule-double {
+                margin: 0 20px;
+            }
+
+            .panels-wrapper {
+                padding: 0 20px 60px;
+            }
+
+            .cat-item {
+                font-size: clamp(2.4rem, 12vw, 4rem);
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="masthead">
+            <div class="masthead-meta" id="update-time">Loading...</div>
+            <div class="masthead-title">Daily Briefing</div>
+            <div class="masthead-tagline">Intelligence &middot; Analysis &middot; Context</div>
+        </div>
+        <div class="rule-double"></div>
+    </header>
+
+    <div class="category-stage" id="category-stage">
+        <div class="category-track" id="category-track"></div>
+    </div>
+    <div class="category-indicator"><span></span></div>
+
+    <div class="panels-wrapper">
+        <div class="panels-track" id="panels-track"></div>
+    </div>
+
+    <script>
+        const SECTIONS = {
+            "Global": [
+                {
+                    kicker: "Geopolitics",
+                    headline: "Diplomatic Tensions Reshape Trade Corridors Across Three Continents",
+                    deck: "A sweeping realignment of alliances is quietly redrawing the map of global commerce, with implications that will be felt for decades.",
+                    body: `<p>Behind closed doors in Geneva last week, senior trade envoys from twelve nations held what officials are describing as one of the most consequential informal summits in recent memory. The discussions, spanning two days, centred on the accelerating fragmentation of the post-Cold War trading order.</p>
+<p>The bloc emerging from the talks does not yet have a name, but analysts say the gravitational pull of its combined markets — accounting for nearly 28% of global GDP — makes its formation almost inevitable.</p>
+<p>The immediate trigger was a series of unilateral tariff moves by Washington that blindsided several longstanding partners. Rather than absorb the shock individually, the affected nations chose coordination.</p>`
+                },
+                {
+                    kicker: "Security",
+                    headline: "Cybersecurity Incident Disrupts Critical Infrastructure in Four Nations Simultaneously",
+                    deck: "Investigators are racing to determine whether a coordinated state actor was behind attacks that briefly took down power grid monitoring systems.",
+                    body: `<p>For approximately ninety minutes on Tuesday, grid operators in four countries found themselves flying partially blind. The incident involved the simultaneous disruption of SCADA monitoring interfaces used to manage electricity distribution across national networks.</p>
+<p>No blackouts occurred, owing to manual overrides and redundant analogue systems that engineers activated within minutes. But the ease with which monitoring was compromised has rattled officials who had considered these systems hardened.</p>`
+                },
+                {
+                    kicker: "Economics",
+                    headline: "Central Banks Signal Diverging Paths as Inflation Data Splits East and West",
+                    deck: "The era of coordinated monetary policy may be drawing to a close, as economic conditions pull major central banks in fundamentally different directions.",
+                    body: `<p>For three years following the pandemic, the world's major central banks moved with unusual synchrony, hiking rates in tandem to combat an inflation surge that respected no borders. That chapter appears to be ending.</p>
+<p>The ECB has telegraphed two further cuts before the summer. The Bank of Japan, by contrast, is actively debating whether its tentative normalisation cycle needs to accelerate.</p>`
+                }
+            ],
+            "Tech": [
+                {
+                    kicker: "Artificial Intelligence",
+                    headline: "Foundation Model Benchmark Wars Obscure a More Important Question: Reliability",
+                    deck: "As AI labs compete on headline scores, enterprises are quietly discovering that consistency matters far more than peak performance.",
+                    body: `<p>The latest round of benchmark releases followed a now-familiar pattern: bold claims, incremental improvements dressed as breakthroughs. Lost in the noise was a more interesting story from a consortium of enterprise customers.</p>
+<p>Their finding is striking: the correlation between benchmark performance and real-world reliability is weak, and in several domains, inverted. Models that score highest on standardised tests often exhibit the greatest variability in production settings.</p>`
+                },
+                {
+                    kicker: "Semiconductors",
+                    headline: "Next-Generation Chip Architecture Promises to Dissolve the Memory Bandwidth Bottleneck",
+                    deck: "A stealth startup emerging from three years of silence has demonstrated a processor design that could alter the economics of AI inference.",
+                    body: `<p>In a nondescript office park in Austin, Texas, a team of forty engineers has spent three years on a single obsession: eliminating the gap between how fast modern processors can compute and how quickly they can access the data they need.</p>
+<p>The company demonstrated its first silicon last month to a small group of prospective customers. The results were described as "genuinely surprising" and "not obviously explainable by conventional architecture improvements."</p>`
+                },
+                {
+                    kicker: "Regulation",
+                    headline: "EU's AI Act Enters Enforcement Phase — First Fines May Come Sooner Than Expected",
+                    deck: "Regulators in Brussels are reportedly further along in high-profile investigations than industry groups had anticipated.",
+                    body: `<p>When the EU AI Act passed last year, most observers expected a leisurely ramp-up to enforcement. That timeline may be compressing. Investigators have been significantly more active than public communications would suggest.</p>
+<p>Three major providers of high-risk AI systems are understood to be under active scrutiny, centring on whether pre-market conformity assessments accurately reflect the systems as actually deployed.</p>`
+                }
+            ],
+            "Markets": [
+                {
+                    kicker: "Equities",
+                    headline: "Rotation Out of Growth Into Value Accelerates as Rate Expectations Reprice",
+                    deck: "Fund managers are executing the sharpest sector rotation in eighteen months, with implications for retail portfolios and passive index exposure.",
+                    body: `<p>The shift has been building for weeks beneath the surface of headline index performance. Growth-oriented technology and consumer discretionary names are being trimmed aggressively, with proceeds rotating into financials, energy, and industrials.</p>
+<p>Futures markets now assign less than 40% probability to even two rate cuts before year-end — a dramatic repricing from February's expectations.</p>`
+                },
+                {
+                    kicker: "Commodities",
+                    headline: "Copper's Structural Deficit Is Arriving Faster Than the Mining Industry Can Respond",
+                    deck: "The green energy transition's most critical raw material is heading toward a supply crunch that may not peak until the early 2030s.",
+                    body: `<p>Every serious pathway to decarbonisation runs through copper. Electric vehicles require four times as much of it as their combustion equivalents. Offshore wind installations are enormously copper-intensive.</p>
+<p>The mining industry's response has been hampered by permitting timelines measured in decades, grade decline at existing operations, and a decade of underinvestment following the previous commodity cycle downturn.</p>`
+                }
+            ],
+            "Science": [
+                {
+                    kicker: "Climate",
+                    headline: "Ocean Heat Content Measurements Reveal Warming Is Proceeding Ahead of Worst-Case Models",
+                    deck: "New data from a globally distributed sensor array is forcing a revision of timelines considered pessimistic only two years ago.",
+                    body: `<p>The oceans absorb over 90% of the excess energy accumulated by the climate system. The latest readings from the Argo float network show heat accumulation accelerated sharply in 2024 and has not slowed.</p>
+<p>The rate now exceeds the 95th percentile of what models projected for this period under high-emission scenarios, according to several senior oceanographers.</p>`
+                },
+                {
+                    kicker: "Biology",
+                    headline: "CRISPR Derivative Achieves First In-Vivo Base Editing Correction in Adult Liver Tissue",
+                    deck: "Researchers have demonstrated precise single-letter DNA correction in a living patient without viral vectors — a clinical milestone.",
+                    body: `<p>The result represents a technical boundary being crossed. Previous in-vivo gene editing successes relied on viral delivery mechanisms that carry immunogenic risk. The new approach uses lipid nanoparticles to deliver base editing machinery directly to hepatocytes.</p>
+<p>The patient showed correction of the target base in approximately 60% of sampled liver cells three months post-treatment. Liver enzyme profiles normalised within six weeks.</p>`
+                }
+            ]
+        };
+
+        // ── INIT ─────────────────────────────────────────────────────────────────────
+        const keys = Object.keys(SECTIONS);
+        let currentIndex = 0;
+
+        document.getElementById('update-time').textContent =
+            'Updated: ' + new Date().toLocaleString('en-GB', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+
+        const categoryTrack = document.getElementById('category-track');
+        const panelsTrack = document.getElementById('panels-track');
+        const stage = document.getElementById('category-stage');
+
+        // Build category labels
+        keys.forEach((cat, i) => {
+            const el = document.createElement('div');
+            el.className = 'cat-item';
+            el.textContent = cat;
+            el.addEventListener('click', () => goTo(i));
+            categoryTrack.appendChild(el);
+        });
+
+        // Build article panels
+        keys.forEach((cat) => {
+            const panel = document.createElement('div');
+            panel.className = 'tab-panel';
+
+            const lbl = document.createElement('div');
+            lbl.className = 'section-label';
+            lbl.textContent = cat;
+            panel.appendChild(lbl);
+
+            SECTIONS[cat].forEach(art => {
+                const article = document.createElement('article');
+                article.className = 'article';
+                article.innerHTML = `
+            <div class="article-kicker">${art.kicker}</div>
+            <h2 class="article-headline">${art.headline}</h2>
+            <p class="article-deck">${art.deck}</p>
+            <button class="article-toggle" type="button">
+                <span class="toggle-icon">+</span>
+                <span class="toggle-label">Read analysis</span>
+            </button>
+            <div class="article-body">
+                <div class="article-body-inner">
+                    <div class="article-body-text">${art.body}</div>
+                </div>
+            </div>
+        `;
+
+                const btn = article.querySelector('.article-toggle');
+                const body = article.querySelector('.article-body');
+                const icon = article.querySelector('.toggle-icon');
+                const label = article.querySelector('.toggle-label');
+
+                btn.addEventListener('click', () => {
+                    const opening = !body.classList.contains('open');
+                    body.classList.toggle('open', opening);
+                    icon.style.transform = opening ? 'rotate(45deg)' : 'rotate(0deg)';
+                    label.textContent = opening ? 'Close' : 'Read analysis';
+                });
+
+                panel.appendChild(article);
+            });
+
+            panelsTrack.appendChild(panel);
+        });
+
+        // ── NAVIGATION ───────────────────────────────────────────────────────────────
+        function getCatOffset(idx) {
+            const items = categoryTrack.querySelectorAll('.cat-item');
+            const stageW = stage.offsetWidth;
+            const item = items[idx];
+            if (!item) return 0;
+            return stageW / 2 - (item.offsetLeft + item.offsetWidth / 2);
+        }
+
+        function updateCats(idx) {
+            categoryTrack.querySelectorAll('.cat-item').forEach((el, i) => {
+                el.classList.remove('active', 'adjacent');
+                const d = Math.abs(i - idx);
+                if (d === 0) el.classList.add('active');
+                else if (d === 1) el.classList.add('adjacent');
+            });
+        }
+
+        function goTo(idx, instant) {
+            currentIndex = Math.max(0, Math.min(idx, keys.length - 1));
+            updateCats(currentIndex);
+
+            if (instant) categoryTrack.classList.add('no-transition');
+            categoryTrack.style.transform = `translateX(${getCatOffset(currentIndex)}px)`;
+            if (instant) requestAnimationFrame(() => categoryTrack.classList.remove('no-transition'));
+
+            panelsTrack.style.transform = `translateX(${-currentIndex * 100}%)`;
+        }
+
+        goTo(0, true);
+        window.addEventListener('resize', () => goTo(currentIndex, true));
+
+        // ── DRAG / SWIPE ──────────────────────────────────────────────────────────────
+        let dragStartX = 0, dragDelta = 0, pointerDown = false;
+
+        stage.addEventListener('pointerdown', e => {
+            pointerDown = true;
+            dragStartX = e.clientX;
+            dragDelta = 0;
+            categoryTrack.classList.add('no-transition');
+            stage.setPointerCapture(e.pointerId);
+        });
+
+        stage.addEventListener('pointermove', e => {
+            if (!pointerDown) return;
+            dragDelta = e.clientX - dragStartX;
+            categoryTrack.style.transform = `translateX(${getCatOffset(currentIndex) + dragDelta}px)`;
+        });
+
+        stage.addEventListener('pointerup', e => {
+            if (!pointerDown) return;
+            pointerDown = false;
+            categoryTrack.classList.remove('no-transition');
+            if (dragDelta < -60 && currentIndex < keys.length - 1) goTo(currentIndex + 1);
+            else if (dragDelta > 60 && currentIndex > 0) goTo(currentIndex - 1);
+            else goTo(currentIndex);
+            dragDelta = 0;
+        });
+    </script>
+</body>
+
+</html>

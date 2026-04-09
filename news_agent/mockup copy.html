@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0a0a0a;
+            --paper: #f5f0e8;
+            --paper-dark: #ede7d9;
+            --accent: #c8102e;
+            --accent-gold: #b8860b;
+            --muted: #6b6459;
+            --rule: #c9bfaf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── MASTHEAD ── */
+        .masthead {
+            border-bottom: 3px double var(--ink);
+            padding: 18px 40px 14px;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .masthead-meta {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .masthead-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            letter-spacing: 0.04em;
+            line-height: 1;
+            color: var(--ink);
+            text-align: center;
+            flex: 1;
+        }
+
+        .masthead-tagline {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .rule-double {
+            border-top: 1px solid var(--ink);
+            border-bottom: 1px solid var(--ink);
+            padding: 4px 0;
+            margin: 0 40px;
+        }
+
+        .rule-thin {
+            border-top: 1px solid var(--rule);
+            margin: 0 40px;
+        }
+
+        /* ── CATEGORY TABS (swipeable) ── */
+        .tab-strip-wrapper {
+            border-bottom: 2px solid var(--ink);
+            background: var(--paper);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .tab-strip {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 0 40px;
+            gap: 0;
+        }
+
+        .tab-strip::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.8rem);
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 14px 28px 10px;
+            white-space: nowrap;
+            position: relative;
+            transition: color 0.25s;
+            flex-shrink: 0;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.25s;
+        }
+
+        .tab-btn.active {
+            color: var(--ink);
+        }
+
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+
+        .tab-divider {
+            align-self: center;
+            color: var(--rule);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* ── MAIN CONTENT ── */
+        main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── ARTICLE ── */
+        .article {
+            padding: 40px 0 32px;
+            border-bottom: 1px solid var(--rule);
+            cursor: pointer;
+        }
+
+        .article:last-child {
+            border-bottom: none;
+        }
+
+        .article-kicker {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .article-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: 14px;
+            transition: color 0.2s;
+        }
+
+        .article:hover .article-headline {
+            color: var(--accent);
+        }
+
+        .article-deck {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--muted);
+            font-weight: 300;
+            margin-bottom: 0;
+            max-width: 640px;
+        }
+
+        /* ── EXPANDED BODY ── */
+        .article-body {
+            display: none;
+            overflow: hidden;
+        }
+
+        .article-body.open {
+            display: block;
+            animation: expandDown 0.4s ease;
+        }
+
+        @keyframes expandDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .article-body-inner {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--rule);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #2a2520;
+            max-width: 640px;
+        }
+
+        .article-body-inner p {
+            margin-bottom: 18px;
+        }
+
+        .article-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 16px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .article-toggle:hover {
+            color: var(--accent);
+        }
+
+        .toggle-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid currentColor;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .article-toggle.open .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.18em;
+            color: var(--muted);
+            padding: 24px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--rule);
+        }
+
+        /* ── LOADING ── */
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--muted);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── SCROLLBAR HINT on tabs ── */
+        .tab-scroll-hint {
+            text-align: center;
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--rule);
+            padding: 4px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .masthead {
+                padding: 14px 20px 10px;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .rule-double,
+            .rule-thin {
+                margin: 0 20px;
+            }
+
+            .tab-strip {
+                padding: 0 20px;
+            }
+
+            main {
+                padding: 0 20px 60px;
+            }
+
+            .tab-scroll-hint {
+                display: block;
+            }
+
+            .masthead-tagline {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="masthead">
+            <div class="masthead-meta" id="update-time">Loading...</div>
+            <div class="masthead-title">Daily Briefing</div>
+            <div class="masthead-tagline">Intelligence &middot; Analysis &middot; Context</div>
+        </div>
+        <div class="rule-double"></div>
+    </header>
+
+    <div class="tab-strip-wrapper">
+        <div class="tab-scroll-hint">← swipe to explore →</div>
+        <div class="tab-strip" id="tab-strip"></div>
+    </div>
+
+    <main id="main-content">
+        <div class="loading-state">Loading briefing…</div>
+    </main>
+
+    <script>
+        // ── SAMPLE DATA (replace with your history.json fetch) ──────────────────
+        const SECTIONS = {
+            "Global": [
+                {
+                    kicker: "Geopolitics",
+                    headline: "Diplomatic Tensions Reshape Trade Corridors Across Three Continents",
+                    deck: "A sweeping realignment of alliances is quietly redrawing the map of global commerce, with implications that will be felt for decades.",
+                    body: `<p>Behind closed doors in Geneva last week, senior trade envoys from twelve nations held what officials are describing as one of the most consequential informal summits in recent memory. The discussions, spanning two days, centred on the accelerating fragmentation of the post-Cold War trading order.</p>
+<p>The bloc emerging from the talks does not yet have a name, but analysts say the gravitational pull of its combined markets — accounting for nearly 28% of global GDP — makes its formation almost inevitable. "We are watching the skeleton of a new multilateral framework being assembled," noted one Geneva-based economist briefed on the proceedings.</p>
+<p>The immediate trigger was a series of unilateral tariff moves by Washington that blindsided several longstanding partners. Rather than absorb the shock individually, the affected nations chose coordination. The resulting communiqué, not yet public, is understood to outline a phased response covering digital services, agricultural exports, and rare earth procurement.</p>`
+                },
+                {
+                    kicker: "Security",
+                    headline: "Cybersecurity Incident Disrupts Critical Infrastructure in Four Nations Simultaneously",
+                    deck: "Investigators are racing to determine whether a coordinated state actor was behind attacks that briefly took down power grid monitoring systems.",
+                    body: `<p>For approximately ninety minutes on Tuesday, grid operators in four countries found themselves flying partially blind. The incident — still being forensically examined — involved the simultaneous disruption of SCADA monitoring interfaces used to manage electricity distribution across national networks.</p>
+<p>No blackouts occurred, owing to manual overrides and redundant analogue systems that engineers activated within minutes. But the ease with which monitoring was compromised has rattled officials who had considered these systems hardened. "The attack surface was theoretical until it wasn't," said one senior grid security officer, speaking on condition of anonymity.</p>`
+                },
+                {
+                    kicker: "Economics",
+                    headline: "Central Banks Signal Diverging Paths as Inflation Data Splits East and West",
+                    deck: "The era of coordinated monetary policy may be drawing to a close, as economic conditions pull major central banks in fundamentally different directions.",
+                    body: `<p>For three years following the pandemic, the world's major central banks moved with unusual synchrony, hiking rates in tandem to combat an inflation surge that respected no borders. That chapter appears to be ending. April's data releases have crystallised a growing divide: Eurozone inflation is now running at 1.8%, comfortably within target, while equivalent figures in Japan and South Korea have re-accelerated above 3%.</p>
+<p>The ECB has telegraphed two further cuts before the summer. The Bank of Japan, by contrast, is actively debating whether its tentative normalisation cycle needs to accelerate. Currency markets are already pricing the divergence, with the yen weakening sharply this week against the euro.</p>`
+                }
+            ],
+            "Tech": [
+                {
+                    kicker: "Artificial Intelligence",
+                    headline: "Foundation Model Benchmark Wars Obscure a More Important Question: Reliability",
+                    deck: "As AI labs compete on headline scores, enterprises are quietly discovering that consistency and predictability matter far more than peak performance.",
+                    body: `<p>The latest round of benchmark releases from the major AI laboratories followed a now-familiar pattern: bold claims, incremental improvements dressed as breakthroughs, and a flurry of social media commentary from partisans on all sides. Lost in the noise was a more interesting story.</p>
+<p>A consortium of enterprise customers — spanning financial services, legal, and pharmaceutical sectors — published the first systematic study of AI reliability at scale. Their finding, buried in a 340-page technical report, is striking: the correlation between benchmark performance and real-world reliability is weak, and in several domains, inverted. Models that score highest on standardised tests often exhibit the greatest variability in production settings.</p>
+<p>The report attributes this to what researchers call "benchmark overfitting at the ecosystem level" — a dynamic where training pipelines, including synthetic data generation, are increasingly optimised toward the specific task distributions used in public evaluations. The implications for procurement decisions are significant.</p>`
+                },
+                {
+                    kicker: "Semiconductors",
+                    headline: "Next-Generation Chip Architecture Promises to Dissolve the Memory Bandwidth Bottleneck",
+                    deck: "A stealth startup emerging from three years of silence has demonstrated a processor design that could fundamentally alter the economics of AI inference.",
+                    body: `<p>In a nondescript office park in Austin, Texas, a team of forty engineers has spent three years on a single obsession: eliminating the gap between how fast modern processors can compute and how quickly they can access the data they need. That gap — the memory bandwidth bottleneck — is the defining constraint of contemporary AI hardware.</p>
+<p>The company, which has operated in complete stealth, demonstrated its first silicon last month to a small group of prospective customers and investors. The results, described to this publication by two people who attended, were described as "genuinely surprising" and "not obviously explainable by conventional architecture improvements."</p>`
+                },
+                {
+                    kicker: "Regulation",
+                    headline: "EU's AI Act Enters Enforcement Phase — and the First Fines May Come Sooner Than Expected",
+                    deck: "Regulators in Brussels are reportedly further along in several high-profile investigations than industry groups had anticipated.",
+                    body: `<p>When the EU AI Act passed last year, most observers expected a leisurely ramp-up to enforcement, with regulators spending years building capacity and establishing precedent. That timeline may be compressing. According to sources familiar with the European AI Office's operations, investigators have been significantly more active in the past six months than public communications would suggest.</p>
+<p>Three major providers of what the Act classifies as "high-risk AI systems" are understood to be under active scrutiny. The investigations centre on documentation requirements — specifically, whether pre-market conformity assessments accurately reflect the systems as actually deployed. This is a technically demanding area of compliance that many providers underinvested in.</p>`
+                }
+            ],
+            "Markets": [
+                {
+                    kicker: "Equities",
+                    headline: "Rotation Out of Growth Into Value Accelerates as Rate Expectations Reprice",
+                    deck: "Fund managers are executing the sharpest sector rotation in eighteen months, with implications for both retail portfolios and passive index exposure.",
+                    body: `<p>The shift has been building for weeks beneath the surface of headline index performance, which has remained relatively stable. But beneath that calm, a significant reallocation is underway. Growth-oriented technology and consumer discretionary names are being trimmed aggressively, with proceeds rotating into financials, energy, and industrials.</p>
+<p>The catalyst is a reassessment of the interest rate trajectory following this week's stronger-than-expected services PMI data. Futures markets, which as recently as February were pricing four rate cuts before year-end, now assign less than 40% probability to even two. That repricing directly affects the discount rates applied to long-duration growth assets.</p>`
+                },
+                {
+                    kicker: "Commodities",
+                    headline: "Copper's Structural Deficit Is Arriving Faster Than the Mining Industry Can Respond",
+                    deck: "The green energy transition's most critical raw material is heading toward a supply crunch that may not peak until the early 2030s.",
+                    body: `<p>Every serious pathway to decarbonisation runs through copper. Electric vehicles require four times as much of it as their combustion equivalents. Offshore wind installations are enormously copper-intensive. Grid upgrades necessary to handle bidirectional power flows demand it in quantities that make historical demand look modest.</p>
+<p>The mining industry's response to this forecast has been hampered by a combination of factors that are unlikely to resolve quickly: permitting timelines measured in decades, grade decline at existing operations, geopolitical complications around the largest reserve concentrations, and a decade of underinvestment that followed the previous commodity cycle downturn.</p>`
+                }
+            ],
+            "Science": [
+                {
+                    kicker: "Climate",
+                    headline: "Ocean Heat Content Measurements Reveal Warming Is Proceeding Ahead of Worst-Case Models",
+                    deck: "New data from a globally distributed sensor array is forcing a revision of timelines that had been considered pessimistic only two years ago.",
+                    body: `<p>The oceans are the planet's primary heat sink, absorbing over 90% of the excess energy accumulated by the climate system. For this reason, ocean heat content is considered a more reliable indicator of long-run warming than surface temperature measurements, which are affected by short-term variability. The latest readings are, by the assessment of several senior oceanographers, alarming.</p>
+<p>Data from the expanded Argo float network — now numbering over 4,000 autonomous sensors distributed across every ocean basin — shows that heat accumulation in the upper 2,000 metres accelerated sharply in 2024 and has not slowed. The rate now exceeds the 95th percentile of what models had projected for this period under high-emission scenarios.</p>`
+                },
+                {
+                    kicker: "Biology",
+                    headline: "CRISPR Derivative Achieves First In-Vivo Base Editing Correction in Adult Liver Tissue",
+                    deck: "A clinical milestone with broad implications: researchers have demonstrated precise single-letter DNA correction in a living patient without viral vectors.",
+                    body: `<p>The result, published Wednesday in a peer-reviewed journal and simultaneously presented at a genomics conference in Boston, represents a technical boundary being crossed. Previous in-vivo gene editing successes have relied on viral delivery mechanisms that carry immunogenic risk and limit repeat dosing. The new approach uses lipid nanoparticles — similar in concept to those used in mRNA vaccines — to deliver base editing machinery directly to hepatocytes.</p>
+<p>The patient, who suffers from a rare metabolic disorder caused by a single-nucleotide variant, showed correction of the target base in approximately 60% of sampled liver cells three months post-treatment. Liver enzyme profiles normalised within six weeks. The team emphasises that this is a single case, and that the disease target was chosen specifically because the liver is the most accessible organ for lipid nanoparticle delivery.</p>`
+                }
+            ]
+        };
+
+        // ── RENDER ───────────────────────────────────────────────────────────────
+        function formatDate() {
+            return new Date().toLocaleString('en-GB', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function buildSite(sections) {
+            document.getElementById('update-time').textContent = `Updated: ${formatDate()}`;
+
+            const strip = document.getElementById('tab-strip');
+            const content = document.getElementById('main-content');
+            content.innerHTML = '';
+
+            const keys = Object.keys(sections);
+
+            keys.forEach((cat, i) => {
+                // Tab button
+                if (i > 0) {
+                    const div = document.createElement('span');
+                    div.className = 'tab-divider';
+                    div.textContent = '·';
+                    strip.appendChild(div);
+                }
+
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+                btn.textContent = cat;
+                btn.dataset.target = `panel-${i}`;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(`panel-${i}`).classList.add('active');
+                    // Scroll tab into view on mobile
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                });
+                strip.appendChild(btn);
+
+                // Panel
+                const panel = document.createElement('div');
+                panel.id = `panel-${i}`;
+                panel.className = 'tab-panel' + (i === 0 ? ' active' : '');
+
+                const label = document.createElement('div');
+                label.className = 'section-label';
+                label.textContent = cat;
+                panel.appendChild(label);
+
+                sections[cat].forEach((art, ai) => {
+                    const article = document.createElement('article');
+                    article.className = 'article';
+                    article.innerHTML = `
+                    <div class="article-kicker">${art.kicker}</div>
+                    <h2 class="article-headline">${art.headline}</h2>
+                    <p class="article-deck">${art.deck}</p>
+                    <button class="article-toggle" aria-expanded="false">
+                        <span class="toggle-icon">+</span> Read analysis
+                    </button>
+                    <div class="article-body">
+                        <div class="article-body-inner">${art.body}</div>
+                    </div>
+                `;
+
+                    const toggle = article.querySelector('.article-toggle');
+                    const body = article.querySelector('.article-body');
+
+                    toggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const isOpen = body.classList.toggle('open');
+                        toggle.classList.toggle('open', isOpen);
+                        toggle.querySelector('span:last-child').textContent = isOpen ? 'Close' : 'Read analysis';
+                        toggle.setAttribute('aria-expanded', isOpen);
+                    });
+
+                    article.addEventListener('click', () => {
+                        const isOpen = body.classList.toggle('open');
+                        toggle.classList.toggle('open', isOpen);
+                        toggle.querySelector('span:last-child').textContent = isOpen ? 'Close' : 'Read analysis';
+                    });
+
+                    panel.appendChild(article);
+                });
+
+                content.appendChild(panel);
+            });
+        }
+
+        buildSite(SECTIONS);
+    </script>
+</body>
+
+</html>
