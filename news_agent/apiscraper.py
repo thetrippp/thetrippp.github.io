@@ -255,207 +255,374 @@ with open(history_file, "w") as f:
 global_warning_html = ""
 if not global_sync_success:
     global_warning_html = """
-    <div class="global-warning">
+    <div class="global-warning" style="background-color: #fff3cd; color: #856404; padding: 15px; text-align: center; font-size: 0.9rem; margin-bottom: 20px;">
         ⚠️ <strong>Notice:</strong> One or more categories could not be updated today due to high AI server demand. You are viewing cached data for those sections.
     </div>
     """
 
+# Repurpose the old buttons into the new div format required by the mockup styles/JS
 processed_tabs = tab_buttons_html.replace('<button onclick="openTab(event, \'', '<div class="cat-item" data-target="').replace('\')">', '">').replace('</button>', '</div>')
 
 html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Briefing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing | Premium Intelligence</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link href="[https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap](https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap)" rel="stylesheet">
+    <link href="[https://fonts.googleapis.com/css2?family=Poppins&display=swap](https://fonts.googleapis.com/css2?family=Poppins&display=swap)" rel="stylesheet">
 
-<style>
-
-@import url('https://fonts.googleapis.com/css?family=Roboto');
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
-:root {{
-    --ink: #0a0a0a;
+    <style>
+        :root {{
+            --ink: #0a0a0a;
             --paper: #f5f0e8;
             --accent: #c8102e;
             --muted: #6b6459;
             --rule: #c9bfaf;
             --max-width: 800px;
-}}
+        }}
 
-* {{margin:0;padding:0;box-sizing:border-box;}}
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
 
-body {{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'DM Sans',sans-serif;
-    user-select:none;
-}}
+        body {{
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }}
 
-.ai-content {{
-    user-select:text;
-}}
+        /* Progress Bar */
+        .progress-container {{
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            height: 3px;
+            background: transparent;
+        }}
 
-header {{
-    border-bottom:3px double var(--ink);
-    padding:18px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-}}
+        .progress-bar {{
+            height: 3px;
+            background: var(--accent);
+            width: 0%;
+        }}
 
-h1 {{
-    font-family:'Poppins';
-    font-size:clamp(5rem,7vw,7rem);
-    flex:1;
-    text-align:center;
-}}
+        /* Masthead */
+        header {{
+            border-bottom: 3px double var(--ink);
+            padding: 18px 40px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }}
 
-.subtitle,.date {{
-    font-size:1rem;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    color:var(--muted);
-}}
+        h1 {{
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(5rem, 7vw, 7rem);
+            letter-spacing: 0.04em;
+            text-align: center;
+            flex: 1;
+        }}
 
-.category-stage {{
-    overflow:hidden;
-    padding:32px 0;
-    border-bottom:2px solid var(--ink);
-}}
+        .subtitle {{
+            font-size: 1rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: right;
+        }}
 
-.category-track {{
-    display:flex;
-    transition:transform .4s ease;
-}}
+        .date {{
+            font-size: 0.9rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }}
 
-.cat-item {{
-    font-family:'Poppins';
-    font-size:clamp(3rem,8vw,6rem);
-    padding:0 36px;
-    opacity:.15;
-    transform:scale(.6);
-    filter:blur(1px);
-    transition:.4s;
-    cursor:pointer;
-}}
+        /* Category carousel */
+        .category-stage {{
+            position: relative;
+            overflow: hidden;
+            padding: 32px 0 18px;
+            border-bottom: 2px solid var(--ink);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%);
+            cursor: grab;
+        }}
 
-.cat-item.active {{
-    opacity:1;
-    transform:scale(1.05);
-    filter:none;
-}}
+        .category-stage:active {{
+            cursor: grabbing;
+        }}
 
-.cat-item.adjacent {{
-    opacity:.35;
-    transform:scale(.75);
-}}
+        .category-track {{
+            display: flex;
+            align-items: center;
+            will-change: transform;
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }}
 
-main {{
-    max-width:var(--max-width);
-    margin:auto;
-    padding:40px;
-}}
+        .category-track.no-transition {{
+            transition: none;
+        }}
 
-.section-heading {{
-    font-family:'Poppins';
-    font-size:.85rem;
-    letter-spacing:.18em;
-    color:var(--muted);
-    margin-top:40px;
-    display:flex;
-    gap:12px;
-}}
+        .cat-item {{
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            letter-spacing: -0.1em;
+            line-height: 1;
+            white-space: nowrap;
+            padding: 0 36px;
+            color: var(--muted);
+            opacity: 0.15;
+            transform: scale(0.6);
+            filter: blur(1px);
+            transition: opacity 0.4s, transform 0.4s, color 0.4s, filter 0.4s;
+            cursor: pointer;
+            flex-shrink: 0;
+        }}
 
-.section-heading::after {{
-    content:'';
-    flex:1;
-    height:1px;
-    background:var(--rule);
-}}
+        .cat-item.active {{
+            color: var(--ink);
+            opacity: 1;
+            transform: scale(1.05);
+            filter: blur(0);
+        }}
 
-.section-divider {{
-    border:none;
-    border-top:1px solid var(--rule);
-    margin:32px 0;
-}}
+        .cat-item.adjacent {{
+            opacity: 0.35;
+            transform: scale(0.75);
+            filter: blur(0.5px);
+        }}
 
-.tabcontent {{display:none;}}
+        .category-indicator {{
+            display: flex;
+            justify-content: center;
+            padding: 10px 0 0;
+        }}
 
-.ai-content p {{
-    font-size:.95rem;
-    line-height:1.8;
-    margin-bottom:16px;
-}}
+        .category-indicator span {{
+            width: 32px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }}
 
-</style>
+        /* Main */
+        main {{
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 40px 80px;
+        }}
+
+        .tabcontent {{
+            display: none;
+        }}
+
+        /* Section label */
+        .section-heading {{
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.18em;
+            color: var(--muted);
+            padding: 32px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }}
+
+        .section-heading::after {{
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--rule);
+        }}
+
+        .section-divider {{
+            margin: 32px 0;
+            border: none;
+            border-top: 1px solid var(--rule);
+        }}
+
+        /* Article style */
+        .ai-content {{
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+            margin-top: 24px;
+        }}
+
+        .ai-content p {{
+            font-size: 0.98rem;
+            line-height: 1.8;
+            color: #2a2520;
+            margin-bottom: 16px;
+            max-width: 620px;
+        }}
+
+        .ai-content h3 {{
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            margin: 28px 0 12px;
+        }}
+        
+        .ai-content h4 {{
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            margin: 20px 0 8px;
+        }}
+
+        .ai-content ul {{
+            margin: 20px 0;
+            padding-left: 20px;
+        }}
+
+        .ai-content li {{
+            margin-bottom: 8px;
+        }}
+
+        /* Responsive */
+        @media (max-width: 600px) {{
+            header {{
+                padding: 14px 20px;
+                flex-direction: column;
+                align-items: center;
+            }}
+
+            main {{
+                padding: 0 20px 60px;
+            }}
+        }}
+    </style>
 </head>
 
 <body>
-
-<header>
-<h1>Daily Briefing</h1>
-<div class="subtitle">What's going on today?</div>
-<div class="date">{today_str}</div>
-</header>
-
-<div class="category-stage">
-    <div class="category-track" id="category-track">
-        {processed_tabs}
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
     </div>
-</div>
 
-{global_warning_html}
+    <header>
+        <div class="date" id="last-sync-date">{today_str}</div>
+        <h1>Daily Briefing</h1><br>
+        <p class="subtitle">What's going on today?</p>
+    </header>
+    
+    <div class="category-stage" id="category-stage">
+        <div class="category-track" id="category-track">
+            {processed_tabs}
+        </div>
+    </div>
+    <div class="category-indicator"><span></span></div>
 
-<main id="tab-contents">
-{tab_content_html}
-</main>
+    {global_warning_html}
 
-<script>
+    <main id="tab-contents">
+        {tab_content_html}
+    </main>
 
-let currentIndex = 0;
-const track = document.getElementById('category-track');
-const items = track.children;
+    <script>
+        // Scroll Progress
+        window.onscroll = function () {{
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("myBar").style.width = scrolled + "%";
+        }};
 
-function getOffset(i) {{
-    const stageWidth = track.parentElement.offsetWidth;
-    const el = items[i];
-    return stageWidth/2 - (el.offsetLeft + el.offsetWidth/2);
-}}
+        // Logic Initialization
+        document.addEventListener("DOMContentLoaded", () => {{
+            const categoryTrack = document.getElementById('category-track');
+            const stage = document.getElementById('category-stage');
+            const items = categoryTrack.querySelectorAll('.cat-item');
+            let currentIndex = 0;
 
-function updateCats(i) {{
-    Array.from(items).forEach((el,idx)=>{{
-        el.classList.remove('active','adjacent');
-        let d=Math.abs(idx-i);
-        if(d===0) el.classList.add('active');
-        else if(d===1) el.classList.add('adjacent');
-    }});
-}}
+            function getOffset(idx) {{
+                const stageW = stage.offsetWidth;
+                const item = items[idx];
+                if (!item) return 0;
+                return stageW / 2 - (item.offsetLeft + item.offsetWidth / 2);
+            }}
 
-function goTo(i) {{
-    currentIndex=Math.max(0,Math.min(i,items.length-1));
-    updateCats(currentIndex);
-    track.style.transform=`translateX(${{getOffset(currentIndex)}}px)`;
+            function updateCats(idx) {{
+                items.forEach((el, i) => {{
+                    el.classList.remove('active', 'adjacent');
+                    const d = Math.abs(i - idx);
+                    if (d === 0) el.classList.add('active');
+                    else if (d === 1) el.classList.add('adjacent');
+                }});
+            }}
 
-    document.querySelectorAll('.tabcontent').forEach(el=>el.style.display='none');
-    document.getElementById(items[currentIndex].dataset.target).style.display='block';
-}}
+            function goTo(idx, instant = false) {{
+                if (items.length === 0) return;
+                
+                currentIndex = Math.max(0, Math.min(idx, items.length - 1));
+                updateCats(currentIndex);
 
-Array.from(items).forEach((el,i)=>{{
-    el.addEventListener('click',()=>goTo(i));
-}});
+                if (instant) categoryTrack.classList.add('no-transition');
+                categoryTrack.style.transform = `translateX(${{getOffset(currentIndex)}}px)`;
+                if (instant) requestAnimationFrame(() => categoryTrack.classList.remove('no-transition'));
 
-goTo(0);
+                document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
+                const activeId = items[currentIndex].dataset.target;
+                const activeContent = document.getElementById(activeId);
+                if (activeContent) activeContent.style.display = 'block';
+            }}
 
-</script>
+            // Setup click listeners on category items
+            items.forEach((item, i) => {{
+                item.addEventListener('click', () => goTo(i));
+            }});
 
+            // Initialize position and content
+            if (items.length > 0) {{
+                goTo(0, true);
+            }}
+
+            // Resize handling
+            window.addEventListener('resize', () => goTo(currentIndex, true));
+
+            // Drag / swipe interactions
+            let startX = 0, delta = 0, down = false;
+
+            stage.addEventListener('pointerdown', e => {{
+                down = true;
+                startX = e.clientX;
+                delta = 0;
+                categoryTrack.classList.add('no-transition');
+                stage.setPointerCapture(e.pointerId);
+            }});
+
+            stage.addEventListener('pointermove', e => {{
+                if (!down) return;
+                delta = e.clientX - startX;
+                categoryTrack.style.transform = `translateX(${{getOffset(currentIndex) + delta}}px)`;
+            }});
+
+            stage.addEventListener('pointerup', () => {{
+                if (!down) return;
+                down = false;
+                categoryTrack.classList.remove('no-transition');
+                if (delta < -60 && currentIndex < items.length - 1) goTo(currentIndex + 1);
+                else if (delta > 60 && currentIndex > 0) goTo(currentIndex - 1);
+                else goTo(currentIndex);
+                delta = 0;
+            }});
+        }});
+    </script>
 </body>
 </html>
 """
-
 
 print(f"\nFinal HTML generation:")
 print(f"  - Categories processed: {len([k for k in categories.keys()])}")
