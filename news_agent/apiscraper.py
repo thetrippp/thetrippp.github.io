@@ -40,7 +40,7 @@ if not MODEL_NAME:
     MODEL_NAME = 'gemini-2.5-flash'
     print(f"Using fallback model: {MODEL_NAME}")
 
-# --- MASSIVE GLOBAL EXPANSION ---
+# --- CATEGORIES ---
 categories = {
     "Global Geopolitics": {
         "Reuters (Global)": "https://www.reutersagency.com/feed/?best-topics=political-general&type=latest",
@@ -83,7 +83,6 @@ if os.path.exists(history_file):
         with open(history_file, "r") as f:
             saved_history = json.load(f)
             if isinstance(saved_history, dict):
-                # Safely merge old history into the new structure
                 for key in history.keys():
                     if key in saved_history:
                         history[key] = saved_history[key]
@@ -91,8 +90,10 @@ if os.path.exists(history_file):
         print("Could not load history, starting fresh.")
 
 today_str = datetime.now().strftime("%Y-%m-%d %H:%M")
-tab_buttons_html = ""
-tab_content_html = ""
+
+# These will hold the data needed to build the HTML
+# cat_items: list of dicts with keys: safe_id, name, daily_html, recap_html, warning
+cat_items = []
 global_sync_success = True
 
 def markdown_to_html(text):
@@ -100,9 +101,9 @@ def markdown_to_html(text):
     text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
     return text
 
-# --- 3. THE MASTERCLASS NEWSROOM ---
+# --- 3. FETCH & GENERATE ---
 for cat_name, feeds in categories.items():
-    print(f"\n--- Processing {cat_name} Deep Dive ---")
+    print(f"\n--- Processing {cat_name} ---")
     
     cat_news_text = ""
     for source, url in feeds.items():
@@ -120,7 +121,7 @@ for cat_name, feeds in categories.items():
         except Exception as e:
             print(f"Skipping {source}")
 
-    print("Generating Long-Form Analysis...")
+    print("Generating analysis...")
     prompt = f"""
     You are an elite, award-winning investigative journalist for {cat_name}. 
     Your reader is a highly intelligent professional who only checks the news once a day and wants deep, exhaustive explanations rather than quick summaries.
@@ -153,116 +154,115 @@ for cat_name, feeds in categories.items():
     History Log: {history[cat_name]}
     """
     
-    try:
-        response_text = client.models.generate_content(model=MODEL_NAME, contents=prompt).text
-    except Exception as e:
-        error_msg = str(e).lower()
-        fallback_triggers = ["not found", "not supported", "resource_exhausted", "quota", "503", "unavailable", "high demand", "servererror", "internal"]
-        
-        if any(trigger in error_msg for trigger in fallback_triggers):
-            print(f"  Model {MODEL_NAME} failed ({type(e).__name__}), trying alternatives...")
-            response_text = None
-            for fallback_model in possible_models:
-                if fallback_model == MODEL_NAME:
-                    continue
-                try:
-                    print(f"  Trying {fallback_model}...")
-                    response_text = client.models.generate_content(model=fallback_model, contents=prompt).text
-                    print(f"  Success with {fallback_model}!")
-                    break
-                except Exception as e2:
-                    print(f"    {fallback_model} failed: {type(e2).__name__}")
-                    continue
-            if not response_text:
-                raise Exception("All fallback models failed.") 
-        else:
-            raise
+    safe_id = "".join(e for e in cat_name if e.isalnum())
 
     try:
+        response_text = None
+        try:
+            response_text = client.models.generate_content(model=MODEL_NAME, contents=prompt).text
+        except Exception as e:
+            error_msg = str(e).lower()
+            fallback_triggers = ["not found", "not supported", "resource_exhausted", "quota", "503", "unavailable", "high demand", "servererror", "internal"]
+            if any(trigger in error_msg for trigger in fallback_triggers):
+                print(f"  Model {MODEL_NAME} failed, trying alternatives...")
+                for fallback_model in possible_models:
+                    if fallback_model == MODEL_NAME:
+                        continue
+                    try:
+                        print(f"  Trying {fallback_model}...")
+                        response_text = client.models.generate_content(model=fallback_model, contents=prompt).text
+                        print(f"  Success with {fallback_model}!")
+                        break
+                    except Exception as e2:
+                        print(f"    {fallback_model} failed: {type(e2).__name__}")
+                if not response_text:
+                    raise Exception("All fallback models failed.")
+            else:
+                raise
+
         parts = response_text.split("|||DIVIDER|||")
-        daily_briefing_html = parts[0].replace("```html", "").replace("```", "").strip()
-        weekly_recap_html = parts[1].replace("```html", "").replace("```", "").strip() if len(parts) > 1 else "<p>Recap generating...</p>"
+        daily_html = parts[0].replace("```html", "").replace("```", "").strip()
+        recap_html = parts[1].replace("```html", "").replace("```", "").strip() if len(parts) > 1 else "<p>Recap generating...</p>"
         
-        daily_briefing_html = markdown_to_html(daily_briefing_html)
-        weekly_recap_html = markdown_to_html(weekly_recap_html)
-        
-        history[cat_name].append({"date": today_str, "briefing": daily_briefing_html, "recap": weekly_recap_html})
+        daily_html = markdown_to_html(daily_html)
+        recap_html = markdown_to_html(recap_html)
+
+        history[cat_name].append({"date": today_str, "briefing": daily_html, "recap": recap_html})
         if len(history[cat_name]) > 28:
             history[cat_name] = history[cat_name][-28:]
-            
-        safe_id = "".join(e for e in cat_name if e.isalnum())
-        tab_buttons_html += f'<button onclick="openTab(event, \'{safe_id}\')">{cat_name}</button>\n'
-        tab_content_html += f"""
-        <div id="{safe_id}" class="tabcontent">
-            <section class="content-section">
-                <h2 class="section-heading daily">Daily Analysis</h2>
-                <div class="ai-content">{daily_briefing_html}</div>
-            </section>
-            <hr class="section-divider">
-            <section class="content-section">
-                <h2 class="section-heading macro">Macro Trends</h2>
-                <div class="ai-content">{weekly_recap_html}</div>
-            </section>
-        </div>
-        """
+
+        cat_items.append({
+            "safe_id": safe_id,
+            "name": cat_name,
+            "daily_html": daily_html,
+            "recap_html": recap_html,
+            "warning": None,
+        })
         print(f"Success! Generated content for {cat_name}")
 
     except Exception as e:
         global_sync_success = False
-        print(f"ERROR: Complete failure generating content for {cat_name}. Attempting to recover from history...")
-        
-        safe_id = "".join(e for e in cat_name if e.isalnum())
-        tab_buttons_html += f'<button onclick="openTab(event, \'{safe_id}\')">{cat_name}</button>\n'
-        
-        if len(history[cat_name]) > 0:
-            last_good = history[cat_name][-1]
-            old_briefing = last_good.get("briefing", "<p>No prior daily briefing found.</p>")
-            old_recap = last_good.get("recap", "<p>No prior macro trend found.</p>")
-            old_date = last_good.get("date", "a previous session")
-            
-            tab_content_html += f"""
-            <div id="{safe_id}" class="tabcontent">
-                <div class="sync-warning">
-                    ⚠️ <strong>API Overwhelmed:</strong> Unable to sync new {cat_name} data today. Displaying the most recent available data from {old_date}.
-                </div>
-                <section class="content-section">
-                    <h2 class="section-heading daily">Daily Analysis</h2>
-                    <div class="ai-content">{old_briefing}</div>
-                </section>
-                <hr class="section-divider">
-                <section class="content-section">
-                    <h2 class="section-heading macro">Macro Trends</h2>
-                    <div class="ai-content">{old_recap}</div>
-                </section>
-            </div>
-            """
-        else:
-            tab_content_html += f"""
-            <div id="{safe_id}" class="tabcontent">
-                 <div class="sync-warning" style="background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;">
-                    ❌ <strong>Sync Failed:</strong> The AI models are currently overwhelmed, and no previous history exists for this category. Please try again later.
-                </div>
-            </div>
-            """
-        
-    time.sleep(3) 
+        print(f"ERROR: Complete failure for {cat_name}. Recovering from history...")
 
-# --- 4. SAVE HISTORY & COMPILE HTML ---
-print("\nSaving history and compiling final website...")
+        if history[cat_name]:
+            last = history[cat_name][-1]
+            warning_msg = f'⚠️ <strong>API Overwhelmed:</strong> Unable to sync new {cat_name} data. Showing data from {last.get("date", "a previous session")}.'
+            cat_items.append({
+                "safe_id": safe_id,
+                "name": cat_name,
+                "daily_html": last.get("briefing", "<p>No prior data found.</p>"),
+                "recap_html": last.get("recap", "<p>No prior recap found.</p>"),
+                "warning": warning_msg,
+            })
+        else:
+            cat_items.append({
+                "safe_id": safe_id,
+                "name": cat_name,
+                "daily_html": "<p>No data available.</p>",
+                "recap_html": "<p>No data available.</p>",
+                "warning": f'❌ <strong>Sync Failed:</strong> No data available for {cat_name}. Please try again later.',
+            })
+
+    time.sleep(3)
+
+# --- 4. SAVE HISTORY ---
+print("\nSaving history...")
 with open(history_file, "w") as f:
     json.dump(history, f)
 
-global_warning_html = ""
-if not global_sync_success:
-    global_warning_html = """
-    <div class="global-warning" style="background-color: #fff3cd; color: #856404; padding: 15px; text-align: center; font-size: 0.9rem; margin-bottom: 20px;">
-        ⚠️ <strong>Notice:</strong> One or more categories could not be updated today due to high AI server demand. You are viewing cached data for those sections.
-    </div>
+# --- 5. BUILD HTML ---
+# Build category track items
+cat_track_html = ""
+for item in cat_items:
+    cat_track_html += f'<div class="cat-item" data-target="{item["safe_id"]}">{item["name"]}</div>\n'
+
+# Build tab content panels
+tab_content_html = ""
+for item in cat_items:
+    warning_html = ""
+    if item["warning"]:
+        warning_html = f'<div class="sync-warning">{item["warning"]}</div>'
+
+    tab_content_html += f"""
+        <div id="{item['safe_id']}" class="tabcontent">
+            {warning_html}
+            <section class="content-section">
+                <h2 class="section-heading">Daily Analysis</h2>
+                <div class="ai-content">{item['daily_html']}</div>
+            </section>
+            <hr class="section-divider">
+            <section class="content-section">
+                <h2 class="section-heading">Macro Trends</h2>
+                <div class="ai-content">{item['recap_html']}</div>
+            </section>
+        </div>
     """
 
-# Repurpose the old buttons into the new div format required by the mockup styles/JS
-processed_tabs = tab_buttons_html.replace('<button onclick="openTab(event, \'', '<div class="cat-item" data-target="').replace('\')">', '">').replace('</button>', '</div>')
+global_warning_html = ""
+if not global_sync_success:
+    global_warning_html = '<div class="global-warning">⚠️ <strong>Notice:</strong> One or more categories could not be updated today. You are viewing cached data for those sections.</div>'
 
+# --- 6. WRITE index.html ---
 html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -270,9 +270,8 @@ html_content = f"""<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Briefing | Premium Intelligence</title>
 
-    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-    <link href="[https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap](https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap)" rel="stylesheet">
-    <link href="[https://fonts.googleapis.com/css2?family=Poppins&display=swap](https://fonts.googleapis.com/css2?family=Poppins&display=swap)" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {{
@@ -301,7 +300,7 @@ html_content = f"""<!DOCTYPE html>
             line-height: 1.6;
         }}
 
-        /* Progress Bar */
+        /* ── Progress Bar ── */
         .progress-container {{
             position: fixed;
             top: 0;
@@ -317,7 +316,7 @@ html_content = f"""<!DOCTYPE html>
             width: 0%;
         }}
 
-        /* Masthead */
+        /* ── Masthead ── */
         header {{
             border-bottom: 3px double var(--ink);
             padding: 18px 40px 14px;
@@ -330,6 +329,7 @@ html_content = f"""<!DOCTYPE html>
         h1 {{
             font-family: 'Poppins', sans-serif;
             font-size: clamp(5rem, 7vw, 7rem);
+            font-weight: 700;
             letter-spacing: 0.04em;
             text-align: center;
             flex: 1;
@@ -350,7 +350,7 @@ html_content = f"""<!DOCTYPE html>
             color: var(--muted);
         }}
 
-        /* Category carousel */
+        /* ── Category carousel ── */
         .category-stage {{
             position: relative;
             overflow: hidden;
@@ -379,6 +379,7 @@ html_content = f"""<!DOCTYPE html>
         .cat-item {{
             font-family: 'Poppins', sans-serif;
             font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
             letter-spacing: -0.1em;
             line-height: 1;
             white-space: nowrap;
@@ -418,7 +419,7 @@ html_content = f"""<!DOCTYPE html>
             border-radius: 2px;
         }}
 
-        /* Main */
+        /* ── Main content ── */
         main {{
             max-width: var(--max-width);
             margin: 0 auto;
@@ -429,11 +430,13 @@ html_content = f"""<!DOCTYPE html>
             display: none;
         }}
 
-        /* Section label */
+        /* ── Section labels ── */
         .section-heading {{
             font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem;
-            letter-spacing: 0.18em;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
             color: var(--muted);
             padding: 32px 0 0;
             display: flex;
@@ -454,7 +457,7 @@ html_content = f"""<!DOCTYPE html>
             border-top: 1px solid var(--rule);
         }}
 
-        /* Article style */
+        /* ── AI-generated article content ── */
         .ai-content {{
             -webkit-user-select: text;
             -moz-user-select: text;
@@ -463,36 +466,105 @@ html_content = f"""<!DOCTYPE html>
             margin-top: 24px;
         }}
 
+        /* Story boxes (from the prompt's HTML structure) */
+        .ai-content .story-box {{
+            padding: 0 0 36px 0;
+            border-bottom: 1px solid var(--rule);
+            margin-bottom: 8px;
+        }}
+
+        .ai-content .story-box:last-child {{
+            border-bottom: none;
+        }}
+
+        .ai-content .story-title {{
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            margin: 28px 0 20px;
+        }}
+
+        .ai-content .section-head {{
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 20px 0 8px;
+        }}
+
         .ai-content p {{
             font-size: 0.98rem;
-            line-height: 1.8;
+            line-height: 1.82;
             color: #2a2520;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             max-width: 620px;
         }}
 
         .ai-content h3 {{
             font-family: 'Poppins', sans-serif;
             font-size: 1.8rem;
+            font-weight: 700;
             margin: 28px 0 12px;
         }}
-        
+
         .ai-content h4 {{
             font-family: 'Poppins', sans-serif;
-            font-size: 1.2rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
             margin: 20px 0 8px;
         }}
 
         .ai-content ul {{
-            margin: 20px 0;
+            margin: 16px 0;
             padding-left: 20px;
         }}
 
         .ai-content li {{
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: #2a2520;
             margin-bottom: 8px;
         }}
 
-        /* Responsive */
+        .ai-content strong {{
+            font-weight: 600;
+            color: var(--ink);
+        }}
+
+        /* Remove drop cap */
+        .ai-content p:first-of-type::first-letter {{
+            all: unset;
+        }}
+
+        /* ── Warning banners ── */
+        .global-warning {{
+            background: #fff3cd;
+            color: #856404;
+            padding: 14px 24px;
+            text-align: center;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #ffe69c;
+        }}
+
+        .sync-warning {{
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffe69c;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 0.88rem;
+            margin: 24px 0 0;
+        }}
+
+        /* ── Responsive ── */
         @media (max-width: 600px) {{
             header {{
                 padding: 14px 20px;
@@ -513,14 +585,14 @@ html_content = f"""<!DOCTYPE html>
     </div>
 
     <header>
-        <div class="date" id="last-sync-date">{today_str}</div>
-        <h1>Daily Briefing</h1><br>
+        <div class="date">{today_str}</div>
+        <h1>Daily Briefing</h1>
         <p class="subtitle">What's going on today?</p>
     </header>
-    
+
     <div class="category-stage" id="category-stage">
         <div class="category-track" id="category-track">
-            {processed_tabs}
+            {cat_track_html}
         </div>
     </div>
     <div class="category-indicator"><span></span></div>
@@ -532,19 +604,18 @@ html_content = f"""<!DOCTYPE html>
     </main>
 
     <script>
-        // Scroll Progress
+        // ── Scroll progress bar ──
         window.onscroll = function () {{
-            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = (winScroll / height) * 100;
-            document.getElementById("myBar").style.width = scrolled + "%";
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById("myBar").style.width = ((winScroll / height) * 100) + "%";
         }};
 
-        // Logic Initialization
+        // ── Category carousel & tab switching ──
         document.addEventListener("DOMContentLoaded", () => {{
             const categoryTrack = document.getElementById('category-track');
             const stage = document.getElementById('category-stage');
-            const items = categoryTrack.querySelectorAll('.cat-item');
+            const items = Array.from(categoryTrack.querySelectorAll('.cat-item'));
             let currentIndex = 0;
 
             function getOffset(idx) {{
@@ -563,9 +634,8 @@ html_content = f"""<!DOCTYPE html>
                 }});
             }}
 
-            function goTo(idx, instant = false) {{
+            function goTo(idx, instant) {{
                 if (items.length === 0) return;
-                
                 currentIndex = Math.max(0, Math.min(idx, items.length - 1));
                 updateCats(currentIndex);
 
@@ -575,24 +645,17 @@ html_content = f"""<!DOCTYPE html>
 
                 document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
                 const activeId = items[currentIndex].dataset.target;
-                const activeContent = document.getElementById(activeId);
-                if (activeContent) activeContent.style.display = 'block';
+                const activeEl = document.getElementById(activeId);
+                if (activeEl) activeEl.style.display = 'block';
             }}
 
-            // Setup click listeners on category items
-            items.forEach((item, i) => {{
-                item.addEventListener('click', () => goTo(i));
-            }});
+            items.forEach((item, i) => item.addEventListener('click', () => goTo(i)));
 
-            // Initialize position and content
-            if (items.length > 0) {{
-                goTo(0, true);
-            }}
+            if (items.length > 0) goTo(0, true);
 
-            // Resize handling
             window.addEventListener('resize', () => goTo(currentIndex, true));
 
-            // Drag / swipe interactions
+            // ── Drag / swipe ──
             let startX = 0, delta = 0, down = false;
 
             stage.addEventListener('pointerdown', e => {{
@@ -625,13 +688,8 @@ html_content = f"""<!DOCTYPE html>
 """
 
 print(f"\nFinal HTML generation:")
-print(f"  - Categories processed: {len([k for k in categories.keys()])}")
-print(f"  - Tab buttons generated: {len(tab_buttons_html) > 0}")
-print(f"  - Tab content generated: {len(tab_content_html) > 0}")
+print(f"  - Categories processed: {len(cat_items)}")
 print(f"  - History entries: {sum(len(v) for v in history.values())}")
-
-if not tab_buttons_html or not tab_content_html:
-    print("WARNING: No content was generated! Check API key and Gemini API availability.")
 
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
