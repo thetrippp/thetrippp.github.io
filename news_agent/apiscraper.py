@@ -319,46 +319,57 @@ html_content = f"""<!DOCTYPE html>
         /* ── Masthead ── */
         header {{
             border-bottom: 3px double var(--ink);
-            padding: 18px 40px 14px;
-            display: flex;
+            padding: 20px 40px 16px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            grid-template-rows: auto auto;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }}
-
-        h1 {{
-            font-family: 'Poppins', sans-serif;
-            font-size: clamp(5rem, 7vw, 7rem);
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            text-align: center;
-            flex: 1;
-        }}
-
-        .subtitle {{
-            font-size: 1rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--muted);
-            text-align: right;
+            gap: 0 12px;
         }}
 
         .date {{
-            font-size: 0.9rem;
-            letter-spacing: 0.12em;
+            grid-column: 1;
+            grid-row: 1;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--muted);
+            white-space: nowrap;
+        }}
+
+        h1 {{
+            grid-column: 1 / -1;
+            grid-row: 2;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2.8rem, 10vw, 7rem);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-align: center;
+            line-height: 1.05;
+            padding: 4px 0;
+        }}
+
+        .subtitle {{
+            grid-column: 3;
+            grid-row: 1;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: right;
+            white-space: nowrap;
         }}
 
         /* ── Category carousel ── */
         .category-stage {{
             position: relative;
             overflow: hidden;
-            padding: 32px 0 18px;
+            padding: clamp(14px, 4vw, 28px) 0 clamp(10px, 2vw, 16px);
             border-bottom: 2px solid var(--ink);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%);
             mask-image: linear-gradient(to right, transparent 0%, black 16%, black 84%, transparent 100%);
             cursor: grab;
+            max-width: 100vw;
         }}
 
         .category-stage:active {{
@@ -378,12 +389,12 @@ html_content = f"""<!DOCTYPE html>
 
         .cat-item {{
             font-family: 'Poppins', sans-serif;
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-size: clamp(1.6rem, 6vw, 6rem);
             font-weight: 700;
-            letter-spacing: -0.1em;
+            letter-spacing: -0.05em;
             line-height: 1;
             white-space: nowrap;
-            padding: 0 36px;
+            padding: 0 clamp(12px, 3vw, 36px);
             color: var(--muted);
             opacity: 0.15;
             transform: scale(0.6);
@@ -396,13 +407,13 @@ html_content = f"""<!DOCTYPE html>
         .cat-item.active {{
             color: var(--ink);
             opacity: 1;
-            transform: scale(1.05);
+            transform: scale(1);
             filter: blur(0);
         }}
 
         .cat-item.adjacent {{
             opacity: 0.35;
-            transform: scale(0.75);
+            transform: scale(0.72);
             filter: blur(0.5px);
         }}
 
@@ -565,15 +576,48 @@ html_content = f"""<!DOCTYPE html>
         }}
 
         /* ── Responsive ── */
-        @media (max-width: 600px) {{
+
+        /* Prevent any horizontal overflow at the page level */
+        html, body {{
+            overflow-x: hidden;
+            max-width: 100%;
+        }}
+
+        @media (max-width: 640px) {{
             header {{
-                padding: 14px 20px;
-                flex-direction: column;
-                align-items: center;
+                padding: 14px 16px 12px;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+                gap: 6px 0;
+            }}
+
+            .date {{
+                grid-column: 1;
+                grid-row: 1;
+                font-size: 0.68rem;
+            }}
+
+            .subtitle {{
+                grid-column: 2;
+                grid-row: 1;
+                font-size: 0.68rem;
+            }}
+
+            h1 {{
+                grid-column: 1 / -1;
+                grid-row: 2;
             }}
 
             main {{
-                padding: 0 20px 60px;
+                padding: 0 16px 60px;
+            }}
+
+            .ai-content p {{
+                max-width: 100%;
+            }}
+
+            .ai-content .story-title {{
+                font-size: 1.3rem;
             }}
         }}
     </style>
@@ -586,8 +630,8 @@ html_content = f"""<!DOCTYPE html>
 
     <header>
         <div class="date">{today_str}</div>
-        <h1>Daily Briefing</h1>
         <p class="subtitle">What's going on today?</p>
+        <h1>Daily Briefing</h1>
     </header>
 
     <div class="category-stage" id="category-stage">
