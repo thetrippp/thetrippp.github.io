@@ -575,6 +575,80 @@ html_content = f"""<!DOCTYPE html>
             margin: 24px 0 0;
         }}
 
+        /* ── Dictionary Tooltip ── */
+        #dict-tooltip {{
+            position: fixed;
+            z-index: 9999;
+            width: 300px;
+            max-width: 92vw;
+            background: var(--ink);
+            color: var(--paper);
+            border-radius: 6px;
+            padding: 14px 16px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            display: none;
+        }}
+        #dict-tooltip.visible {{
+            opacity: 1;
+            transform: translateY(0);
+        }}
+        #dict-tooltip .dict-word {{
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+            color: #fff;
+            margin-bottom: 2px;
+        }}
+        #dict-tooltip .dict-phonetic {{
+            font-size: 0.75rem;
+            color: #aaa89a;
+            margin-bottom: 8px;
+            font-style: italic;
+        }}
+        #dict-tooltip .dict-pos {{
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 8px 0 3px;
+        }}
+        #dict-tooltip .dict-def {{
+            color: #d5cfc5;
+            font-size: 0.81rem;
+            line-height: 1.55;
+        }}
+        #dict-tooltip .dict-example {{
+            color: #8a8278;
+            font-style: italic;
+            font-size: 0.77rem;
+            margin-top: 3px;
+        }}
+        #dict-tooltip .dict-loading {{
+            color: #aaa89a;
+            font-size: 0.8rem;
+        }}
+        #dict-tooltip .dict-error {{
+            color: #e8a0a0;
+            font-size: 0.8rem;
+        }}
+        #dict-tooltip .dict-footer {{
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid #2a2a2a;
+            font-size: 0.68rem;
+            color: #555;
+            text-align: right;
+            letter-spacing: 0.06em;
+        }}
+
         /* ── Responsive ── */
 
         /* Prevent any horizontal overflow at the page level */
@@ -646,6 +720,9 @@ html_content = f"""<!DOCTYPE html>
     <main id="tab-contents">
         {tab_content_html}
     </main>
+
+    <!-- Dictionary Tooltip -->
+    <div id="dict-tooltip" role="tooltip" aria-live="polite"></div>
 
     <script>
         // ── Scroll progress bar ──
@@ -726,6 +803,90 @@ html_content = f"""<!DOCTYPE html>
                 delta = 0;
             }});
         }});
+
+        // ── Dictionary Tooltip ──
+        (() => {{
+            const tooltip = document.getElementById('dict-tooltip');
+            let showTimer = null;
+            let currentWord = '';
+            const cache = {{}};
+
+            function getSelectedWord() {{
+                const sel = window.getSelection();
+                if (!sel || sel.isCollapsed) return '';
+                const text = sel.toString().trim();
+                if (!/^[a-zA-Z][a-zA-Z'\-]{{1,29}}$/.test(text)) return '';
+                return text.toLowerCase();
+            }}
+
+            function positionTooltip(x, y) {{
+                const tw = tooltip.offsetWidth;
+                const th = tooltip.offsetHeight;
+                const vw = window.innerWidth;
+                let left = x + 12;
+                let top = y - th - 12;
+                if (left + tw > vw - 8) left = vw - tw - 8;
+                if (top < 8) top = y + 22;
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+            }}
+
+            function showTooltip(word, x, y) {{
+                tooltip.style.display = 'block';
+                tooltip.innerHTML = `<span class="dict-loading">Looking up "<em>${{word}}</em>"…</span>`;
+                requestAnimationFrame(() => tooltip.classList.add('visible'));
+                positionTooltip(x, y);
+                if (cache[word]) {{ renderResult(cache[word]); return; }}
+                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${{encodeURIComponent(word)}}`)
+                    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+                    .then(data => {{ cache[word] = data; if (currentWord === word) renderResult(data); }})
+                    .catch(() => {{ if (currentWord === word) tooltip.innerHTML = `<span class="dict-error">No definition found for "<em>${{word}}</em>".</span>`; }});
+            }}
+
+            function renderResult(data) {{
+                const entry = data[0];
+                if (!entry) {{ tooltip.innerHTML = `<span class="dict-error">No entry found.</span>`; return; }}
+                const phonetic = entry.phonetics?.find(p => p.text)?.text || entry.phonetic || '';
+                let html = `<div class="dict-word">${{entry.word}}</div>`;
+                if (phonetic) html += `<div class="dict-phonetic">${{phonetic}}</div>`;
+                const meanings = (entry.meanings || []).slice(0, 2);
+                for (const m of meanings) {{
+                    html += `<div class="dict-pos">${{m.partOfSpeech}}</div>`;
+                    const def = m.definitions?.[0];
+                    if (def) {{
+                        html += `<div class="dict-def">${{def.definition}}</div>`;
+                        if (def.example) html += `<div class="dict-example">"${{def.example}}"</div>`;
+                    }}
+                }}
+                html += `<div class="dict-footer">dictionaryapi.dev</div>`;
+                tooltip.innerHTML = html;
+            }}
+
+            function hideTooltip() {{
+                tooltip.classList.remove('visible');
+                setTimeout(() => {{ if (!tooltip.classList.contains('visible')) tooltip.style.display = 'none'; }}, 200);
+                currentWord = '';
+            }}
+
+            document.addEventListener('mouseup', (e) => {{
+                const word = getSelectedWord();
+                if (!word) return;
+                currentWord = word;
+                clearTimeout(showTimer);
+                showTimer = setTimeout(() => showTooltip(word, e.clientX, e.clientY), 280);
+            }});
+
+            tooltip.addEventListener('mouseenter', () => clearTimeout(showTimer));
+            tooltip.addEventListener('mouseleave', hideTooltip);
+
+            document.addEventListener('mousedown', (e) => {{
+                if (e.target !== tooltip) {{ clearTimeout(showTimer); hideTooltip(); }}
+            }});
+            document.addEventListener('keydown', (e) => {{
+                if (e.key === 'Escape') {{ clearTimeout(showTimer); hideTooltip(); }}
+            }});
+            window.addEventListener('scroll', hideTooltip, {{ passive: true }});
+        }})();
     </script>
 </body>
 </html>
