@@ -227,7 +227,7 @@ img {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    max-width: 900px;
+    max-width: 1200px;
     width: 100%;
     z-index: 1;
     background: rgba(0, 0, 0, 0.45);
