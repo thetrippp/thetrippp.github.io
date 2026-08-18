@@ -279,6 +279,22 @@
       color: var(--text-dim);
     }
 
+    #lossQuote {
+      max-width: 460px;
+      margin: 14px auto 0;
+      padding: 0 16px;
+      text-align: center;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--text-dim);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #lossQuote.show {
+      opacity: 1;
+    }
+
     .crown {
       position: absolute;
       right: 0;
@@ -287,7 +303,7 @@
       opacity: 0.85;
     }
 
-    #lossOverlay {
+    #winOverlay {
       position: fixed;
       inset: 0;
       display: none;
@@ -298,11 +314,11 @@
       overflow: hidden;
     }
 
-    #lossOverlay.show {
+    #winOverlay.show {
       display: flex;
     }
 
-    #lossBackdrop {
+    #winBackdrop {
       position: absolute;
       inset: -20px;
       background-size: cover;
@@ -311,14 +327,14 @@
       transform: scale(1.1);
     }
 
-    #lossOverlay::after {
+    #winOverlay::after {
       content: "";
       position: absolute;
       inset: 0;
       background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.65) 85%);
     }
 
-    #lossGrid {
+    #winGrid {
       position: relative;
       z-index: 1;
       width: 100%;
@@ -329,7 +345,7 @@
       padding: 24px;
     }
 
-    #lossGrid img {
+    #winGrid img {
       max-width: 96vw;
       max-height: 88vh;
       width: auto;
@@ -337,15 +353,9 @@
       object-fit: contain;
       border-radius: 8px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-      opacity: 1;
-      transition: opacity 0.35s ease;
     }
 
-    #lossGrid.fading img {
-      opacity: 0;
-    }
-
-    #lossOverlay .loss-caption {
+    #winOverlay .loss-caption {
       position: absolute;
       bottom: 24px;
       left: 0;
@@ -392,11 +402,12 @@
 
   <footer>The answer has never changed since Season 3.</footer>
   <div id="streakDisplay">🔥 <span id="streakCount">0</span> DAY STREAK</div>
+  <div id="lossQuote"></div>
 
-  <div id="lossOverlay">
-    <div id="lossBackdrop"></div>
-    <div id="lossGrid"></div>
-    <div class="loss-caption">you had one job</div>
+  <div id="winOverlay">
+    <div id="winBackdrop"></div>
+    <div id="winGrid"></div>
+    <div class="loss-caption">as expected</div>
   </div>
 
   <script>
@@ -416,22 +427,23 @@
 
     // Add as many image filenames as you like — they'll be placed in the outputs
     // folder alongside this HTML file, so just reference them by filename here.
-    const LOSS_IMAGES = [
+    // These now display on a WIN, filling the screen without distortion.
+    const WIN_IMAGES = [
       "faker-calling.gif",
       "faker-shush.gif"
     ];
 
-    function showLossOverlay() {
-      const overlay = document.getElementById('lossOverlay');
-      const grid = document.getElementById('lossGrid');
-      const backdrop = document.getElementById('lossBackdrop');
+    function showWinOverlay() {
+      const overlay = document.getElementById('winOverlay');
+      const grid = document.getElementById('winGrid');
+      const backdrop = document.getElementById('winBackdrop');
 
-      if (LOSS_IMAGES.length === 0) {
+      if (WIN_IMAGES.length === 0) {
         overlay.classList.add('show');
         return;
       }
 
-      const src = LOSS_IMAGES[Math.floor(Math.random() * LOSS_IMAGES.length)];
+      const src = WIN_IMAGES[Math.floor(Math.random() * WIN_IMAGES.length)];
 
       grid.innerHTML = "";
       const img = document.createElement('img');
@@ -443,6 +455,23 @@
 
       overlay.classList.add('show');
     }
+
+    // Quotes shown at the bottom of the page on a loss. Add as many as you like.
+    const LOSS_QUOTES = [
+      '"How do you lose to Faker? He is literally the only answer."',
+      '"Every game is winnable. This one, somehow, was not."',
+      '"You had six tries. Six. It is a five-letter word."',
+      '"Somewhere, Faker is not surprised."',
+      '"This is why they call it the Unkillable Demon King."'
+    ];
+
+    function showLossQuote() {
+      const el = document.getElementById('lossQuote');
+      const quote = LOSS_QUOTES[Math.floor(Math.random() * LOSS_QUOTES.length)];
+      el.textContent = quote;
+      el.classList.add('show');
+    }
+
     const TITLES = [
       "UNKILLABLE DEMON KING",
       "FIRST INDUCTEE INTO THE HALL OF LEGENDS",
@@ -454,7 +483,7 @@
       "6-TIME WORLD CHAMPION",
       "THE FACE OF LEAGUE OF LEGENDS",
       "GOAT OF ESPORTS",
-      "THE LEGEND HIMSELF"
+      "THE ZED PLAYER YOUR ZED PLAYER FEARS"
     ];
 
     function shuffle(arr) {
@@ -669,10 +698,11 @@
           gameOver = true;
           showMessage(winTitle, true);
           recordWinStreak();
+          showWinOverlay();
         } else if (guessCount >= MAX_GUESSES) {
           gameOver = true;
           showMessage("IT WAS ALWAYS FAKER. HOW.", true);
-          showLossOverlay();
+          showLossQuote();
         } else {
           currentGuess = "";
         }
