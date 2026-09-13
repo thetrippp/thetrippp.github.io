@@ -4,11 +4,9 @@
    unified work grid, expandable card details.
    ============================================================ */
 
-/* Google Fonts loaded in HTML — Space Mono + DM Sans */
+/* Google Fonts loaded in HTML — Space Grotesk + Sora */
 
 /* ---- CSS Custom Properties -------------------------------- */
-@import url('https://fonts.googleapis.com/css?family=Roboto');
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 :root {
     --bg: #0e0e10;
@@ -27,8 +25,8 @@
     --text-muted: #888;
     --text-dim: #555;
 
-    --font-head: 'Space Mono', monospace;
-    --font-body: 'DM Sans', sans-serif;
+    --font-head: 'Space Grotesk', sans-serif;
+    --font-body: 'Sora', sans-serif;
 
     --card-radius: 14px;
     --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -58,7 +56,7 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     user-select: none;
@@ -146,7 +144,7 @@ img {
 
 .hero-text-area h1 {
     font-family: var(--font-head);
-    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-size: clamp(3rem, 5vw, 4rem);
     line-height: 1.05;
     font-weight: 700;
     margin-bottom: 20px;
@@ -314,6 +312,43 @@ img {
 .skill-level.beginner {
     background: rgba(255, 255, 255, 0.07);
     color: var(--text-muted);
+}
+
+.scroll-cue {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    z-index: 2;
+    transition: color var(--transition);
+    animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+.scroll-cue:hover {
+    color: var(--cyan);
+}
+
+.scroll-cue-text {
+    font-family: var(--font-head);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+}
+
+@keyframes scroll-bounce {
+
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(8px);
+    }
 }
 
 /* ============================================================

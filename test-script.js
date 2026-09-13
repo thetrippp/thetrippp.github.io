@@ -9,27 +9,27 @@ function createCarousel(containerId) {
     }
 
     const cards = originalCardsMap.get(containerId);
-    container.innerHTML = ''; 
+    container.innerHTML = '';
 
     const width = window.innerWidth;
     let itemsPerPage;
     let columns;
 
     if (width < 600) {
-        itemsPerPage = 3; 
-        columns = "1fr";  
+        itemsPerPage = 3;
+        columns = "1fr";
     } else if (width < 1024) {
-        itemsPerPage = 4; 
-        columns = "1fr 1fr"; 
+        itemsPerPage = 4;
+        columns = "1fr 1fr";
     } else {
-        itemsPerPage = 6; 
-        columns = "1fr 1fr"; 
+        itemsPerPage = 6;
+        columns = "1fr 1fr";
     }
 
     for (let i = 0; i < cards.length; i += itemsPerPage) {
         const page = document.createElement('div');
         page.className = 'page-container';
-        page.style.width = "100%"; 
+        page.style.width = "100%";
         page.style.gridTemplateColumns = columns;
 
         const chunk = cards.slice(i, i + itemsPerPage);
@@ -37,7 +37,7 @@ function createCarousel(containerId) {
             const clone = card.cloneNode(true);
             page.appendChild(clone);
         });
-        
+
         container.appendChild(page);
     }
 
@@ -61,7 +61,7 @@ window.addEventListener('resize', () => {
     resizeTimeout = setTimeout(() => {
         const gridIds = ['experimentCarousel', 'projectCarousel'];
         gridIds.forEach(id => createCarousel(id));
-        
+
         // Refresh arrow visibility for the About section manually
         const aboutV = document.getElementById('aboutCarousel');
         if (aboutV) updateIndicatorVisibility(aboutV);
@@ -113,15 +113,15 @@ function updateIndicatorVisibility(viewport) {
 
     if (rightHint) {
         // Only show if there is meaningful content to scroll to (> 10px)
-        maxScroll > 10 && scrollLeft < (maxScroll - 10) 
-            ? rightHint.classList.add('is-visible') 
+        maxScroll > 10 && scrollLeft < (maxScroll - 10)
+            ? rightHint.classList.add('is-visible')
             : rightHint.classList.remove('is-visible');
     }
 }
 
 function initAllCarousels() {
     const viewports = document.querySelectorAll('.carousel-viewport');
-    
+
     viewports.forEach(viewport => {
         // Run once on load to set initial arrow state
         // Wrapped in timeout to allow layout to settle
