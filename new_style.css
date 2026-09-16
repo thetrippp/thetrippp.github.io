@@ -56,7 +56,7 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     user-select: none;
@@ -144,7 +144,7 @@ img {
 
 .hero-text-area h1 {
     font-family: var(--font-head);
-    font-size: clamp(3rem, 5vw, 4rem);
+    font-size: clamp(2.4rem, 5vw, 4rem);
     line-height: 1.05;
     font-weight: 700;
     margin-bottom: 20px;
@@ -312,43 +312,6 @@ img {
 .skill-level.beginner {
     background: rgba(255, 255, 255, 0.07);
     color: var(--text-muted);
-}
-
-.scroll-cue {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    color: var(--text-muted);
-    z-index: 2;
-    transition: color var(--transition);
-    animation: scroll-bounce 2s ease-in-out infinite;
-}
-
-.scroll-cue:hover {
-    color: var(--cyan);
-}
-
-.scroll-cue-text {
-    font-family: var(--font-head);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-}
-
-@keyframes scroll-bounce {
-
-    0%,
-    100% {
-        transform: translateX(-50%) translateY(0);
-    }
-
-    50% {
-        transform: translateX(-50%) translateY(8px);
-    }
 }
 
 /* ============================================================
@@ -610,4 +573,491 @@ img {
     .skills-panel {
         padding: 20px 18px;
     }
+}
+/* ============================================================
+   NEW DESIGN — HEADER / FEATURED / CAROUSEL
+   Replaces the old hero-section + skills-panel + work-section
+   layout above. Those rules are now unused — safe to delete
+   once you're confident this is the final layout.
+   ============================================================ */
+
+/* ---- Header ---- */
+.site-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 24px;
+}
+
+.site-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.site-name {
+    font-family: var(--font-head);
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 700;
+}
+
+.site-nav {
+    display: flex;
+    gap: 28px;
+}
+
+.site-nav a {
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color var(--transition);
+}
+
+.site-nav a:hover {
+    color: var(--text);
+}
+
+.site-header-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.site-tagline {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+}
+
+.site-header-bottom .hero-socials {
+    margin-top: 0;
+}
+
+.site-header-bottom .social-icon {
+    width: 38px;
+    height: 38px;
+}
+
+/* ---- Section wrapper ---- */
+.projects-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px 24px 100px;
+}
+
+/* ---- Featured / pinned project ---- */
+.featured-project {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    background: var(--surface);
+    border: 2px solid var(--cyan);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: 0 0 0 4px rgba(0, 207, 255, 0.08);
+    flex: 0 0 38%;
+    min-height: 0;
+}
+
+.featured-media {
+    background-size: cover;
+    background-position: center;
+    min-height: 320px;
+}
+
+.featured-body {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+}
+
+.featured-badge {
+    align-self: flex-start;
+    font-family: var(--font-head);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(0, 207, 255, 0.12);
+    border: 1px solid rgba(0, 207, 255, 0.3);
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.featured-title {
+    font-family: var(--font-head);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+}
+
+.featured-summary {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.featured-cta {
+    font-family: var(--font-head);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--orange);
+    margin-top: 8px;
+}
+
+/* ---- Carousel ---- */
+.carousel-section {
+    position: relative;
+}
+
+.carousel-viewport {
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 20px;
+    padding: 4px 4px 16px;
+}
+
+.carousel-card {
+    flex: 0 0 320px;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color var(--transition), transform var(--transition);
+}
+
+.carousel-card:hover {
+    border-color: var(--border-hi);
+    transform: translateY(-3px);
+}
+
+.carousel-card .card-media {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.8);
+}
+
+.carousel-card-body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.carousel-card-title {
+    font-family: var(--font-head);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.carousel-card-summary {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.carousel-card-cta {
+    flex: 0 0 auto;
+    font-family: var(--font-head);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--orange);
+    height: 34px;
+    display: flex;
+    align-items: center;
+}
+
+.carousel-card.coming-soon {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border-hi);
+    color: var(--text);
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: background-color var(--transition), border-color var(--transition);
+}
+
+.carousel-arrow:hover {
+    background: var(--surface);
+    border-color: var(--cyan);
+}
+
+.carousel-arrow.prev {
+    left: -8px;
+}
+
+.carousel-arrow.next {
+    right: -8px;
+}
+
+@media (max-width: 900px) {
+    .featured-project {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-media {
+        min-height: 220px;
+    }
+}
+
+@media (max-width: 640px) {
+    .site-header-top,
+    .site-header-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .carousel-card {
+        flex-basis: 260px;
+    }
+}
+
+/* ============================================================
+   ONE-SCREEN LAYOUT — no page scroll, carousel scrolls instead
+   ============================================================ */
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.site-header {
+    flex: 0 0 auto;
+    padding: 20px 24px 10px;
+}
+
+.site-header-top {
+    align-items: center;
+}
+
+.name-banner-container {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.name-banner-container canvas {
+    display: block;
+}
+
+.site-header-bottom {
+    margin-top: 8px;
+}
+
+.projects-section {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 24px 20px;
+}
+
+/* New info shown on the enlarged carousel cards */
+.carousel-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.carousel-card-tag {
+    font-family: var(--font-head);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.carousel-card-skills {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.featured-media {
+    height: 100%;
+    min-height: 0;
+}
+
+.featured-body {
+    min-height: 0;
+    overflow: hidden;
+    padding: 20px 28px;
+}
+
+.featured-summary {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Carousel takes the rest, cards scroll horizontally within it */
+.carousel-section {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.carousel-viewport {
+    flex: 1;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* Fade mask at both edges — reinforces the arrows as the "there's more" cue */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
+}
+
+.carousel-viewport::-webkit-scrollbar {
+    display: none;
+    height: 0;
+}
+
+.carousel-track {
+    height: 100%;
+    gap: 18px;
+    padding: 4px 8px;
+}
+
+.carousel-card {
+    flex: 0 0 340px;
+    height: 100%;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease, border-color var(--transition), transform 0.35s ease;
+}
+
+.carousel-card.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+.carousel-card .card-media {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+}
+
+.carousel-card-body {
+    flex: 0 0 auto;
+    min-height: 0;
+    overflow: hidden;
+    padding: 14px 18px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.carousel-card-summary {
+    -webkit-line-clamp: 3;
+}
+
+@media (max-width: 900px) {
+    html, body {
+        height: auto;
+        overflow: auto;
+    }
+
+    .container {
+        height: auto;
+    }
+
+    .featured-project {
+        flex-basis: auto;
+    }
+
+    .carousel-section {
+        flex-basis: auto;
+        min-height: 320px;
+    }
+}
+
+/* ---- "Open to work" attention badge ---- */
+.open-to-work {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    animation: open-to-work-cycle 4s ease-in-out infinite;
+}
+
+@keyframes open-to-work-cycle {
+    0%, 100% {
+        color: var(--cyan);
+        text-shadow: 0 0 8px rgba(0, 207, 255, 0.6), 0 0 16px rgba(0, 207, 255, 0.3);
+    }
+    33% {
+        color: var(--green);
+        text-shadow: 0 0 8px rgba(0, 230, 118, 0.6), 0 0 16px rgba(0, 230, 118, 0.3);
+    }
+    66% {
+        color: var(--orange);
+        text-shadow: 0 0 8px rgba(255, 140, 0, 0.6), 0 0 16px rgba(255, 140, 0, 0.3);
+    }
+}
+
+/* Respect reduced-motion preferences: fade a static glow instead of cycling colors */
+@media (prefers-reduced-motion: reduce) {
+    .open-to-work {
+        animation: none;
+        color: var(--cyan);
+        text-shadow: 0 0 8px rgba(0, 207, 255, 0.5);
+    }
+}
+
+/* ---- Name particle slot: fixed width sized to the widest cycling word,
+   right-aligned so the canvas grows/shrinks toward the left as words
+   change length — keeps the nav's position stable without padding out
+   shorter words to match the longest one's box size. Actual width is set
+   by name-particles.js (computeSharedLayout) since it depends on measured
+   text metrics; this just establishes the alignment behavior. ---- */
+.name-slot {
+    display: flex;
+    justify-content: flex-end;
 }
