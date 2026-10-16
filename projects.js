@@ -19,13 +19,15 @@
 
   function buildFeaturedCard(row) {
     return (
+      '<a href="' + escapeHtml(row.link) + '">' +
       '<div class="featured-media" style="background-image:url(\'' + escapeHtml(row.image) + '\')"></div>\n' +
       '      <div class="featured-body">\n' +
       (row.venue ? '        <span class="featured-badge">' + escapeHtml(row.venue) + '</span>\n' : '') +
       '        <h2 class="featured-title">' + escapeHtml(row.title) + '</h2>\n' +
       '        <p class="featured-summary">' + escapeHtml(row.summary) + '</p>\n' +
       (row.link ? '        <a href="' + escapeHtml(row.link) + '" class="featured-cta">' + escapeHtml(row.cta_text || 'View Full Write-Up →') + '</a>\n' : '') +
-      '      </div>'
+      '      </div>' +
+      '</a>'
     );
   }
 
@@ -43,7 +45,7 @@
     // duplicate is the same project with the same link, so all of them stay
     // clickable regardless of which physical copy happens to be on screen.
     var linkOverlay = (!comingSoon && row.link)
-      ? '<a href="' + escapeHtml(row.link) + '" class="card-link-overlay" aria-label="' + escapeHtml(row.title) + ' project" target="_blank"></a>\n        '
+      ? '<a href="' + escapeHtml(row.link) + '" class="card-link-overlay" aria-label="' + escapeHtml(row.title) + ' project" ' + escapeHtml(row.open_in_new_tab ? 'target="_blank"' : '') + '></a>\n        '
       : '';
 
     var tags = splitList(row.tags).slice(0, 3);

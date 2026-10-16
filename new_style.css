@@ -574,6 +574,7 @@ img {
         padding: 20px 18px;
     }
 }
+
 /* ============================================================
    NEW DESIGN — HEADER / FEATURED / CAROUSEL
    Replaces the old hero-section + skills-panel + work-section
@@ -645,7 +646,7 @@ img {
 
 /* ---- Section wrapper ---- */
 .projects-section {
-    max-width: 1200px;
+    max-width: 100vh;
     margin: 0 auto;
     padding: 8px 24px 100px;
 }
@@ -653,6 +654,7 @@ img {
 /* ---- Featured / pinned project ---- */
 .featured-project {
     display: grid;
+    max-width: 100vh;
     grid-template-columns: 1.1fr 1fr;
     background: var(--surface);
     border: 2px solid var(--cyan);
@@ -824,6 +826,7 @@ img {
 
 @media (max-width: 900px) {
     .featured-project {
+        max-width: 85%;
         grid-template-columns: 1fr;
     }
 
@@ -833,6 +836,7 @@ img {
 }
 
 @media (max-width: 640px) {
+
     .site-header-top,
     .site-header-bottom {
         flex-direction: column;
@@ -848,7 +852,8 @@ img {
    ONE-SCREEN LAYOUT — no page scroll, carousel scrolls instead
    ============================================================ */
 
-html, body {
+html,
+body {
     height: 100%;
     overflow: hidden;
 }
@@ -1001,7 +1006,9 @@ html, body {
 }
 
 @media (max-width: 900px) {
-    html, body {
+
+    html,
+    body {
         height: auto;
         overflow: auto;
     }
@@ -1011,6 +1018,30 @@ html, body {
     }
 
     .featured-project {
+        max-width: 85%;
+        flex-basis: auto;
+    }
+
+    .carousel-section {
+        flex-basis: auto;
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 640px) {
+
+    html,
+    body {
+        height: auto;
+        overflow: auto;
+    }
+
+    .container {
+        height: auto;
+    }
+
+    .featured-project {
+        max-width: 85%;
         flex-basis: auto;
     }
 
@@ -1028,14 +1059,18 @@ html, body {
 }
 
 @keyframes open-to-work-cycle {
-    0%, 100% {
+
+    0%,
+    100% {
         color: var(--cyan);
         text-shadow: 0 0 8px rgba(0, 207, 255, 0.6), 0 0 16px rgba(0, 207, 255, 0.3);
     }
+
     33% {
         color: var(--green);
         text-shadow: 0 0 8px rgba(0, 230, 118, 0.6), 0 0 16px rgba(0, 230, 118, 0.3);
     }
+
     66% {
         color: var(--orange);
         text-shadow: 0 0 8px rgba(255, 140, 0, 0.6), 0 0 16px rgba(255, 140, 0, 0.3);
