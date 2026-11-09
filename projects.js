@@ -1,9 +1,20 @@
 (function () {
+  // Escapes for both text and attribute contexts (titles end up inside
+  // aria-label="..." and data-*="..." attributes, so quotes must be escaped too).
   function escapeHtml(str) {
     var div = document.createElement('div');
     div.textContent = str == null ? '' : str;
-    return div.innerHTML;
+    return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
+
+  // open_in_new_tab accepts yes / true / 1. Any other non-empty value
+  // (e.g. "no") must NOT open a new tab, which a plain truthiness check would.
+  function opensInNewTab(row) {
+    return /^(yes|true|1)$/i.test((row.open_in_new_tab || '').trim());
+  }
+
+  var FEATURED_AUTO_DELAY = 5000; // ms each featured slide is shown before auto-advancing
+  var FEATURED_SLIDE_MS = 1000;    // slide transition length
 
   function isFeatured(row) {
     return (row.featured || '').trim().toLowerCase() === 'yes';
@@ -17,18 +28,173 @@
     return (str || '').split(';').map(function (s) { return s.trim(); }).filter(Boolean);
   }
 
-  function buildFeaturedCard(row) {
+  // One featured slide. Uses the same invisible full-card link overlay as the
+  // lower carousel instead of wrapping everything in an <a>: the old markup
+  // nested a link (the CTA) inside a link (the wrapper), which is invalid HTML
+  // and gets rewritten by the browser's parser.
+  function buildFeaturedSlide(row, index, total) {
+    var linkable = row.link && !isComingSoon(row);
+    var overlay = linkable
+      ? '  <a href="' + escapeHtml(row.link) + '" class="card-link-overlay" aria-label="' + escapeHtml(row.title) + ' project"' +
+      (opensInNewTab(row) ? ' target="_blank" rel="noopener"' : '') + '></a>\n'
+      : '';
+    var groupAttrs = total > 1
+      ? ' role="group" aria-roledescription="slide" aria-label="' + (index + 1) + ' of ' + total + '"'
+      : '';
+
     return (
-      '<a href="' + escapeHtml(row.link) + '">' +
-      '<div class="featured-media" style="background-image:url(\'' + escapeHtml(row.image) + '\')"></div>\n' +
-      '      <div class="featured-body">\n' +
-      (row.venue ? '        <span class="featured-badge">' + escapeHtml(row.venue) + '</span>\n' : '') +
-      '        <h2 class="featured-title">' + escapeHtml(row.title) + '</h2>\n' +
-      '        <p class="featured-summary">' + escapeHtml(row.summary) + '</p>\n' +
-      (row.link ? '        <a href="' + escapeHtml(row.link) + '" class="featured-cta">' + escapeHtml(row.cta_text || 'View Full Write-Up →') + '</a>\n' : '') +
-      '      </div>' +
-      '</a>'
+      '<article class="featured-slide' + (index === 0 ? ' is-active' : '') + '"' + groupAttrs + '>\n' +
+      overlay +
+      '  <div class="featured-media" style="background-image:url(\'' + escapeHtml(row.image) + '\')"></div>\n' +
+      '  <div class="featured-body">\n' +
+      (row.venue ? '    <span class="featured-badge">' + escapeHtml(row.venue) + '</span>\n' : '') +
+      '    <h2 class="featured-title">' + escapeHtml(row.title) + '</h2>\n' +
+      '    <p class="featured-summary">' + escapeHtml(row.summary) + '</p>\n' +
+      (linkable ? '    <span class="featured-cta">' + escapeHtml(row.cta_text || 'View Full Write-Up →') + '</span>\n' : '') +
+      '  </div>\n' +
+      '</article>'
     );
+  }
+
+  // Turns the rendered slides into a carousel: arrows, dots, slide transition
+  // with wrap-around, auto-rotate, swipe and arrow-key support. Slides are
+  // stacked in one grid cell and moved with transforms; there is no scroll
+  // position to keep in sync, so none of the loop-correction logic the lower
+  // carousel needs applies here.
+  function initFeaturedCarousel(container) {
+    var slides = Array.prototype.slice.call(container.querySelectorAll('.featured-slide'));
+    if (slides.length < 2) return;
+
+    var index = 0;
+    var animating = false;
+    var hovering = false;
+    var focused = false;
+    var timer = null;
+
+    container.setAttribute('role', 'region');
+    container.setAttribute('aria-roledescription', 'carousel');
+    container.setAttribute('aria-label', 'Featured projects');
+
+    var controls = document.createElement('div');
+    controls.className = 'featured-controls';
+    controls.innerHTML =
+      '<button type="button" class="featured-arrow prev" aria-label="Previous featured project"><span aria-hidden="true">&#8249;</span></button>' +
+      '<div class="featured-dots">' +
+      slides.map(function (s, i) {
+        return '<button type="button" class="featured-dot' + (i === 0 ? ' is-active' : '') + '" data-index="' + i +
+          '" aria-label="Show featured project ' + (i + 1) + ' of ' + slides.length + '"' + (i === 0 ? ' aria-current="true"' : '') + '></button>';
+      }).join('') +
+      '</div>' +
+      '<button type="button" class="featured-arrow next" aria-label="Next featured project"><span aria-hidden="true">&#8250;</span></button>';
+    container.appendChild(controls);
+    container.classList.add('has-controls');
+
+    var dots = Array.prototype.slice.call(controls.querySelectorAll('.featured-dot'));
+
+    function updateDots() {
+      dots.forEach(function (dot, i) {
+        dot.classList.toggle('is-active', i === index);
+        if (i === index) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    function prefersReducedMotion() {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    // dir: 1 = next (new slide enters from the right), -1 = previous.
+    // Further requests are ignored while a transition runs, so two animations
+    // can never fight over the same slides.
+    function go(target, dir) {
+      if (animating || target === index) return;
+      var out = slides[index];
+      var inn = slides[target];
+      index = target;
+      updateDots();
+
+      if (prefersReducedMotion() || !out.animate) {
+        out.classList.remove('is-active');
+        inn.classList.add('is-active');
+        return;
+      }
+
+      animating = true;
+      inn.classList.add('is-active'); // both visible while sliding
+      var opts = { duration: FEATURED_SLIDE_MS, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' };
+      var outAnim = out.animate(
+        [{ transform: 'translateX(0)' }, { transform: 'translateX(' + (-dir * 100) + '%)' }],
+        { duration: opts.duration, easing: opts.easing, fill: 'forwards' }
+      );
+      inn.animate(
+        [{ transform: 'translateX(' + (dir * 100) + '%)' }, { transform: 'translateX(0)' }],
+        opts
+      );
+      outAnim.onfinish = function () {
+        out.classList.remove('is-active');
+        outAnim.cancel();
+        animating = false;
+      };
+    }
+
+    function next() { go((index + 1) % slides.length, 1); }
+    function prev() { go((index - 1 + slides.length) % slides.length, -1); }
+
+    function stopAuto() {
+      if (timer) { clearTimeout(timer); timer = null; }
+    }
+    function scheduleAuto() {
+      stopAuto();
+      if (hovering || focused || document.hidden) return;
+      timer = setTimeout(function () { next(); scheduleAuto(); }, FEATURED_AUTO_DELAY);
+    }
+
+    controls.querySelector('.prev').addEventListener('click', function () { prev(); scheduleAuto(); });
+    controls.querySelector('.next').addEventListener('click', function () { next(); scheduleAuto(); });
+    dots.forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        var target = parseInt(dot.getAttribute('data-index'), 10);
+        go(target, target > index ? 1 : -1);
+        scheduleAuto();
+      });
+    });
+
+    // Pause while a mouse is over the card or keyboard focus is inside it.
+    // Mouse only: touch devices fire emulated enter events on tap and never a
+    // matching leave, which would leave auto-rotate paused forever.
+    container.addEventListener('pointerenter', function (e) {
+      if (e.pointerType === 'mouse') { hovering = true; stopAuto(); }
+    });
+    container.addEventListener('pointerleave', function (e) {
+      if (e.pointerType === 'mouse') { hovering = false; scheduleAuto(); }
+    });
+    container.addEventListener('focusin', function () { focused = true; stopAuto(); });
+    container.addEventListener('focusout', function () { focused = false; scheduleAuto(); });
+    document.addEventListener('visibilitychange', scheduleAuto);
+
+    container.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { prev(); scheduleAuto(); }
+      else if (e.key === 'ArrowRight') { next(); scheduleAuto(); }
+    });
+
+    var touchStart = null;
+    container.addEventListener('touchstart', function (e) {
+      var t = e.changedTouches[0];
+      touchStart = { x: t.clientX, y: t.clientY };
+    }, { passive: true });
+    container.addEventListener('touchend', function (e) {
+      if (!touchStart) return;
+      var t = e.changedTouches[0];
+      var dx = t.clientX - touchStart.x;
+      var dy = t.clientY - touchStart.y;
+      touchStart = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) next(); else prev();
+        scheduleAuto();
+      }
+    }, { passive: true });
+
+    scheduleAuto();
   }
 
   // Each row renders once per clone index (0 = real set, 1/2 = loop clones) so
@@ -45,7 +211,7 @@
     // duplicate is the same project with the same link, so all of them stay
     // clickable regardless of which physical copy happens to be on screen.
     var linkOverlay = (!comingSoon && row.link)
-      ? '<a href="' + escapeHtml(row.link) + '" class="card-link-overlay" aria-label="' + escapeHtml(row.title) + ' project" ' + escapeHtml(row.open_in_new_tab ? 'target="_blank"' : '') + '></a>\n        '
+      ? '<a href="' + escapeHtml(row.link) + '" class="card-link-overlay" aria-label="' + escapeHtml(row.title) + ' project"' + (opensInNewTab(row) ? ' target="_blank" rel="noopener"' : '') + '></a>\n        '
       : '';
 
     var tags = splitList(row.tags).slice(0, 3);
@@ -80,11 +246,17 @@
     var track = document.getElementById('carousel-track');
     if (!featuredContainer || !track) return;
 
-    var featuredRow = rows.filter(isFeatured)[0];
-    var restRows = rows.filter(function (r) { return r !== featuredRow; });
+    // Every featured=yes row goes into the pinned carousel, in CSV order, and
+    // is kept out of the lower carousel. One featured row renders as a plain
+    // card with no controls.
+    var featuredRows = rows.filter(isFeatured);
+    var restRows = rows.filter(function (r) { return !isFeatured(r); });
 
-    if (featuredRow) {
-      featuredContainer.innerHTML = buildFeaturedCard(featuredRow);
+    if (featuredRows.length) {
+      featuredContainer.innerHTML = featuredRows.map(function (row, i) {
+        return buildFeaturedSlide(row, i, featuredRows.length);
+      }).join('\n');
+      initFeaturedCarousel(featuredContainer);
     } else {
       console.warn('No row in projects.csv has featured=yes; pinned slot left empty.');
     }
@@ -272,8 +444,8 @@
   // Any scroll, click, drag, or hover resets the idle countdown so it never
   // fights the person actually browsing.
   function setupAutoRotate(viewport, prevBtn, nextBtn, scrollByCard) {
-    var IDLE_DELAY = 3000;   // ms of no interaction before auto-rotation starts
-    var STEP_INTERVAL = 2000; // ms between automatic advances once idle
+    var IDLE_DELAY = 5000;   // ms of no interaction before auto-rotation starts
+    var STEP_INTERVAL = 3000; // ms between automatic advances once idle
     var idleTimer = null;
     var autoTimer = null;
 

@@ -1096,3 +1096,139 @@ body {
     display: flex;
     justify-content: flex-end;
 }
+
+/* ============================================================
+   FEATURED CAROUSEL
+   #featured-project now holds one slide per featured=yes row.
+   All slides share one grid cell and are shown/hidden with
+   .is-active; the transition itself is animated from projects.js.
+   ============================================================ */
+.featured-project {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    position: relative;
+    isolation: isolate;
+    touch-action: pan-y;
+}
+
+.featured-slide {
+    grid-area: 1 / 1;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    min-height: 0;
+    visibility: hidden;
+}
+
+.featured-slide.is-active {
+    visibility: visible;
+}
+
+.featured-slide .card-link-overlay:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: -6px;
+    border-radius: var(--card-radius);
+}
+
+/* Controls sit top-right, over the text column, clear of the badge and CTA */
+.featured-controls {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.featured-arrow {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border-hi);
+    color: var(--text);
+    font-size: 1.2rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition);
+}
+
+.featured-arrow:hover {
+    background: var(--surface);
+    border-color: var(--cyan);
+}
+
+.featured-dots {
+    display: flex;
+    align-items: center;
+}
+
+/* 18px hit area, 8px visible dot */
+.featured-dot {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.featured-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid var(--border-hi);
+    background: transparent;
+    transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.featured-dot.is-active::before {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    box-shadow: 0 0 6px rgba(0, 207, 255, 0.5);
+}
+
+.featured-arrow:focus-visible,
+.featured-dot:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+    .featured-slide {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* The one-screen block above sets min-height: 0 on the media, which
+       collapses it to nothing once the slide stacks into one column. */
+    .featured-media {
+        height: auto;
+        min-height: 220px;
+    }
+}
+
+/* ---- Fixes: phone overflow + badge/controls collision ---- */
+/* The section has margin:0 auto inside a flex column, so it shrank to its
+   content (the carousel track) and ballooned to max-width. Pin it to the
+   container width; max-width still caps it on large screens. */
+.projects-section {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.featured-project.has-controls .featured-badge {
+    max-width: calc(100% - 130px);
+    white-space: normal;
+}
